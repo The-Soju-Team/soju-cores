@@ -1,0 +1,203 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>
+    <li><a href="javascript:void(0)" onclick="backToList();">Danh sách đơn hàng</a></li>
+    <li class="active">Nội dung đơn hàng</li>
+</ul>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">NỘI DUNG ĐƠN HÀNG</h3>
+                </div>
+                <div class="panel-body">                     
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Khách hàng</label>
+                                    <div class="col-md-7">
+                                        <label class="control-label" style="color:#428bca; text-align:left;" id="lblcustomer"></label>
+                                    </div>                                    
+                                </div>
+                                <div class="row" style="margin-bottom: 20px">
+                                    <div id="customerView" class="dropzone dropzone-mini" style="margin-left:5px; text-align: center; width: 180px; min-height: 135px">
+                                    </div>                                    
+                                </div> 
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-4 control-label">Văn bản</label>
+                                    <div id="fileView" class="col-md-8" style="text-align: left">
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: 5px">
+                                    <div id="fileArea" class="col-md-12" style="text-align: center; margin-bottom: 5px">
+                                        <form id="fileForm" method="post" enctype="multipart/form-data" class="dropzone dropzone-mini" style="margin-left:5px; text-align: center; width: 180px; min-height: 135px">
+                                            <input type="hidden" id="orderId" name="orderId"/>
+                                            <div class="fallback">
+                                                <input name="orderfile" type="file" multiple />
+                                            </div>
+                                        </form>
+                                        <div id="errorFile" class="alert alert-danger" role="alert" style="display:none">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <div class="col-md-8">
+                                <form id="updateForm" class="form-horizontal" role="form">
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Mã đơn hàng</label>
+                                    <div class="col-md-7">
+                                        <label class="control-label" style="color:#428bca; text-align:left;" id="lblordercode"></label>
+                                        <input type="hidden" id="parent" name="parent"/>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Trạng thái</label>
+                                    <div class="col-md-7">
+                                        <label class="control-label" style="color:red; text-align:left;" id="lblstatus"></label>
+                                    </div>                                    
+                                </div>                                
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Giá tiền</label>
+                                    <div class="col-md-7">
+                                        <label class="control-label" style="color:red; text-align:left;" id="lblprice"></label>
+                                    </div>
+                                </div>
+                                <div id="rowStart" class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Bắt đầu</label>
+                                    <div class="col-md-7">
+                                        <label class="control-label" style="color:#428bca; text-align:left;" id="lblstart"></label>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Ngày tạo</label>
+                                    <div class="col-md-7">
+                                        <label class="control-label" style="color:#428bca; text-align:left;" id="lblcreate"></label>
+                                    </div>                                    
+                                </div>                                
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Nội dung</label>
+                                    <div class="col-md-7">
+                                        <label class="control-label" style="color:#428bca; text-align:left;" id="lblcontent"></label>
+                                    </div>
+
+                                </div>
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Lau dọn</label>
+                                    <div class="col-md-7">
+                                        <input type="checkbox" id="cleaning" disabled style="margin-top:10px"/>
+                                    </div>
+                                </div>                            
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Nấu ăn</label>
+                                    <div class="col-md-7">
+                                        <input type="checkbox" id="cooking" disabled style="margin-top:10px"/>
+                                    </div>
+                                </div>                          
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Chăm em bé</label>
+                                    <div class="col-md-7">
+                                        <input type="checkbox" id="babycare" disabled style="margin-top:10px"/>
+                                    </div>
+
+                                </div>
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Chăm người già</label>
+                                    <div class="col-md-7">
+                                        <input type="checkbox" id="oldcare" disabled style="margin-top:10px"/>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: 5px">
+                                    <label class="col-md-5 control-label">Địa chỉ</label>
+                                    <div class="col-md-7">
+                                        <label class="control-label" style="color:#428bca; text-align:left;" id="lbladdress"></label>
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="periodicalDiv" class="col-md-4">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 5px; border-bottom: solid 1px #aaa;">
+                                <label class="col-md-12 control-label">LỊCH ĐỊNH KỲ</label>
+                            </div>
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-5 control-label">Từ ngày</label>
+                                <div class="col-md-7">
+                                    <label class="control-label" style="color:#428bca; text-align:left;" id="lblfrom"></label>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-5 control-label">Đến ngày</label>
+                                <div class="col-md-7">
+                                    <label class="control-label" style="color:#428bca; text-align:left;" id="lblexpire"></label>
+                                </div>
+                            </div>                            
+                            <div class="row" style="margin-bottom: 5px">
+                                <div class="col-md-12">
+                                    <table class="table datatable" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th width="30%">Ngày</th>
+                                                <th width="35%">Bắt đầu</th>
+                                                <th width="35%">Thời lượng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Thứ 2</td>
+                                                <td id="monstart"></td>
+                                                <td id="monend"></td>
+                                            </tr>
+                                            <tr style="background:#f7f7f7">
+                                                <td>Thứ 3</td>
+                                                <td id="tuestart"></td>
+                                                <td id="tueend"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Thứ 4</td>
+                                                <td id="wedstart"></td>
+                                                <td id="wedend"></td>
+                                            </tr>
+                                            <tr style="background:#f7f7f7">
+                                                <td>Thứ 5</td>
+                                                <td id="thustart"></td>
+                                                <td id="thuend"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Thứ 6</td>
+                                                <td id="fristart"></td>
+                                                <td id="friend"></td>
+                                            </tr>
+                                            <tr style="background:#f7f7f7">
+                                                <td>Thứ 7</td>
+                                                <td id="satstart"></td>
+                                                <td id="satend"></td>
+                                            </tr>
+                                            <tr style="border-bottom: solid 1px #aaa">
+                                                <td>Chủ nhật</td>
+                                                <td id="sunstart"></td>
+                                                <td id="sunend"></td>
+                                            </tr>                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row" style="margin-bottom: 5px;">
+                            <input type="hidden" id="latitude" value=""/>
+                            <input type="hidden" id="longitude" value=""/>
+                            <div id="map" class="disableScroll" style="height: 300px; width: 100%;"></div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="panel-footer" style="text-align: center">
+                    <button type="button" class="btn btn-primary" onclick="backToList();" style="width:97px"><span class="fa fa-arrow-left"></span> Quay lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

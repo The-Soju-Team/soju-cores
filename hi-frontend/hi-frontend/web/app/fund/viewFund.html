@@ -1,0 +1,51 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>
+    <li><a href="javascript:void(0)" onclick="backToList();">Danh sách sổ quỹ</a></li>
+    <li class="active">Thông tin sổ quỹ</li>
+</ul>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">THÔNG TIN SỔ QUỸ</h3>
+                </div>
+                <div class="panel-body">                       
+                    <div class="form-group">
+                        <form id="updateForm" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Tên sổ quỹ *</label>
+                                <div class="col-md-4">
+                                    <label class="control-label" style="color:#428bca" id="lblfundname"></label>
+                                    <input type="text" class="form-control" name="fundname" id="fundname" maxlength="100" autofocus style="display:none"/>
+                                    <label id="fundname-require" class="error" style="display:none"></label>
+                                    <input type="hidden" id="fundid" name="fundid"/>
+                                    <input type="hidden" id="parent" name="parent"/>
+                                </div>
+                                <label class="col-md-2 control-label">Số tiền *</label>
+                                <div class="col-md-4">
+                                    <label class="control-label" style="color:#428bca" id="lblamount"></label>
+                                    <input type="text" onkeyup="separateAmount(this)" class="form-control" name="amount" id="amount" style="display:none"/>
+                                    <label id="mobile-require" class="error" style="display:none"></label>
+                                </div>
+                            </div>
+                             <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Ghi chú</label>
+                                <div class="col-md-10">
+                                    <label class="control-label" style="color:#428bca" id="lbldescription"></label>
+                                    <textarea rows="3" class="form-control" name="description" id="description" maxlength="300" style="display:none"></textarea>
+                                </div>
+                            </div>
+                    </form>
+                    </div>                 
+                </div>
+                <div class="panel-footer" style="text-align: center">
+                    <button id="saveButton" type="button" class="btn btn-danger" onclick="updateFund();" style="width:97px; display:none"><span class="fa fa-save"></span> Ghi lại</button>
+                    <button id="editButton" type="button" class="btn btn-info" onclick="editFund(this);" style="width:97px"><span class="fa fa-pencil"></span> Sửa</button>
+                    <button type="button" class="btn btn-primary" onclick="backToList();" style="width:97px"><span class="fa fa-arrow-left"></span> Quay lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

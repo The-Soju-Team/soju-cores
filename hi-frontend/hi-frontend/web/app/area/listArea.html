@@ -1,0 +1,56 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Danh mục khu vực</li>
+</ul>
+<div class="page-title">
+    <h2>Danh mục khu vực</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                    <button type="button" class="btn btn-info pull-right" onclick="searchArea();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                    <input type="hidden" id="parent" name="parent" value="listArea"/>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-2 control-label">Tên khu vực</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="areaName" id="areaName" maxlength="100" autofocus/>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DANH SÁCH</h3>
+                    <button id="deleteButton" type="button" class="btn btn-primary pull-right" onclick="deleteOnClick(); return false;" style="width:84px"><span class="fa fa-trash-o"></span> Xóa</button>
+                    <button type="button" class="btn btn-info pull-right" onclick="viewAddArea()" style="width:84px"><span class="fa fa-pencil"></span> Thêm</button>
+                    <input type="hidden" id="isdelete" value="0"/>
+                </div>
+                <div class="panel-body">
+                    <table id="areaTable" class="table datatable" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="85%">TÊN KHU VỰC</th>
+                                <th width="10%"><input type="checkbox" id="selectAll" onclick="checkAll(this);"/></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

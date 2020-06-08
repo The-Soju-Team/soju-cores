@@ -1,0 +1,82 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Danh sách thông báo</li>
+</ul>
+<div class="page-title">
+    <h2> Danh sách thông báo</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                    <button type="button" class="btn btn-info pull-right" onclick="searchMessage();" style="width:94px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                    <input type="hidden" id="parent" name="parent" value="listMessage"/>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form" onsubmit="searchMessage(); return false;">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-1 control-label">Nội dung</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="content" id="content" maxlength="30"/>
+                            </div>
+                            <label class="col-md-1 control-label">Người gửi</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="senderName" id="senderName" maxlength="30"/>
+                            </div>
+                            <label class="col-md-1 control-label">Người nhận</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="receiverName" id="receiverName" maxlength="30"/>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <label class="col-md-1 control-label">Từ ngày</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="fromdate" id="fromdate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                            <label class="col-md-1 control-label">Đến ngày</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="todate" id="todate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DANH SÁCH</h3>
+                    <input type="hidden" id="isaccept" value="0"/>
+                </div>
+                <div class="panel-body">
+                    <table id="messageTable" class="table datatable" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th>NỘI DUNG</th>
+                                <th>NGƯỜI GỬI</th>
+                                <th>NGÀY GỬI</th>
+                                <th>NGƯỜI NHẬN</th>
+                                <th>TRẠNG THÁI</th>
+                                <th width="5%"><input type="checkbox" id="selectAll" onclick="checkAll(this);"/></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

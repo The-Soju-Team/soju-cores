@@ -1,0 +1,22 @@
+CACHE MANIFEST
+# version: 1528859522725
+# Explicitly cached entries
+../../../authen/share/sso/images/hf_background.jpg
+../../../authen/share/sso/images/logo_100.png
+../../../authen/share/sso/images/user.png
+../../../authen/share/sso/images/lock.png
+../../../authen/share/sso/js/jquery-1.12.4.min.js
+../../../authen/share/sso/css/style.css
+../../../authen/share/sso/images/refresh.png
+../../../authen/share/sso/fonts/fontawesome-webfont.woff?v=4.1.0
+../../../authen/share/sso/js/jquery-1.12.4.min.js
+
+# offline will be displayed if the user is offline
+FALLBACK:
+
+# All other resources (e.g. sites) require the user to be online. 
+NETWORK:
+*
+
+# Additional resources to cache
+CACHE:

@@ -1,0 +1,89 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Khuyến mại</li>
+</ul>
+<div class="page-title">
+    <h2> Khuyến mại</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                    <button type="button" class="btn btn-info pull-right" onclick="searchPromotion();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                    <input type="hidden" id="parent" name="parent" value="listUser"/>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-2 control-label">Mã khuyến mại</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="promotionCode" id="promotionCode" maxlength="15" autofocus/>
+                            </div>
+                            <label class="col-md-1 control-label">Nội dung</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="content" id="content" maxlength="100"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label">Trạng thái</label>
+                            <div class="col-md-4">
+                                <select id="status" name="status" class="form-control">
+                                    <option value="0"></option>
+                                    <option value="1">Chưa áp dụng</option>
+                                    <option value="2">Đang áp dụng</option>
+                                    <option value="3">Hết hiệu lực</option>
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">Từ ngày</label>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="fromdate" id="fromdate"/>                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                            <label class="col-md-1 control-label">Đến ngày</label>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="todate" id="todate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>   
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DANH SÁCH</h3>
+                    <button id="deleteButton" type="button" class="btn btn-primary pull-right" onclick="deleteOnClick(); return false;" style="width:84px"><span class="fa fa-trash-o"></span> Xóa</button>
+                    <button type="button" class="btn btn-info pull-right" onclick="viewAddPromotion()" style="width:84px"><span class="fa fa-pencil"></span> Thêm</button>
+                    <input type="hidden" id="isdelete" value="0"/>
+                </div>
+                <div class="panel-body">
+                    <table id="promotionTable" class="table datatable" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="15%">MÃ KM</th>
+                                <th width="30%">NỘI DUNG</th>
+                                <th width="15%">BẮT ĐẦU</th>
+                                <th width="15%">KẾT THÚC</th>
+                                <th width="15%">TRẠNG THÁI</th>
+                                <th width="5%"><input type="checkbox" id="selectAll" onclick="checkAll(this);"/></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

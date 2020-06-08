@@ -1,0 +1,169 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Danh sách người dùng</li>
+</ul>
+<div class="page-title">
+    <h2> Danh sách người dùng</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <form id="searchForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <div class="row" style="margin-bottom:5px;">
+                    <label class="col-md-1 control-label">Tài khoản</label>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="username" id="s_username" maxlength="100" autofocus/>
+                    </div>
+                    <label class="col-md-1 control-label">Họ tên</label>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="fullname" id="s_fullname" maxlength="100"/>
+                    </div>
+                    <label class="col-md-1 control-label">Điện thoại</label>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="mobile" id="s_mobile" maxlength="15"/>
+                    </div>                    
+                </div>
+                <div class="row">
+                    <label class="col-md-1 control-label">Vai trò</label>
+                    <div class="col-md-3">
+                        <select id="s_usertype" name="usertype" class="form-control">
+                            <option value="0"></option>
+                            <option value="1">Quản trị</option>
+                            <option value="2">Người dùng</option>
+                        </select>
+                    </div>
+                    <label class="col-md-1 control-label">Từ ngày</label>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="fromdate" id="s_fromdate"/>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div>
+                    </div>
+                    <label class="col-md-1 control-label">Đến ngày</label>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="todate" id="s_todate"/>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div>
+                    </div>   
+                </div>
+                <div class="row" style="padding: 20px; text-align: center;">
+                    <button type="button" class="btn btn-info" onclick="searchUser();" style="width:84px;"><span class="fa fa-search"></span> Tìm</button>
+                    <button type="button" class="btn btn-info" data-toggle="modal" onclick="viewAddUser()" style="width:84px"><span class="fa fa-pencil"></span> Thêm</button>
+                    <button id="deleteButton" type="button" class="btn btn-primary" onclick="deleteOnClick(); return false;" style="width:84px"><span class="fa fa-trash-o"></span> Xóa</button>
+                    <input type="hidden" id="isdelete" value="0"/>                    
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="userTable" class="table datatable" width="100%">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="15%">TÀI KHOẢN</th>
+                        <th width="20%">HỌ TÊN</th>
+                        <th width="20%">ĐIỆN THOẠI</th>
+                        <th width="20%">VAI TRÒ</th>
+                        <th width="15%">NGÀY TẠO</th>
+                        <th width="5%"><input type="checkbox" id="selectAll" onclick="checkAll(this);"/></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="selectModal" role="dialog">
+        <div class="modal-dialog" style="width:1024px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">TẠO TÀI KHOẢN</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addForm" class="form-horizontal" role="form">
+                    <div class="row" style="margin-bottom:5px;">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4 control-label">Tài khoản</label>
+                                <div class="col-md-8" style="margin-bottom:5px;">
+                                    <input type="text" class="form-control" name="username" id="username" maxlength="100" autofocus/>
+                                    <input type="hidden" id="hi-process" name="hi-process" value="user"/>
+                                    <input type="hidden" id="cmd" name="cmd" value="ADD_USER"/>
+                                    <input type="hidden" id="userid" name="userid"/>
+                                </div>
+                                <label class="col-md-4 control-label">Mật khẩu</label>
+                                <div class="col-md-8" style="margin-bottom:5px;">
+                                    <input type="password" class="form-control" name="password" id="password" maxlength="100"/>
+                                </div>
+                                <label class="col-md-4 control-label">Họ tên</label>
+                                <div class="col-md-8" style="margin-bottom:5px;">
+                                    <input type="text" class="form-control" name="fullname" id="fullname" maxlength="100"/>
+                                </div>                        
+                                <label class="col-md-4 control-label">Điện thoại</label>
+                                <div class="col-md-8" style="margin-bottom:5px;">
+                                    <input type="text" class="form-control" name="mobile" id="mobile" maxlength="15"/>
+                                </div>                   
+                                <label class="col-md-4 control-label">Vai trò</label>
+                                <div class="col-md-8" style="margin-bottom:5px;">
+                                    <select id="usertype" name="usertype" class="form-control">
+                                        <option value="0"></option>
+                                        <option value="1">Quản trị</option>
+                                        <option value="2">Người dùng</option>
+                                    </select>
+                                </div>                        
+                                <label class="col-md-4 control-label">Ngày sinh</label>
+                                <div class="col-md-8" style="margin-bottom:5px;">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="birthday" id="birthday"/>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                    </div>
+                                </div>
+                                <label class="col-md-4 control-label">Email</label>
+                                <div class="col-md-8" style="margin-bottom:5px;">
+                                    <input type="text" class="form-control" name="email" id="email" maxlength="100"/>
+                                </div>                                
+                            </div>
+                        </div>                           
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4 control-label">Ứng dụng</label>
+                                <div class="col-md-8" style="padding-right:0px">
+                                    <div class="row" style="margin-bottom: 5px">
+                                        <select id="app" name="app" class="form-control" style="float:left; width:85%">
+                                            <option value="0"></option>
+                                            <option value="1">Cảnh báo rủi ro</option>
+                                            <option value="18">Phân tích kinh doanh</option>
+                                            <option value="4">Giám sát chất lượng sản phẩm</option>
+                                            <option value="2">Cổng đăng nhập</option>
+											<option value="19">Giám sát vận hành</option>
+                                        </select>
+                                        <button type="button" class="btn btn-success" onclick="addApp();" style="float:right; padding-left: 10px; padding-right: 5px"><span class="fa fa-plus"></span></button>
+                                    </div>
+                                    <div class="row">
+                                        <table id="appTable" class="table datatable" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">STT</th>
+                                                    <th width="90%">TÊN ỨNG DỤNG</th>
+                                                    <th width="5%" style="text-align: right">XÓA</th>
+                                                </tr>
+                                            </thead>
+                                        </table>                                           
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal" onclick="addUser();"><span class="fa fa-save"></span>Ghi lại</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="searchUser();"><span class="fa fa-times"></span>Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

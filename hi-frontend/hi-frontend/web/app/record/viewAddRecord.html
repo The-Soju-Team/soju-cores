@@ -1,0 +1,48 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>
+    <li><a href="javascript:void(0)" onclick="backToList();">Danh mục thành tích</a></li>
+    <li class="active">Thêm mới thành tích</li>
+</ul>
+<div class="page-title">
+    <h2> Thêm mới thành tích</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">THÔNG TIN THÀNH TÍCH</h3>
+                </div>
+                <div class="panel-body">                   
+                    <div class="col-md-12">
+                        <form id="addForm" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Tên thành tích *</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="name" id="name" maxlength="300" autofocus/>
+                                    <label id="name-require" class="error" style="display:none"></label>
+                                </div>
+                                <label class="col-md-2 control-label">Ghi chú</label>
+                                <div class="col-md-4" style="margin-bottom: 10px;">
+                                    <input type="text" class="form-control" name="description" id="description" maxlength="500"/>
+                                    <label id="description-none" class="error" style="display:none"></label>
+                                </div>
+                                <label class="col-md-2 control-label">Tiền thưởng</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="reward_amount" id="reward_amount" maxlength="20"/>
+                                    <label id="description-none" class="error" style="display:none"></label>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-footer" style="text-align: center">
+                    <button type="button" class="btn btn-danger" onclick="addRecord();" style="width:97px"><span class="fa fa-pencil"></span> Ghi lại</button>
+                    <button type="button" class="btn btn-primary" onclick="backToList();" style="width:97px"><span class="fa fa-arrow-left"></span> Quay lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

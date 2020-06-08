@@ -1,0 +1,44 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Báo cáo nợ chưa thu</li>
+</ul>
+<div class="page-title">
+    <h2>Báo cáo nợ chưa thu</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form" onsubmit="searchReceipt(); return false;">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-2 control-label">Từ ngày</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="fromdate" id="fromdate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                            <label class="col-md-2 control-label">Đến ngày</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="todate" id="todate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>                               
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                <div class="panel-footer" style="text-align: center;">
+                    <a href="/exportbusiness" class="btn btn-info" onclick="return setParam(this)"><span class="fa fa-download"></span> Tải báo cáo </a>
+                </div>                  
+            </div>          
+        </div>
+    </div> 
+</div>
+

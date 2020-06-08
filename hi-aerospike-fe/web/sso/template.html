@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>        
+        <!-- META SECTION -->
+        <title>Fintech Authen</title>            
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <link rel="icon" href="favicon.ico" type="image/x-icon" />
+        <!-- CSS INCLUDE -->        
+        <link rel="stylesheet" type="text/css" id="theme" href="/authen/share/css/theme-blue.css"/>
+        <!-- EOF CSS INCLUDE -->
+        <!-- END META SECTION -->
+    </head>
+    <body>
+        <!-- START PAGE CONTAINER -->
+        <div class="page-container">
+            
+            <!-- START PAGE SIDEBAR -->
+            <div class="page-sidebar">
+                <!-- START X-NAVIGATION -->
+                <ul class="x-navigation">
+                    <li class="xn-logo">
+                        <a href="/bi" style="padding-top:20px; color: #c9faff">Fintech Authen</a>
+                        <a href="javascript:void(0)" class="x-navigation-control"></a>
+                    </li>
+                    <li class="xn-profile">
+                        <div class="profile" style="min-height:130px">
+                            <div class="profile-image">
+                                <img src="/authen/share/img/frontend/no-user.jpg" alt="Administrator"/>
+                            </div>
+                            <div class="profile-data">
+                                <div class="profile-data-name">Admin</div>
+                                <div class="profile-data-title">Quản trị hệ thống</div>
+                            </div>
+                        </div>                                                                        
+                    </li>
+                    <li>
+                        <a href="/authen/user"><span class="fa fa-user"></span>Người dùng</a>
+                    </li>
+                    <li>
+                        <a href="/authen/app"><span class="fa fa-bar-chart-o"></span>Ứng dụng</a>
+                    </li>
+                </ul>
+                <!-- END X-NAVIGATION -->
+            </div>
+            <!-- END PAGE SIDEBAR -->
+            
+            <!-- PAGE CONTENT -->
+            <div class="page-content">
+                
+                <!-- START X-NAVIGATION VERTICAL -->
+                <ul class="x-navigation x-navigation-horizontal x-navigation-panel">
+                    <!-- TOGGLE NAVIGATION -->
+                    <li class="xn-icon-button">
+                        <a href="javascript:void(0)" class="x-navigation-minimize"><span class="fa fa-dedent"></span></a>
+                    </li>
+                    <!-- END TOGGLE NAVIGATION -->
+                    <!-- SEARCH -->
+<!--                    <li class="xn-search">
+                        <form role="form">
+                            <input type="text" name="search" placeholder="Search..."/>
+                        </form>
+                    </li>   -->
+                    <!-- END SEARCH -->
+                    <!-- SIGN OUT -->
+                    <li class="xn-icon-button pull-right">
+                        <a href="javascript:void(0)" class="mb-control" data-box="#mb-signout"><span class="fa fa-sign-out"></span></a>                        
+                    </li> 
+                    <!-- END SIGN OUT -->
+
+                </ul>
+                <!-- END X-NAVIGATION VERTICAL -->                      
+                <div id="content_ajax_wrap" style="padding: 10px;">
+                <!-- PAGE-CONTENT-WRAPPER -->
+                
+                <!-- END PAGE CONTENT WRAPPER -->
+                </div>
+            </div>            
+            <!-- END PAGE CONTENT -->
+        </div>
+        <!-- END PAGE CONTAINER -->
+
+        <!-- MESSAGE BOX-->
+        <div class="message-box animated fadeIn" data-sound="alert" id="mb-signout">
+            <div class="mb-container">
+                <div class="mb-middle">
+                    <div class="mb-title"><span class="fa fa-sign-out"></span> Đăng <strong>Xuất</strong> ?</div>
+                    <div class="mb-content">
+                        <p>Bạn có muốn đăng xuất không?</p>
+                    </div>
+                    <div class="mb-footer">
+                        <div class="pull-right">
+                            <a href="javascript:void(0)" onclick="logout();" class="btn btn-success btn-lg">Có</a>
+                            <button class="btn btn-default btn-lg mb-control-close">Không</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" role="dialog" id="mb-processing">
+            <div class="modal-dialog" style="width:300px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Đang xử lý</h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center">
+                        <img src="/authen/share/img/icons/processing.gif" alt="processing"/>
+                    </div>
+                </div>
+            </div>
+        </div>          
+
+        <!-- END MESSAGE BOX-->
+        
+        <!-- START PRELOADS -->
+        <!--<audio id="audio-alert" src="/authen/share/audio/alert.mp3" preload="auto"></audio>
+        <audio id="audio-fail" src="/authen/share/audio/fail.mp3" preload="auto"></audio>
+        <!-- END PRELOADS -->                  
+        
+    <!-- START SCRIPTS -->
+        <!-- START PLUGINS -->
+        <script type="text/javascript" src="/authen/share/js/plugins/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/authen/share/js/plugins/jquery/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/authen/share/js/plugins/bootstrap/bootstrap.min.js"></script>        
+        <!-- END PLUGINS -->
+
+        <!-- START THIS PAGE PLUGINS-->        
+<!--        <script type='text/javascript' src='bi/share/js/plugins/icheck/icheck.min.js'></script>        -->
+        <script type="text/javascript" src="/authen/share/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js"></script>
+        
+<!--        <script type="text/javascript" src="/authen/share/js/plugins/morris/raphael-min.js"></script>
+        <script type="text/javascript" src="/authen/share/js/plugins/morris/morris.min.js"></script>       
+        <script type="text/javascript" src="/authen/share/js/plugins/rickshaw/d3.v3.js"></script>
+        <script type="text/javascript" src="/authen/share/js/plugins/rickshaw/rickshaw.min.js"></script>
+        <script type='text/javascript' src='bi/share/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'></script>
+        <script type='text/javascript' src='bi/share/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'></script>                
+        <script type='text/javascript' src='bi/share/js/plugins/bootstrap/bootstrap-datepicker.js'></script>                -->
+        <script type="text/javascript" src="/authen/share/js/plugins/owl/owl.carousel.min.js"></script>                 
+        
+<!--        <script type="text/javascript" src="/authen/share/js/plugins/moment.min.js"></script>-->
+<!--        <script type="text/javascript" src="/authen/share/js/plugins/daterangepicker/daterangepicker.js"></script>-->
+        <!-- END THIS PAGE PLUGINS-->        
+
+        <!-- START TEMPLATE -->
+        
+        <script type="text/javascript" src="/authen/share/js/plugins.js"></script>        
+        <script type="text/javascript" src="/authen/share/js/actions.js"></script>
+
+<!--        <script type="text/javascript" src="/authen/share/js/demo_dashboard.js"></script>-->
+        <!-- END TEMPLATE -->
+        <script type="text/javascript" src="/authen/share/js/plugins/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/authen/share/js/common.js"></script>        
+        
+        <!-- JS-CSS -->
+
+        <!-- END JS,CSS -->
+        
+    <!-- END SCRIPTS -->         
+    </body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,50 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>
+    <li><a href="javascript:void(0)" onclick="backToList();">Danh sách sổ quỹ</a></li>
+    <li class="active">Thêm mới khu vực</li>
+</ul>
+<div class="page-title">
+    <h2> Thêm mới sổ quỹ</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">THÔNG TIN SỔ QUỸ</h3>
+                </div>
+                <div class="panel-body">                   
+                    <div class="col-md-12">
+                        <form id="addForm" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Tên sổ quỹ *</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="fundName" id="fundName" maxlength="100" autofocus/>
+                                    <label id="fundName-require" class="error" style="display:none"></label>
+                                </div>
+                                 <label class="col-md-2 control-label">Tổng tiền *</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="amount" id="amount" maxlength="100" autofocus/>
+                                    <label id="amount-require" class="error" style="display:none"></label>
+                                </div>
+                            </div>
+                             <div class="row" style="margin-bottom: 5px">
+                                 <label class="col-md-2 control-label">Ghi chú</label>
+                                 <div class="col-md-4">
+                                    <input type="text" class="form-control" name="description" id="description" maxlength="200" autofocus/>
+                                    <label id="fundName-require" class="error" style="display:none"></label>
+                                </div>
+                             </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-footer" style="text-align: center">
+                    <button type="button" class="btn btn-danger" onclick="addFund();" style="width:97px"><span class="fa fa-pencil"></span> Ghi lại</button>
+                    <button type="button" class="btn btn-primary" onclick="backToList();" style="width:97px"><span class="fa fa-arrow-left"></span> Quay lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

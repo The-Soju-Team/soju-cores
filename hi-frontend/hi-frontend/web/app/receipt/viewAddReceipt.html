@@ -1,0 +1,212 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>
+    <li><a href="javascript:void(0)" onclick="backToList();">Danh mục phiếu thu</a></li>
+    <li class="active">Thêm mới phiếu thu</li>
+</ul>
+<div class="page-title">
+    <h2> Thêm mới phiếu thu</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">NHẬP PHIẾU THU</h3>
+                </div>
+                <div class="panel-body">                   
+                    <div class="col-md-12">
+                        <form id="addForm" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 10px">
+                                <label class="col-md-2 control-label">Người nộp *</label>
+                                <div class="col-md-4" style="padding-left: 0px">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <input type="checkbox" style="width:20px; height: 20px;" class="form-control" onchange="changePayer()"/>
+                                        </div>
+                                        <div class="col-md-10" id="divPayerName" style="padding:0px">
+                                            <input type="text" class="form-control" name="payerName" id="payerName" maxlength="100" autofocus/>
+                                        </div>
+                                        <div class="col-md-8" id="divPayerId" style="padding:0px; display:none">
+                                            <input type="hidden" name="payerId" id="payerId"/>
+                                            <input type="text" class="form-control" name="payer" id="payer" maxlength="100" disabled/>
+                                        </div>
+                                        <div class="col-md-1" id="divPayerButton" style="padding:0px; display:none">
+                                            <button type="button" class="btn btn-info" id="payerButton" data-toggle="modal" data-target="#selectModal" onclick="openPopupUser('payer');"><span class="fa fa-search"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="col-md-2 control-label" id="lblPayerMobile">Số điện thoại *</label>
+                                <div class="col-md-4" id="divPayerMobile">
+                                    <input type="text" class="form-control" name="payerMobile" id="payerMobile" maxlength="15"/>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 10px">
+                                <label class="col-md-2 control-label">Người nhận *</label>
+                                <div class="col-md-4" style="padding-left: 0px">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <input type="checkbox" style="width:20px; height: 20px;" class="form-control" onchange="changeReceiver()"/>
+                                        </div>
+                                        <div class="col-md-10" id="divReceiverName" style="padding:0px">
+                                            <input type="text" class="form-control" name="receiverName" id="receiverName" maxlength="100"/>
+                                        </div>
+                                        <div class="col-md-8" id="divReceiverId" style="padding:0px; display:none">
+                                            <input type="hidden" name="receiverId" id="receiverId"/>
+                                            <input type="text" class="form-control" name="receiver" id="receiver" maxlength="100" disabled/>
+                                        </div>
+                                        <div class="col-md-1" id="divReceiverButton" style="padding:0px; display:none">
+                                            <button type="button" class="btn btn-info" id="receiverButton" data-toggle="modal" data-target="#selectModal" onclick="openPopupUser('receiver');"><span class="fa fa-search"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="col-md-2 control-label" id="lblReceiverMobile">Số điện thoại *</label>
+                                <div class="col-md-4" id="divReceiverMobile">
+                                    <input type="text" class="form-control" name="receiverMobile" id="receiverMobile" maxlength="15"/>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 10px">
+                                <label class="col-md-2 control-label">Số tiền</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="amount" id="amount" maxlength="100" onkeyup="separateAmount(this);"/>
+                                    <label id="amount-require" class="error" style="display:none"></label>
+                                </div>
+                                 <label class="col-md-2 control-label">Lý do thu tiền</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="receiveReason" id="receiveReason" maxlength="100" />
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 10px">
+                                <label class="col-md-2 control-label">Sổ quỹ tiền mặt</label>
+                               <div class="col-md-4">
+                                    <select id="fundId" name="fundId" class="form-control" data-live-search="true">
+                                    </select>
+                                </div>
+                                 <label class="col-md-2 control-label">Trạng thái</label>
+                                 <div class="col-md-4">
+                                    <select id="status" name="status" class="form-control" data-live-search="true">
+                                        <option selected="selected" value ="1" class="option">Chưa xác nhận</option>
+                                        <option class="option" value="2" >Đã xác nhận</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 10px">
+                                <label class="col-md-2 control-label">Ngày thu</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="payDate" id="payDate"/>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-footer" style="text-align: center">
+                    <button type="button" class="btn btn-danger" onclick="addReceipt();" style="width:97px"><span class="fa fa-pencil"></span> Ghi lại</button>
+                    <button type="button" class="btn btn-primary" onclick="backToList();" style="width:97px"><span class="fa fa-arrow-left"></span> Quay lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="selectModal" role="dialog">
+        <div class="modal-dialog" style="width:1024px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Chọn  người nộp</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">TÌM KIẾM</h3>
+                                    <button type="button" class="btn btn-info pull-right" onclick="searchPopup();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                                    <input type="hidden" id="parent" name="parent" value="listReceipt"/>
+                                    <input type="hidden" id="userType" name="userType" value="payer"/>
+                                </div>
+                                <div class="panel-body">
+                                    <form id="searchForm" class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <div class="row" style="margin-bottom:5px;">
+                                            <label class="col-md-1 control-label">Họ tên</label>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" name="username" id="username" maxlength="100" autofocus/>
+                                            </div>
+                                            <label class="col-md-1 control-label">Điện thoại</label>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" name="mobile" id="mobile" maxlength="15"/>
+                                            </div>
+                                            <label class="col-md-1 control-label">Địa chỉ</label>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" name="home" id="address" maxlength="100"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-1 control-label">Vai trò</label>
+                                            <div class="col-md-3">
+                                                <select id="usertype" name="usertype" class="form-control">
+                                                    <option value="0"></option>
+                                                    <option value="1">Quản trị</option>
+                                                    <option value="2">Điều hành</option>
+                                                    <option value="3">Giúp việc</option>
+                                                    <option value="4">Khách hàng</option>
+                                                </select>
+                                            </div>
+                                            <label class="col-md-1 control-label">Từ ngày</label>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="fromdate" id="fromdate"/>
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                            </div>
+                                            <label class="col-md-1 control-label">Đến ngày</label>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="todate" id="todate"/>
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">DANH SÁCH</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <table id="userTable" class="table datatable" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th width="5%">#</th>
+                                                <th width="25%">TÊN</th>
+                                                <th width="20%">ĐIỆN THOẠI</th>
+                                                <th width="25%">ĐỊA CHỈ</th>
+                                                <th width="20%">VAI TRÒ</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đồng ý</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>

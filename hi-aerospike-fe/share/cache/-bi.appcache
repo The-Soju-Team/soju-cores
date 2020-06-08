@@ -1,0 +1,50 @@
+CACHE MANIFEST
+# version: 1528859522725
+# Explicitly cached entries
+../../../bi/share/audio/alert.mp3
+../../../bi/share/audio/fail.mp3
+../../../bi/share/js/plugins/jquery/jquery.min.js
+../../../bi/share/js/plugins/jquery/jquery-ui.min.js
+../../../bi/share/js/plugins/bootstrap/bootstrap.min.js
+../../../bi/share/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js
+../../../bi/share/js/plugins/morris/raphael-min.js
+../../../bi/share/js/plugins/morris/morris.min.js
+../../../bi/share/js/plugins/rickshaw/d3.v3.js
+../../../bi/share/js/plugins/rickshaw/rickshaw.min.js
+../../../bi/share/js/plugins/owl/owl.carousel.min.js
+../../../bi/share/js/plugins/moment.min.js
+../../../bi/share/js/plugins/daterangepicker/daterangepicker.js
+../../../bi/share/js/plugins.js
+../../../bi/share/js/actions.js
+../../../bi/share/js/demo_dashboard.js
+../../../bi/share/js/plugins/socket.io/socket.io.js
+../../../bi/share/js/common.js
+../../../bi/share/css/theme-blue.css
+../../../bi/share/css/fullcalendar/fullcalendar.css
+../../../bi/share/css/jquery/jquery-ui.min.css
+../../../bi/share/css/bootstrap/bootstrap.min.css
+../../../bi/share/css/fontawesome/font-awesome.min.css
+../../../bi/share/css/summernote/summernote.css
+../../../bi/share/css/codemirror/codemirror.css
+../../../bi/share/css/nvd3/nv.d3.css
+../../../bi/share/css/mcustomscrollbar/jquery.mCustomScrollbar.css
+../../../bi/share/css/blueimp/blueimp-gallery.min.css
+../../../bi/share/css/rickshaw/rickshaw.css
+../../../bi/share/css/dropzone/dropzone.css
+../../../bi/share/css/animate/animate.min.css
+../../../bi/share/img/bg.png
+../../../bi/share/css/fonts/fontawesome-webfont.woff?v=4.1.0
+../../../bi/share/css/fonts/fontawesome-webfont.ttf?v=4.1.0
+../../../bi/share/js/plugins/nvd3/lib/d3.v3.js
+../../../bi/share/js/plugins/nvd3/nv.d3.min.js
+../../../bi/share/js/app/dashboard.js
+
+# offline will be displayed if the user is offline
+FALLBACK:
+
+# All other resources (e.g. sites) require the user to be online. 
+NETWORK:
+*
+
+# Additional resources to cache
+CACHE:

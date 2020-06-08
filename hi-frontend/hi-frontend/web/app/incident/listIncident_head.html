@@ -1,0 +1,21 @@
+<script type="text/javascript" src="share/js/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type='text/javascript' src='share/js/plugins/noty/jquery.noty.js'></script>
+<script type='text/javascript' src='share/js/plugins/noty/layouts/center.js'></script>
+<script type='text/javascript' src='share/js/plugins/bootstrap/bootstrap-datepicker.js'></script>
+<script type="text/javascript" src="share/js/plugins/dropzone/dropzone.min.js"></script>
+<script type="text/javascript" src="share/js/app/user.js"></script>
+<script type="text/javascript" src="share/js/app/incident.js"></script>
+<script type="text/javascript" src="share/js/app/plan.js"></script>
+<script type="text/javascript">       
+    $('#searchForm').keypress(function (e) {
+        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            searchIncident();
+            return false;
+        } else {
+            return true;
+        }
+    });
+    $(document).ready(function() {
+        searchIncident();
+    });        
+</script>

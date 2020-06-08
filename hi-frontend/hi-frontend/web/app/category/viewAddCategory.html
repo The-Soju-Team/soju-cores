@@ -1,0 +1,43 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>
+    <li><a href="javascript:void(0)" onclick="backToList();">Gói dịch vụ</a></li>
+    <li class="active">Thêm mới gói dịch vụ</li>
+</ul>
+<div class="page-title">
+    <h2> Thêm mới gói dịch vụ</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">THÔNG TIN GÓI DỊCH VỤ</h3>
+                </div>
+                <div class="panel-body">                   
+                    <div class="col-md-12">
+                        <form id="addForm" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-1 control-label">Tên gói *</label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" name="categoryName" id="categoryName" maxlength="50" autofocus/>
+                                    <label id="categoryName-require" class="error" style="display:none"></label>
+                                </div>
+                                <label class="col-md-2 control-label">Thời lượng(Phút) *</label>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" name="timeLength" id="timeLength" maxlength="5"/>
+                                    <label id="timeLength-require" class="error" style="display:none"></label>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-footer" style="text-align: center">
+                    <button type="button" class="btn btn-danger" onclick="addCategory();" style="width:97px"><span class="fa fa-pencil"></span> Ghi lại</button>
+                    <button type="button" class="btn btn-primary" onclick="backToList();" style="width:97px"><span class="fa fa-arrow-left"></span> Quay lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

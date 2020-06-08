@@ -1,0 +1,15 @@
+[role="option"] {
+	display: block;
+	padding: 0 1em;
+	position: relative;
+	line-height: 1.8em;
+}
+
+.table > thead > tr > th {
+  padding-bottom: 17px;
+  padding-top: 17px;
+}
+
+div.panel-heading {
+	background: #E0E0E0;
+}

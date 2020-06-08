@@ -1,0 +1,24 @@
+listenerConfigurations:
+ -
+  id: "ussd-http"
+  host: "10.61.138.72"
+  port: 8087
+  bossThreadPoolSize: 2
+  workerThreadPoolSize: 250
+  execHandlerThreadPoolSize: 60
+  parameters:
+    -
+     name: "execThreadPoolSize"
+     value: 60
+ 
+ -
+  id: "ussd-https"
+  host: "10.61.138.72"
+  port: 8888
+  bossThreadPoolSize: 2
+  workerThreadPoolSize: 250
+  execHandlerThreadPoolSize: 60
+  scheme: https
+  keyStoreFile: "conf/wso2carbon.jks"
+  keyStorePass: wso2carbon
+  certPass: wso2carbon

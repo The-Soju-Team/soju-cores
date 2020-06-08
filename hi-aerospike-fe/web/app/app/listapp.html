@@ -1,0 +1,90 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Danh sách ứng dụng</li>
+</ul>
+<div class="page-title">
+    <h2> Danh sách ứng dụng</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-md-12">
+            <form id="searchForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <div class="row" style="margin-bottom:5px;">
+                    <label class="col-md-2 control-label">Mã ứng dụng</label>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="appcode" id="s_appcode" maxlength="100" autofocus/>
+                    </div>
+                    <label class="col-md-2 control-label">Tên ứng dụng</label>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="appname" id="s_appname" maxlength="100"/>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-info pull-left" onclick="searchApp();" style="width:84px;"><span class="fa fa-search"></span> Tìm</button>
+                        <button type="button" class="btn btn-info pull-left" data-toggle="modal" onclick="viewAddApp()" style="width:84px"><span class="fa fa-pencil"></span> Thêm</button>
+                        <button id="deleteButton" type="button" class="btn btn-primary pull-left" onclick="deleteOnClick(); return false;" style="width:84px"><span class="fa fa-trash-o"></span> Xóa</button>
+                        <input type="hidden" id="isdelete" value="0"/>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="appTable" class="table datatable" width="100%">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="20%">MÃ ỨNG DỤNG</th>
+                        <th width="25%">TÊN ỨNG DỤNG</th>
+                        <th width="25%">IP</th>
+                        <th width="20%">PORT</th>
+                        <th width="5%"><input type="checkbox" id="selectAll" onclick="checkAll(this);"/></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="selectModal" role="dialog">
+        <div class="modal-dialog" style="width:1024px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">TẠO ỨNG DỤNG</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addForm" class="form-horizontal" role="form">
+                    <div class="row" style="margin-bottom:5px;">
+                        <label class="col-md-2 control-label">Mã ứng dụng</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="appcode" id="appcode" maxlength="100" autofocus/>
+                            <input type="hidden" id="hi-process" name="hi-process" value="app"/>
+                            <input type="hidden" id="cmd" name="cmd" value="ADD_USER"/>
+                            <input type="hidden" id="appid" name="appid"/>
+                        </div>
+                        <label class="col-md-2 control-label">Tên ứng dụng</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="appname" id="appname" maxlength="100"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom:5px;">                        
+                        <label class="col-md-2 control-label">IP</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="ip" id="ip" maxlength="100"/>
+                        </div>                        
+                        <label class="col-md-2 control-label">Port</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="port" id="port" maxlength="100"/>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal" onclick="addApp();"><span class="fa fa-save"></span>Ghi lại</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="searchApp();"><span class="fa fa-times"></span>Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

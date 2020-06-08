@@ -1,0 +1,95 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Lịch làm việc</li>
+</ul>
+<div class="page-title">
+    <h2> Lịch làm việc</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                    <button type="button" class="btn btn-info pull-right" onclick="searchPlan();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                    <input type="hidden" id="parent" name="parent" value="listPlan"/>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-1 control-label">Đơn hàng</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="ordercode" id="ordercode" maxlength="20" autofocus/>
+                            </div>
+                            <label class="col-md-1 control-label">Chủ nhà</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="customer" id="customer" maxlength="15"/>
+                            </div>
+                            <label class="col-md-1 control-label">Giúp việc</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="maid" id="maid"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-1 control-label">Trạng thái</label>
+                            <div class="col-md-3">
+                                <select id="status" name="status" class="form-control">
+                                    <option value="0"></option>
+                                    <option value="1">Chưa thực hiện</option>
+                                    <option value="2">Nhận việc</option>
+                                    <option value="3">Thay người</option>
+                                    <option value="4">Đang thực hiện</option>
+                                    <option value="5">Hoàn thành</option>
+                                    <option value="6">Đóng</option>
+                                </select>
+                            </div>   
+                            <label class="col-md-1 control-label">Từ ngày</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="fromdate" id="fromdate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>   
+                            <label class="col-md-1 control-label">Đến ngày</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="todate" id="todate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>                               
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DANH SÁCH</h3>
+                    <input type="hidden" id="isdelete" value="0"/>
+                </div>
+                <div class="panel-body">
+                    <table id="orderTable" class="table datatable" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="13%">MÃ LỊCH</th>
+                                <th width="12%">ĐƠN HÀNG</th>
+                                <th width="14%">CHỦ NHÀ</th>
+                                <th width="14%">GIÚP VIỆC</th>
+                                <th width="14%">BẮT ĐẦU</th>
+                                <th width="14%">KẾT THÚC</th>
+                                <th width="14%">TRẠNG THÁI</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

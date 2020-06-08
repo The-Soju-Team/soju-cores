@@ -1,0 +1,98 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>
+    <li><a href="javascript:void(0)" onclick="backToList();">Khuyến mại</a></li>
+    <li class="active">Thông tin khuyến mại</li>
+</ul>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">THÔNG TIN KHUYẾN MẠI</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-12 form-group">                                  
+                        <form id="updateForm" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Mã khuyến mại *</label>
+                                <div class="col-md-4">
+                                    <input type="text" style="display:none" class="form-control" name="promotionCode" id="promotionCode" maxlength="15" autofocus/>
+                                    <label id="promotionCode-require" class="error" style="display:none"></label>
+                                    <label class="control-label" style="color:#428bca" id="lblPromotionCode"></label>
+                                    <input type="hidden" id="promotionId" name="promotionId"/>
+                                </div>
+                                <label class="col-md-2 control-label">Nội dung *</label>
+                                <div class="col-md-4">
+                                    <input type="text" style="display:none" class="form-control" name="content" id="content" maxlength="100"/>
+                                    <label class="control-label" style="color:#428bca" id="lblContent"></label>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Từ thời lượng</label>
+                                <div class="col-md-4">
+                                    <input type="text" style="display:none" class="form-control" name="timeFrom" id="timeFrom" maxlength="5"/>
+                                    <label class="control-label" style="color:#428bca" id="lblTimeFrom"></label>
+                                </div>
+                                <label class="col-md-2 control-label">Đến thời lượng</label>
+                                <div class="col-md-4">
+                                    <input type="text" style="display:none" class="form-control" name="timeTo" id="timeTo" maxlength="5"/>
+                                    <label class="control-label" style="color:#428bca" id="lblTimeTo"></label>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Từ ngày</label>
+                                <div class="col-md-4">
+                                    <div class="input-group" style="display:none">
+                                        <input type="text" class="form-control" name="fromDate" id="fromDate"/>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                    </div>
+                                    <label id="fromDate-require" class="error" style="display:none"></label>
+                                    <label class="control-label" style="color:#428bca" id="lblFromDate"></label>
+                                </div>                            
+                                <label class="col-md-2 control-label">Đến ngày</label>
+                                <div class="col-md-4">
+                                    <div class="input-group" style="display:none">
+                                        <input type="text" class="form-control" name="toDate" id="toDate"/>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                    </div>
+                                    <label id="toDate-require" class="error" style="display:none"></label>
+                                    <label class="control-label" style="color:#428bca" id="lblToDate"></label>
+                                </div>
+                            </div>                        
+                            <div class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Khu vực</label>
+                                <div class="col-md-4">
+                                    <select id="areaId" style="display:none" name="areaId" class="form-control"></select>
+                                    <label class="control-label" style="color:#428bca" id="lblAreaId"></label>
+                                </div>                            
+                                <label class="col-md-2 control-label">Trạng thái</label>
+                                <div class="col-md-4">
+                                    <label class="control-label" style="color:#428bca" id="lblStatus"></label>
+                                    <select id="status" style="display:none" name="status" class="form-control">
+                                        <option value="0"></option>
+                                        <option value="1">Chưa áp dụng</option>
+                                        <option value="2">Đang áp dụng</option>
+                                        <option value="3">Hết hiệu lực</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="divCreateDate" class="row" style="margin-bottom: 5px">
+                                <label class="col-md-2 control-label">Ngày tạo</label>
+                                <div class="col-md-4">
+                                    <label class="control-label" style="color:#428bca" id="lblCreateDate"></label>
+                                </div>                            
+                            </div>                            
+                        </div>
+                        </form>
+                    </div>                 
+                </div>
+                <div class="panel-footer" style="text-align: center">
+                    <button id="saveButton" type="button" class="btn btn-danger" onclick="updatePromotion();" style="width:97px; display:none"><span class="fa fa-save"></span> Ghi lại</button>
+                    <button id="editButton" type="button" class="btn btn-info" onclick="editPromotion(this);" style="width:97px"><span class="fa fa-pencil"></span> Sửa</button>
+                    <button type="button" class="btn btn-primary" onclick="backToList();" style="width:97px"><span class="fa fa-arrow-left"></span> Quay lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

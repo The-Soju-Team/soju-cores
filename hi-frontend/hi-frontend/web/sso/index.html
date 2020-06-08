@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Quan ly dieu hanh</title>
+        <link rel="shortcut icon" href="share/sso/favicon.ico">
+        <meta name=viewport content="width=device-width, initial-scale=0.9">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-logo"><img src="share/sso/images/logo_100.jpeg"  class="img-logo"/></div>
+            <section class="main">
+                <form id="loginForm" class="form-2" onsubmit="submitLogin(); return false;">
+                    <input type="submit" value="ĐĂNG NHẬP" style="display:none"/>
+                    <h1 style="text-align: center;"><span class="sign-up">QUẢN TRỊ HỆ THỐNG</span></h1>
+                    <div class="clearfix" style="margin-top:14px; text-align:center;">
+                        <div id="spanUser" class="span-user" style="display:none">
+                            <img src="share/sso/images/user.png" alt="mobile" class="img-mobile"/>
+                            <input id="userName" type="tel" name="userName" placeholder="Số điện thoại" class="mobile-field">
+                        </div>
+                        <div id="userNameError" class="error-message-field"></div>
+                        <div id="spanPassword" class="span-user">
+                            <img src="share/sso/images/lock.png" alt="mobile" class="img-mobile" style="width:20px; height:20px"/>
+                            <input id="password" type="password" name="password" autofocus placeholder="Mật khẩu" autocomplete="off"  class="mobile-field">
+                        </div>
+                        <input id="userId" type="hidden" name="userId">
+                        <input id="luser" type="hidden" name="luser">
+                        <input id="luserName" type="hidden" name="luserName">
+                        <div id="profileButton" class="profile-frame" style="display:none;">
+                            <i class="fa fa-user" style="font-size:64px"></i> 
+                        </div>
+                    </div>
+                    <p class="clearfix" style="margin-top:3px; text-align: center">
+                        <a id="loginAnother" href="#" class="blue-link" style="display:none" onclick="document.getElementById('otherStop').value = 1; return hideLoginUser();">Đăng nhập với tài khoản khác!</a>
+                    </p>
+                    <p id="typeField" style="display:none; margin-top:14px; margin-bottom: 10px;" class="clearfix">
+                        <span id="kindLabel" style="color: #222">Kiểu đăng nhập</span>
+                        <span style="float:right; width:50%">
+                            <label style="display: inline">
+                                <input id="ussd" type="radio" name="authenType" value="USSD" checked/> USSD
+                            </label>
+                            <label style="margin-left: 16px; display: inline">
+                                <input id="sms" type="radio" name="authenType" value="SMS" /> SMS
+                            </label>
+                            <input id="first" type="hidden" value="0"/>
+                            <input id="otherStop" type="hidden" value="0"/>
+                        </span>
+                    </p>
+                    <p id="captchaLabel" class="captcha-label" style="display:none">
+                        <input type="text" id="captcha" name="captcha" placeholder="Nhập mã bảo vệ">
+                        <span id="captchaError" class="captcha-error"></span>
+                        <a href="#" onclick="refreshCaptcha();"><img title="Lấy mã bảo vệ khác" src = "share/sso/images/refresh.png"></a>
+                    </p>					
+                    <p id="captchaField" class="float" style="display:none">
+                        <img id="captchaImg" class="captcha" src = "">
+                    </p>
+                    <div id="buttonArea" class="clearfix button-area"> 
+                        <label id="autoLabel" style="display: none; margin: auto; float:left; margin-top: 8px;">
+                            <input id="save" type="checkbox" name="save" value="save" checked/> Lưu đăng nhập
+                        </label>
+                        <button id="loginButton" type="submit" style="width: 100%">
+                            <i class="fa fa-sign-in"></i>&nbsp; ĐĂNG NHẬP
+                        </button>
+                        <button id="disableLoginButton" type="button" disabled style="display:none; width: 100%;">
+                            <i class="fa fa-sign-in"></i>&nbsp; ĐĂNG NHẬP LẠI
+                        </button>
+                    </div>
+                    <p class="clearfix"> 
+                        <span id="errorMessage" class="alert alert-danger" role="alert" style="display:none;">
+                        </span>
+                    </p>
+                    <p class="clearfix"> 
+                        <span id="successMessage" class="alert alert-success" role="alert" style="display:none;">
+                        </span>
+                    </p>
+                    <div id="progressBar" class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="display:none">
+                        &nbsp;
+                    </div>
+                </form>​​
+            </section>
+        </div>
+        <link rel="stylesheet" type="text/css" href="share/sso/css/style.css" />
+        <script src="share/sso/js/jquery-1.12.4.min.js"></script>           
+        <script>
+            showLoginUser();
+        </script>     
+    </body>
+</html>

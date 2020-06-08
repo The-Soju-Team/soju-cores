@@ -1,0 +1,86 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Bản đồ người giúp việc</li>
+</ul>
+<div class="page-title">
+    <h2> Bản đồ người giúp việc</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">DANH SÁCH</h3>
+                        <button type="button" class="btn btn-info pull-right" onclick="searchUserMap();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                        <input type="hidden" id="parent" name="parent" value="listMap"/>                        
+                    </div>
+                    <div class="panel-body">
+                        <form id="searchForm" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom:5px;">
+                                <label class="col-md-2 control-label">Họ tên</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="username" id="username" maxlength="100" autofocus/>
+                                    <input type="hidden" id="usertype" name="usertype" value="3"/>
+                                </div>
+                                <label class="col-md-2 control-label">SĐT</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="mobile" id="mobile" maxlength="15"/>
+                                </div>                                 
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="panel-footer">
+                        <table id="userTable" class="table datatable" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th width="40%">TÊN</th>
+                                    <th width="35%">ĐIỆN THOẠI</th>
+                                    <th width="10%">Chọn</th>
+                                </tr>
+                            </thead>
+                        </table>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">THỜI ĐIỂM</h3>
+                <button type="button" class="btn btn-info pull-right" onclick="searchLocation();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+            </div>
+            <div class="panel-body">
+                <form id="searchForm" class="form-horizontal" role="form">
+                <div class="form-group">
+                    <div class="row" style="margin-bottom:5px;">
+                        <label class="col-md-2 control-label">Ngày</label>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="date" id="date"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label">Giờ</label>
+                        <div class="col-md-4">
+                            <select id="time" name="time" class="form-control">
+                            </select>
+                        </div>                                
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="panel-footer">
+                <input type="hidden" id="latitude" name="latitude" value=""/>
+                <input type="hidden" id="longitude" name="longitude" value=""/>
+                <input id="pac-input" class="form-control" style="margin-top:10px; width:250px" type="text" placeholder="Tìm kiếm địa điểm">
+                <div id="map" class="disableScroll" style="height: 443px; width: 100%;"></div>                
+            </div>
+        </div>
+    </div>
+</div>
+

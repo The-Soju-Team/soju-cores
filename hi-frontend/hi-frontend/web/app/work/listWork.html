@@ -1,0 +1,102 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Đăng ký đi làm</li>
+</ul>
+<div class="page-title">
+    <h2>Đăng ký đi làm</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                    <button type="button" class="btn btn-info pull-right" onclick="searchWork();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                    <input type="hidden" id="parent" name="parent" value="listWork"/>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-1 control-label">Giúp việc</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="maidName" name="maidName" />
+                            </div>
+                            <label class="col-md-1 control-label">Từ ngày</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="fromDate" id="fromDate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                            <label class="col-md-1 control-label">Đến ngày</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="toDate" id="toDate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-1 control-label">Thứ </label>
+                            <div class="col-md-3">
+                                <select id="dayOfWeek" name="dayOfWeek" class="form-control">
+                                    <option value=""></option>
+                                    <option value="2">Thứ 2</option>
+                                    <option value="3">Thứ 3</option>
+                                    <option value="4">Thứ 4</option>
+                                    <option value="5">Thứ 5</option>
+                                    <option value="6">Thứ 6</option>
+                                    <option value="7">Thứ 7</option>
+                                    <option value="1">Chủ nhật</option>
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">Từ giờ</label>
+                            <div class="col-md-3">
+                                <select id="fromHour" name="fromHour" class="form-control"></select>
+                            </div>
+                            <label class="col-md-1 control-label">Đến giờ</label>
+                            <div class="col-md-3">
+                                <select id="toHour" name="toHour" class="form-control"></select>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DANH SÁCH</h3>
+                    <button id="deleteButton" type="button" class="btn btn-primary pull-right" onclick="deleteOnClick(); return false;" style="width:84px"><span class="fa fa-trash-o"></span> Xóa</button>
+                    <button type="button" class="btn btn-info pull-right" onclick="viewAddWork()" style="width:84px"><span class="fa fa-pencil"></span> Thêm</button>
+                    <input type="hidden" id="isdelete" value="0"/>
+                </div>
+                <div class="panel-body">
+                    <table id="workTable" class="table datatable" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="15%">GIÚP VIỆC</th>
+                                <th width="8%">THỨ 2</th>
+                                <th width="8%">THỨ 3</th>
+                                <th width="8%">THỨ 4</th>
+                                <th width="8%">THỨ 5</th>
+                                <th width="8%">THỨ 6</th>
+                                <th width="8%">THỨ 7</th>
+                                <th width="8%">CN</th>
+                                <th width="10%">TỪ NGÀY</th>
+                                <th width="10%">ĐẾN NGÀY</th>
+                                <th width="4%"><input type="checkbox" id="selectAll" onclick="checkAll(this);"/></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

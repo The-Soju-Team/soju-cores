@@ -1,0 +1,37 @@
+<script type="text/javascript" src="share/js/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type='text/javascript' src='share/js/plugins/noty/jquery.noty.js'></script>
+<script type='text/javascript' src='share/js/plugins/noty/layouts/center.js'></script>
+<script type='text/javascript' src='share/js/plugins/bootstrap/bootstrap-datepicker.js'></script>
+<script type="text/javascript" src="share/js/plugins/dropzone/dropzone.min.js"></script>
+<script type="text/javascript" src="share/js/app/user.js"></script>
+<script type="text/javascript" src="share/js/app/order.js"></script>
+<script type="text/javascript" src="share/js/app/task.js"></script>
+<script type="text/javascript">       
+    $('#searchForm').keypress(function (e) {
+        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            searchTask();
+            return false;
+        } else {
+            return true;
+        }
+    });
+    $(document).ready(function() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10) {
+            dd = '0'+dd
+        } 
+
+        if(mm<10) {
+            mm = '0'+mm
+        } 
+
+        today = dd + '-' + mm + '-' + yyyy;
+        
+        document.getElementById('todate').value = today;
+        searchTask();
+    });        
+</script>

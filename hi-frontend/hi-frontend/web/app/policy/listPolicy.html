@@ -1,0 +1,89 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Chính sách giá</li>
+</ul>
+<div class="page-title">
+    <h2> Chính sách giá</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                    <button type="button" class="btn btn-info pull-right" onclick="searchPolicy();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                    <input type="hidden" id="parent" name="parent" value="listUser"/>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-2 control-label">Mã chính sách</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="policyCode" id="policyCode" maxlength="15" autofocus/>
+                            </div>
+                            <label class="col-md-1 control-label">Mô tả</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="content" id="content" maxlength="100"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label">Trạng thái</label>
+                            <div class="col-md-4">
+                                <select id="status" name="status" class="form-control">
+                                    <option value="0"></option>
+                                    <option value="1">Chưa áp dụng</option>
+                                    <option value="2">Đang áp dụng</option>
+                                    <option value="3">Hết hiệu lực</option>
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">Từ ngày</label>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="fromdate" id="fromdate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                            <label class="col-md-1 control-label">Đến ngày</label>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="todate" id="todate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>   
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DANH SÁCH</h3>
+                    <button id="deleteButton" type="button" class="btn btn-primary pull-right" onclick="deleteOnClick(); return false;" style="width:84px"><span class="fa fa-trash-o"></span> Xóa</button>
+                    <button type="button" class="btn btn-info pull-right" onclick="viewAddPolicy()" style="width:84px"><span class="fa fa-pencil"></span> Thêm</button>
+                    <input type="hidden" id="isdelete" value="0"/>
+                </div>
+                <div class="panel-body">
+                    <table id="policyTable" class="table datatable" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="15%">MÃ CS</th>
+                                <th width="30%">MÔ TẢ</th>
+                                <th width="15%">BẮT ĐẦU</th>
+                                <th width="15%">KẾT THÚC</th>
+                                <th width="15%">TRẠNG THÁI</th>
+                                <th width="5%"><input type="checkbox" id="selectAll" onclick="checkAll(this);"/></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

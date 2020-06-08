@@ -1,0 +1,25 @@
+<script type='text/javascript' src='share/js/plugins/noty/jquery.noty.js'></script>
+<script type='text/javascript' src='share/js/plugins/noty/layouts/center.js'></script>
+<script type='text/javascript' src='share/js/plugins/bootstrap/bootstrap-datepicker.js'></script>
+<script type="text/javascript" src="share/js/app/reportDebt.js"></script>
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10) {
+            dd = '0'+dd
+        } 
+
+        if(mm<10) {
+            mm = '0'+mm
+        } 
+
+        today = dd + '-' + mm + '-' + yyyy;
+        
+        document.getElementById('todate').value = today;
+        searchReceipt();
+    });        
+</script>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Quan ly dieu hanh</title>
+        <link rel="shortcut icon" href="share/sso/favicon.ico"> 
+        <meta name=viewport content="width=device-width, initial-scale=0.9">
+    </head>
+    <body>
+        <div class="header-logo"><img src="share/sso/images/logo_100.png" class="img-logo"/></div>
+        <div class="container">
+            <section class="main">
+                <form id="forgetForm" class="form-2" onsubmit="forget(); return false;">
+                    <h1 style="text-align: center;"><span class="sign-up">CẤP LẠI MẬT KHẨU</span></h1>
+                    <div id="spanUser" class="span-user" style="margin-top:10px;">
+                        <img src="share/sso/images/user.png" alt="mobile" class="img-mobile"/>
+                        <input id="userName" type="tel" name="mobile" autofocus placeholder="Số điện thoại" class="mobile-field">
+                    </div>
+                    <div id="userNameError" class="error-message-field" style="display:none"></div>
+                    <p id="captchaLabel" class="captcha-label">
+                        <input type="text" id="captcha" name = "captcha" placeholder="Nhập mã bảo vệ">
+                        <span id="captchaError" class="captcha-error"></span>
+                        <a href="#" onclick="refreshCaptcha();"><img src = "share/sso/images/refresh.png"></a>
+                    </p>					
+                    <p id="captchaField" class="float">
+                        <img id="captchaImg" class="captcha" src = "captcha/captcha.jpg">
+                    </p>
+                    <p id="buttonArea" class="button-area" style="margin-top: 100px;"> 
+                        <input id="passType" type="hidden" name="passType" value="1"/>
+                        <a id="back" href="#" class="blue-link" style="float:left; margin-top: 10px; " onclick="window.location = '/login?app=g_app'; return false;"><span class="fa fa-arrow-left"></span> Quay lại!</a>
+                        <input id="changePass" type="submit" value="Gửi Mật khẩu">
+                    </p>
+                    <p class="clearfix" style="margin-top: 10px;"> 
+                        <span id="errorMessage" class="alert alert-danger" role="alert" style="display:none;">
+                        </span>
+                    </p>
+                    <p class="clearfix" style="margin-top: 10px;"> 
+                        <span id="successMessage" class="alert alert-success" role="alert" style="display:none;">
+                        </span>
+                    </p>                    
+                </form>​​
+            </section>
+        </div>
+        <link rel="stylesheet" type="text/css" href="share/sso/css/style.css" />
+        <script src="share/sso/js/forget.js"></script>
+    </body>
+</html>

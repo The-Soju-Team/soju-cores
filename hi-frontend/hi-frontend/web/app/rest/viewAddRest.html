@@ -1,0 +1,251 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>
+    <li><a href="javascript:void(0)" onclick="backToList();">Đăng ký nghỉ</a></li>
+    <li class="active">Thêm mới đăng ký nghỉ</li>
+</ul>
+<div class="page-title">
+    <h2> Thêm mới đăng ký nghỉ</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">THÔNG TIN ĐĂNG KÝ LÀM</h3>
+                </div>
+                <div class="panel-body">                   
+                    <div class="col-md-12">
+                        <form id="addForm" class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div class="row" style="margin-bottom: 5px">
+                                    <div class="col-md-4">
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-4 control-label">Giúp việc *</label>
+                                            <div class="col-md-8">
+                                                <div class="col-md-10" style="padding:0px;">
+                                                    <input type="hidden" name="maidId" id="maidId"/>
+                                                    <input type="text" class="form-control" name="maid" id="maid" maxlength="100" disabled/>
+                                                    <label id="maidId-require" class="error" style="display:none"></label>
+                                                </div>
+                                                <div class="col-md-2" style="padding:0px;">
+                                                    <button type="button" class="btn btn-info" id="payerButton" data-toggle="modal" data-target="#selectModal" onclick="openPopupUser();"><span class="fa fa-search"></span></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-4 control-label">Từ ngày *</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="fromDate" id="fromDate"/>
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                                <label id="fromDate-require" class="error" style="display:none"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-4 control-label">Đến ngày *</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="toDate" id="toDate"/>
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                                <label id="toDate-require" class="error" style="display:none"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-2 control-label">Thứ 2: Từ giờ</label>
+                                            <div class="col-md-4">
+                                                <select id="monStart" name="monStart" class="form-control">
+                                                </select>
+                                            </div>
+                                            <label class="col-md-2 control-label">Đến giờ </label>
+                                            <div class="col-md-4">
+                                                <select id="monEnd" name="monEnd" class="form-control">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-2 control-label">Thứ 3: Từ giờ</label>
+                                            <div class="col-md-4">
+                                                <select id="tueStart" name="tueStart" class="form-control">
+                                                </select>
+                                            </div>
+                                            <label class="col-md-2 control-label">Đến giờ </label>
+                                            <div class="col-md-4">
+                                                <select id="tueEnd" name="tueEnd" class="form-control">
+                                                </select>
+                                            </div>
+                                        </div>                                
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-2 control-label">Thứ 4: Từ giờ</label>
+                                            <div class="col-md-4">
+                                                <select id="wedStart" name="wedStart" class="form-control">
+                                                </select>
+                                            </div>
+                                            <label class="col-md-2 control-label">Đến giờ </label>
+                                            <div class="col-md-4">
+                                                <select id="wedEnd" name="wedEnd" class="form-control">
+                                                </select>
+                                            </div>
+                                        </div>                                
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-2 control-label">Thứ 5: Từ giờ</label>
+                                            <div class="col-md-4">
+                                                <select id="thuStart" name="thuStart" class="form-control">
+                                                </select>
+                                            </div>
+                                            <label class="col-md-2 control-label">Đến giờ </label>
+                                            <div class="col-md-4">
+                                                <select id="thuEnd" name="thuEnd" class="form-control">
+                                                </select>
+                                            </div>
+                                        </div>                                
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-2 control-label">Thứ 6: Từ giờ</label>
+                                            <div class="col-md-4">
+                                                <select id="friStart" name="friStart" class="form-control">
+                                                </select>
+                                            </div>
+                                            <label class="col-md-2 control-label">Đến giờ </label>
+                                            <div class="col-md-4">
+                                                <select id="friEnd" name="friEnd" class="form-control">
+                                                </select>
+                                            </div>
+                                        </div>                                
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-2 control-label">Thứ 7: Từ giờ</label>
+                                            <div class="col-md-4">
+                                                <select id="satStart" name="satStart" class="form-control">
+                                                </select>
+                                            </div>
+                                            <label class="col-md-2 control-label">Đến giờ </label>
+                                            <div class="col-md-4">
+                                                <select id="satEnd" name="satEnd" class="form-control">
+                                                </select>
+                                            </div>
+                                        </div>                                
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <label class="col-md-2 control-label">CN: Từ giờ</label>
+                                            <div class="col-md-4">
+                                                <select id="sunStart" name="sunStart" class="form-control">
+                                                </select>
+                                            </div>
+                                            <label class="col-md-2 control-label">Đến giờ </label>
+                                            <div class="col-md-4">
+                                                <select id="sunEnd" name="sunEnd" class="form-control">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-footer" style="text-align: center">
+                    <button type="button" class="btn btn-danger" onclick="addRest();" style="width:97px"><span class="fa fa-pencil"></span> Ghi lại</button>
+                    <button type="button" class="btn btn-primary" onclick="backToList();" style="width:97px"><span class="fa fa-arrow-left"></span> Quay lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="selectModal" role="dialog">
+        <div class="modal-dialog" style="width:1024px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Chọn  người nộp</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">TÌM KIẾM</h3>
+                                    <button type="button" class="btn btn-info pull-right" onclick="searchPopup();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                                    <input type="hidden" id="parent" name="parent" value="listReceipt"/>
+                                    <input type="hidden" id="userType" name="userType" value="payer"/>
+                                </div>
+                                <div class="panel-body">
+                                    <form id="searchForm" class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <div class="row" style="margin-bottom:5px;">
+                                            <label class="col-md-1 control-label">Họ tên</label>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" name="username" id="username" maxlength="100" autofocus/>
+                                            </div>
+                                            <label class="col-md-1 control-label">Điện thoại</label>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" name="mobile" id="mobile" maxlength="15"/>
+                                            </div>
+                                            <label class="col-md-1 control-label">Địa chỉ</label>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" name="home" id="address" maxlength="100"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-1 control-label">Vai trò</label>
+                                            <div class="col-md-3">
+                                                <select id="usertype" name="usertype" class="form-control">
+                                                    <option value="0"></option>
+                                                    <option value="1">Quản trị</option>
+                                                    <option value="2">Điều hành</option>
+                                                    <option value="3">Giúp việc</option>
+                                                    <option value="4">Khách hàng</option>
+                                                </select>
+                                            </div>
+                                            <label class="col-md-1 control-label">Từ ngày</label>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="fromdate" id="fromdate"/>
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                            </div>
+                                            <label class="col-md-1 control-label">Đến ngày</label>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="todate" id="todate"/>
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">DANH SÁCH</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <table id="userTable" class="table datatable" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th width="5%">#</th>
+                                                <th width="25%">TÊN</th>
+                                                <th width="20%">ĐIỆN THOẠI</th>
+                                                <th width="25%">ĐỊA CHỈ</th>
+                                                <th width="20%">VAI TRÒ</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đồng ý</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>

@@ -1,0 +1,61 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Gói dịch vụ</li>
+</ul>
+<div class="page-title">
+    <h2>Gói dịch vụ</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                    <button type="button" class="btn btn-info pull-right" onclick="searchCategory();" style="width:84px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                    <input type="hidden" id="parent" name="parent" value="listUser"/>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-2 control-label">Tên gói</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="categoryName" id="categoryName" maxlength="50" autofocus/>
+                            </div>
+                            <label class="col-md-2 control-label">Thời lượng(Phút)</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="timeLength" id="timeLength" maxlength="5" autofocus/>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DANH SÁCH</h3>
+                    <button id="deleteButton" type="button" class="btn btn-primary pull-right" onclick="deleteOnClick(); return false;" style="width:84px"><span class="fa fa-trash-o"></span> Xóa</button>
+                    <button type="button" class="btn btn-info pull-right" onclick="viewAddCategory()" style="width:84px"><span class="fa fa-pencil"></span> Thêm</button>
+                    <input type="hidden" id="isdelete" value="0"/>
+                </div>
+                <div class="panel-body">
+                    <table id="categoryTable" class="table datatable" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="45%">TÊN GÓI</th>
+                                <th width="45%">THỜI LƯỢNG(PHÚT)</th>
+                                <th width="5%"><input type="checkbox" id="selectAll" onclick="checkAll(this);"/></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+

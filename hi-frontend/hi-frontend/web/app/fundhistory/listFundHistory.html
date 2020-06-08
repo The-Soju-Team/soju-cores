@@ -1,0 +1,91 @@
+<ul class="breadcrumb">
+    <li><a href="/">Trang chủ</a></li>                    
+    <li class="active">Lịch sử quỹ</li>
+</ul>
+<div class="page-title">
+    <h2> Lịch sử quỹ</h2>
+</div>
+<div class="page-content-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TÌM KIẾM</h3>
+                    <button type="button" class="btn btn-info pull-right" onclick="searchFundHistory();" style="width:94px; float:right"><span class="fa fa-search"></span> Tìm</button>
+                    <input type="hidden" id="parent" name="parent" value="listFundHistory"/>
+                </div>
+                <div class="panel-body">
+                    <form id="searchForm" class="form-horizontal" role="form" onsubmit="searchFundHistory(); return false;">
+                    <div class="form-group">
+                        <div class="row" style="margin-bottom:5px;">
+                            <label class="col-md-1 control-label">Tên quỹ</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="fundName" id="fundName" maxlength="30"/>
+                            </div>
+                            <label class="col-md-1 control-label">Phiếu thu</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="recieptNo" id="recieptNo" maxlength="30"/>
+                            </div>
+                            <label class="col-md-1 control-label">Phiếu chi</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="spendNo" id="spendNo" maxlength="30"/>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <label class="col-md-1 control-label">Từ ngày</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="fromdate" id="fromdate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                            <label class="col-md-1 control-label">Đến ngày</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="todate" id="todate"/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>  
+                            <label class="col-md-1 control-label">Loại</label>
+                            <div class="col-md-3">
+                                  <select id="type" name="type" class="form-control" data-live-search="true">
+                                      <option selected="selected" value ="0" class="option">Chọn</option>
+                                      <option  value ="1" class="option">Thu</option>
+                                      <option class="option" value="1" >Chi</option>
+                                  </select>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DANH SÁCH</h3>
+                </div>
+                <div class="panel-body">
+                    <table id="fundHistoryTable" class="table datatable" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="15%">TÊN QUỸ</th>
+                                <th width="10%">NGÀY GHI</th>
+                                <th width="10%">PHIẾU THU</th>
+                                <th width="10%">PHIẾU CHI</th>
+                                <th width="10%">SỐ TIỀN</th>
+                                <th width="10%">SỐ DƯ</th>
+                                <th width="30%">LÝ DO</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+
