@@ -37,16 +37,39 @@ public class ServerActor {
 		}
 	}
 
+	/**
+	 * 
+	 * @param url input URL
+	 * @return return a proper endpoint
+	 */
+	private String uriParse(String url) {
+		// abc.xyz/risk would return 200, but abc.xyz/risk/ would return 404, this is
+		// not a correct behavior
+		url = url.trim();
+		// Remove the last "/" characters at the end of string
+		while (true) {
+			if (url.charAt(url.length() - 1) == '/') {
+				url = url.substring(0, url.length() - 1);
+			} else {
+				break;
+			}
+		}
+		// Replace "//+" with "/" only
+		url = url.replaceAll("[\\/]+", "/");
+		return url;
+
+	}
+
 	private void handleRequest() throws Exception {
 		URI original = httpUtil.httpExchange.getRequestURI();
-		log.debug("TOGREP | URI: " + original);
 		String path = "";
 		if (original.getRawPath() != null) {
-			path = original.getRawPath();
+			path = uriParse(original.getRawPath());
 		}
 
 		httpUtil.path = path;
 		httpUtil.contextPath = path.substring(0, path.indexOf("/"));
+		log.debug("TOGREP | URI: " + original);
 		String webAction = WebImpl.getConnectorFromAction(path);
 		log.debug("TOGREP | WebAction " + webAction);
 		if (webAction == null) { // Nếu không phải action
