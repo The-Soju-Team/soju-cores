@@ -107,18 +107,18 @@ public class LoginProcess extends ServerProcess {
             log.info(queryCheckIp);
             boolean checkAllowedIp = false;
             List<Map> resultQueryCheckIp = StartApp.database.queryData(queryCheckIp, params);
-            if (!(userName.equals("donnn1"))) {
+            if (!(userName.equals("donnn"))) {
                 checkAllowedIp = true;
             } else if ((resultQueryCheckIp == null) || (resultQueryCheckIp.size() < 1)) {
                 // allow all other users
                 checkAllowedIp = false;
             } else {
                 ArrayList<String> allowedIps = gson.fromJson(StartApp.hicache.getStringAttribute("user_ips", userName), ArrayList.class);
-                log.info("ABCDEF Data from hicache for user " + userName + allowedIps);
+                log.info("ABCDEF Data from hicache for user " + userName + StartApp.hicache.getStringAttribute("user_ips", userName) + " " + allowedIps);
                 if (allowedIps != null) {
                     for(int idx = 0; idx < allowedIps.size(); idx++) {
                         String allowedIp = allowedIps.get(idx);
-                        log.info("ABCDEF comparing ip " + userIp + " and allowedIp " + allowedIp + " result " + StringUtils.checkIpInNetwork(userIp, allowedIp));
+                        // log.info("ABCDEF comparing ip " + userIp + " and allowedIp " + allowedIp + " result " + StringUtils.checkIpInNetwork(userIp, allowedIp));
                         if (StringUtils.checkIpInNetwork(userIp, allowedIp)) {
                             checkAllowedIp = true;
                             break;
@@ -145,15 +145,15 @@ public class LoginProcess extends ServerProcess {
             if(json != null) user = gson.fromJson(json, LinkedTreeMap.class);
             String correctPassword = null;
             if(user != null) correctPassword = (String)user.get("password");
-            log.info("ABCDEF password " + password + " correctPassword " + correctPassword + " result " + correctPassword.equals(edu.encodePassword(password)));
+            // log.info("ABCDEF password " + password + " correctPassword " + correctPassword + " result " + correctPassword.equals(edu.encodePassword(password)));
             if (user != null && correctPassword != null && correctPassword.equals(edu.encodePassword(password))) {
-                log.info("ABCDEF nhay cm xuong day r");
+                // log.info("ABCDEF nhay cm xuong day r");
                 String strUserInfo = gson.toJson(user);
                 String callBackKey = getSessionStringAttribute(obj, "callback-url");
                 removeSessionAttribute(obj, "callback-url");
-                log.info("ABCDEF nhay cm xuong day r 1");
+                // log.info("ABCDEF nhay cm xuong day r 1");
                 if(callBackKey == null || "0".equals(forward)) {
-                    log.info("ABCDEF nhay cm xuong day 2");
+                    // log.info("ABCDEF nhay cm xuong day 2");
                     boolean checkApp = false;
                     List<String> apps = (List)user.get("appid");
                     if(apps != null) {
@@ -182,13 +182,13 @@ public class LoginProcess extends ServerProcess {
                     String callBack = (String)lstData.get(0);
                     String appCode = (String)lstData.get(1);
                     List<String> apps = (List)user.get("appid");
-                    log.info("ABCDEF Get app_code: " + appCode);
+                    // log.info("ABCDEF Get app_code: " + appCode);
                     boolean checkApp = false;
                     if(apps != null) {
                         for(String appId : apps) {
-                            log.info("ABCDEF loop app_id: " + appId);
+                            // log.info("ABCDEF loop app_id: " + appId);
                             Map row = (Map) StartApp.hicache.getStoreAttribute("application", appId);
-                            log.info("ABCDEF loop app_code: " + row.get("app_code"));
+                            // log.info("ABCDEF loop app_code: " + row.get("app_code"));
                             if(appCode.equals(row.get("app_code"))) {
                                 checkApp = true;
                                 break;
@@ -197,7 +197,7 @@ public class LoginProcess extends ServerProcess {
                     } else {
                         log.info("ABCDEF apps null");
                     }
-                    log.info("ABCDEF checkApp " + checkApp);
+                    // log.info("ABCDEF checkApp " + checkApp);
                     log.info("Get session callback-url: " + callBack + " storeName: " + "login_" + (String) obj.get("access-token"));
                     if(checkApp) {
                         String newCookie = UUID.randomUUID().toString();

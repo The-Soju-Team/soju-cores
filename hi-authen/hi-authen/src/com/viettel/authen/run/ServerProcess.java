@@ -234,14 +234,14 @@ public class ServerProcess extends BaseProcess{
     
     public static void updateCredentialFromDatabase() {
         try {
-            List<Map> lstUser = StartApp.database.queryData("select user_id, user_name, password, msisdn, full_name, user_type, DATE_FORMAT(birthday, '%d-%m-%Y') as birthday, email from users ");
-            for(Map user : lstUser) {
-                int intUserId = Integer.parseInt(user.get("user_id").toString());
-                StartApp.hicache.setStoreAttribute("credentials_id", "" + intUserId, user.get("user_name"));
-                StartApp.hicache.setStoreAttribute("credentials", (String)user.get("user_name"), (new Gson()).toJson(user));
-            }
+            // List<Map> lstUser = StartApp.database.queryData("select user_id, user_name, password, msisdn, full_name, user_type, DATE_FORMAT(birthday, '%d-%m-%Y') as birthday, email from users ");
+            // for(Map user : lstUser) {
+            //     int intUserId = Integer.parseInt(user.get("user_id").toString());
+            //     StartApp.hicache.setStoreAttribute("credentials_id", "" + intUserId, user.get("user_name"));
+            //     StartApp.hicache.setStoreAttribute("credentials", (String)user.get("user_name"), (new Gson()).toJson(user));
+            // }
 
-            log.info("ABCDEF credentials loaded from DB");
+            // log.info("ABCDEF credentials loaded from DB");
 
             List<Map> allowedIps = StartApp.database.queryData(" select user_name, allowed_ip from user_ip ");
             HashMap<String, ArrayList<String>> userIp = new HashMap<String, ArrayList<String>>();
@@ -255,15 +255,27 @@ public class ServerProcess extends BaseProcess{
                 lstIps.add((String) row.get("allowed_ip"));
             }
 
+            // log.info("ABCDEF " + (new Gson()).toJson(userIp));
+
+            StartApp.hicache.useSpace("authen");
+
+            StartApp.hicache.deleteStore("usre_ips");
+
+            StartApp.hicache.createStore("user_ips");
+
             for(Entry<String, ArrayList<String>> entry: userIp.entrySet()) {
                 // Map m = new HashMap();
                 // m.put("ips", entry.getValue());
                 StartApp.hicache.setStoreAttribute("user_ips", entry.getKey(), (new Gson()).toJson(entry.getValue()));
             }
-            log.info("ABCDEF IP for donnn:");
-            log.info(StartApp.hicache.getStringAttribute("user_ips", "donnn"));
+            // log.info("ABCDEF IP for donnn:");
+            // log.info("ABCDEF hehe");
+            // log.info("ABCDEF user_ips" + StartApp.hicache.getStringAttribute("user_ips", "donnn"));
+            // log.info("ABCDEF hihi");
+            // log.info("ABCDEF credentials" + StartApp.hicache.getStringAttribute("credentials", "donnn"));
+            // log.info("/ ABCDEF IP for donnn:");
             
-            log.info("ABCDEF IP loaded from DB");
+            // log.info("ABCDEF IP loaded from DB");
         } catch (Exception ex) {
             log.error("Error when return to client", ex);
         }   
