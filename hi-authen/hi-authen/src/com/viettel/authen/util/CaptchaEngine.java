@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.hh.authen.util;
+package com.viettel.authen.util;
 
 import com.octo.captcha.component.image.backgroundgenerator.BackgroundGenerator;
 import com.octo.captcha.component.image.backgroundgenerator.GradientBackgroundGenerator;

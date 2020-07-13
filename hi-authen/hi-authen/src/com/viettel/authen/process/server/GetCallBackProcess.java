@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.hh.authen.process.server;
+package com.viettel.authen.process.server;
 
 import com.google.gson.Gson;
 import com.hh.connector.server.Server;
+import com.viettel.authen.run.ServerProcess;
+import com.viettel.authen.run.StartApp;
+
 import io.netty.channel.ChannelHandlerContext;
 import com.google.gson.internal.LinkedTreeMap;
-import com.hh.authen.run.ServerProcess;
-import com.hh.authen.run.StartApp;
 
 /**
  *

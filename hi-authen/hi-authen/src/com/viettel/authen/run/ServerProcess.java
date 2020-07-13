@@ -3,19 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.hh.authen.run;
+package com.viettel.authen.run;
 
 import com.google.gson.Gson;
 import com.hh.connector.process.BaseProcess;
 import com.hh.connector.server.Server;
 import com.hh.util.FileUtils;
 import io.netty.channel.ChannelHandlerContext;
+
+import static com.viettel.authen.run.StartApp.config;
+import static com.viettel.authen.run.StartApp.hicache;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
 import com.google.gson.internal.LinkedTreeMap;
-import static com.hh.authen.run.StartApp.config;
-import static com.hh.authen.run.StartApp.hicache;
 import com.hh.cache.process.client.HiCacheSession;
 import com.hh.util.EncryptDecryptUtils;
 import org.apache.commons.io.IOUtils;
