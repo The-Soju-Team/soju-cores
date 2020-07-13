@@ -325,8 +325,9 @@ public class HttpUtils {
 			log.debug(String.format("TOGREP | Request body: %s", line));
 			sb.append(line);
 		}
-		// Since we can't parse it right now, let's assume it Deep learning
+		// Since we can't parse it right now, let's assume it
 		Gson gson = new Gson();
+		@SuppressWarnings("rawtypes")
 		HashMap params = gson.fromJson(sb.toString(), HashMap.class);
 
 		parameters.put("hi-process", params.get("hi-process"));
