@@ -20,8 +20,12 @@ import com.hh.cache.process.client.HiCacheSession;
 import com.hh.util.EncryptDecryptUtils;
 import com.viettel.authen.db.daoImpl.AppDaoImpl;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -177,6 +181,7 @@ public class ServerProcess extends BaseProcess{
             StartApp.hicache.useSpace("authen");
             StartApp.hicache.createStore("credentials");
             StartApp.hicache.createStore("credentials_id");
+            StartApp.hicache.createStore("user_ips");
             EncryptDecryptUtils edu = new EncryptDecryptUtils();
             LinkedTreeMap user = new LinkedTreeMap();
             user.put("user_name", "root");
@@ -235,6 +240,30 @@ public class ServerProcess extends BaseProcess{
                 StartApp.hicache.setStoreAttribute("credentials_id", "" + intUserId, user.get("user_name"));
                 StartApp.hicache.setStoreAttribute("credentials", (String)user.get("user_name"), (new Gson()).toJson(user));
             }
+
+            log.info("ABCDEF credentials loaded from DB");
+
+            List<Map> allowedIps = StartApp.database.queryData(" select user_name, allowed_ip from user_ip ");
+            HashMap<String, ArrayList<String>> userIp = new HashMap<String, ArrayList<String>>();
+
+            for(Map row : allowedIps) {
+                ArrayList<String> lstIps = userIp.get((String) row.get("user_name"));
+                if (lstIps == null) {
+                    lstIps = new ArrayList<String>();
+                    userIp.put((String) row.get("user_name"), lstIps);
+                }
+                lstIps.add((String) row.get("allowed_ip"));
+            }
+
+            for(Entry<String, ArrayList<String>> entry: userIp.entrySet()) {
+                // Map m = new HashMap();
+                // m.put("ips", entry.getValue());
+                StartApp.hicache.setStoreAttribute("user_ips", entry.getKey(), (new Gson()).toJson(entry.getValue()));
+            }
+            log.info("ABCDEF IP for donnn:");
+            log.info(StartApp.hicache.getStringAttribute("user_ips", "donnn"));
+            
+            log.info("ABCDEF IP loaded from DB");
         } catch (Exception ex) {
             log.error("Error when return to client", ex);
         }   

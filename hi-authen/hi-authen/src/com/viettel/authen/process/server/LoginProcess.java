@@ -13,6 +13,7 @@ import io.netty.channel.ChannelHandlerContext;
 import com.google.gson.internal.LinkedTreeMap;
 import com.viettel.authen.run.ServerProcess;
 import com.viettel.authen.run.UpdateTransToDBThread;
+import com.viettel.authen.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class LoginProcess extends ServerProcess {
     public static final String PASSWORD_EMPTY = "4";
     public static final String CAPTCHA_EMPTY = "5";
     public static final String NOT_ALLOWED_IP = "6";
+    private static Gson gson = new Gson();
     
     public LoginProcess(ChannelHandlerContext ctx, Server server) {
         super(ctx, server);
@@ -97,7 +99,7 @@ public class LoginProcess extends ServerProcess {
             String loginToken = (String) obj.get("loginToken");
             // String queryCheckIp = "select lt.*, ui.allowed_ip from (select * from login_token where USER_NAME = ? and LOGIN_TOKEN = ? order by id desc limit 1) lt INNER join user_ip ui on lt.user_name = ui.user_name";
             String queryCheckIp = " select user_name, allowed_ip from user_ip where user_name = ? ";
-            String usedIp = "";
+            String userIp = ip;
             List params = new ArrayList();
             params.add(userName);
             // params.add(loginToken);
@@ -105,45 +107,53 @@ public class LoginProcess extends ServerProcess {
             log.info(queryCheckIp);
             boolean checkAllowedIp = false;
             List<Map> resultQueryCheckIp = StartApp.database.queryData(queryCheckIp, params);
-            if (!(userName.equals("donnn"))) {
+            if (!(userName.equals("donnn1"))) {
                 checkAllowedIp = true;
             } else if ((resultQueryCheckIp == null) || (resultQueryCheckIp.size() < 1)) {
                 // allow all other users
                 checkAllowedIp = false;
             } else {
-                for(int idx = 0; idx < resultQueryCheckIp.size(); idx++) {
-                    Map m = resultQueryCheckIp.get(idx);
-                    
-                    usedIp = ip;
-                    String allowedIp = m.get("allowed_ip") == null ? "-" : (m.get("allowed_ip") + "");
-                    // log.info("ABCDEF comparing ip " + ip + " and allowedIp " + allowedIp);
-                    if (ip.equals(allowedIp)) {
-                        checkAllowedIp = true;
-                        break;
+                ArrayList<String> allowedIps = gson.fromJson(StartApp.hicache.getStringAttribute("user_ips", userName), ArrayList.class);
+                log.info("ABCDEF Data from hicache for user " + userName + allowedIps);
+                if (allowedIps != null) {
+                    for(int idx = 0; idx < allowedIps.size(); idx++) {
+                        String allowedIp = allowedIps.get(idx);
+                        log.info("ABCDEF comparing ip " + userIp + " and allowedIp " + allowedIp + " result " + StringUtils.checkIpInNetwork(userIp, allowedIp));
+                        if (StringUtils.checkIpInNetwork(userIp, allowedIp)) {
+                            checkAllowedIp = true;
+                            break;
+                        }
                     }
                 }
             }
 
             if (!checkAllowedIp) {
-                log.info("ABCDEF user " + userName + " trying to log in at unauthorized IP " + usedIp);
+                log.info("ABCDEF user " + userName + " trying to log in at unauthorized IP " + userIp);
                 sendLoginResponse(obj, NOT_ALLOWED_IP, failCount);
                 return;
             }
+
+            log.info("ABCDEF checkAllowedIp " + checkAllowedIp);
 
             // End check IP
 
             EncryptDecryptUtils edu = new EncryptDecryptUtils();
             Gson gson = new Gson();
             String json = StartApp.hicache.getStringAttribute("credentials", userName);
+            log.info("ABCDEF " + json);
             LinkedTreeMap user = null;
             if(json != null) user = gson.fromJson(json, LinkedTreeMap.class);
             String correctPassword = null;
             if(user != null) correctPassword = (String)user.get("password");
+            log.info("ABCDEF password " + password + " correctPassword " + correctPassword + " result " + correctPassword.equals(edu.encodePassword(password)));
             if (user != null && correctPassword != null && correctPassword.equals(edu.encodePassword(password))) {
+                log.info("ABCDEF nhay cm xuong day r");
                 String strUserInfo = gson.toJson(user);
                 String callBackKey = getSessionStringAttribute(obj, "callback-url");
                 removeSessionAttribute(obj, "callback-url");
+                log.info("ABCDEF nhay cm xuong day r 1");
                 if(callBackKey == null || "0".equals(forward)) {
+                    log.info("ABCDEF nhay cm xuong day 2");
                     boolean checkApp = false;
                     List<String> apps = (List)user.get("appid");
                     if(apps != null) {
@@ -172,19 +182,22 @@ public class LoginProcess extends ServerProcess {
                     String callBack = (String)lstData.get(0);
                     String appCode = (String)lstData.get(1);
                     List<String> apps = (List)user.get("appid");
-                    log.info("Get app_code: " + appCode);
+                    log.info("ABCDEF Get app_code: " + appCode);
                     boolean checkApp = false;
                     if(apps != null) {
                         for(String appId : apps) {
-                            log.info("loop app_id: " + appId);
+                            log.info("ABCDEF loop app_id: " + appId);
                             Map row = (Map) StartApp.hicache.getStoreAttribute("application", appId);
-                            log.info("loop app_code: " + row.get("app_code"));
+                            log.info("ABCDEF loop app_code: " + row.get("app_code"));
                             if(appCode.equals(row.get("app_code"))) {
                                 checkApp = true;
                                 break;
                             }
                         }
+                    } else {
+                        log.info("ABCDEF apps null");
                     }
+                    log.info("ABCDEF checkApp " + checkApp);
                     log.info("Get session callback-url: " + callBack + " storeName: " + "login_" + (String) obj.get("access-token"));
                     if(checkApp) {
                         String newCookie = UUID.randomUUID().toString();
