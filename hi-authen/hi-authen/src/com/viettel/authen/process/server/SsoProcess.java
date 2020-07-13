@@ -6,14 +6,13 @@
 package com.viettel.authen.process.server;
 
 import com.hh.connector.server.Server;
-import com.viettel.authen.run.ServerProcess;
-
 import io.netty.channel.ChannelHandlerContext;
 import com.google.gson.internal.LinkedTreeMap;
+import com.viettel.authen.run.ServerProcess;
 
 /**
  *
- * @author HienDM
+ * @author Ha
  */
 public class SsoProcess extends ServerProcess {
     

@@ -5,16 +5,14 @@
  */
 package com.viettel.authen.run;
 
+import static com.viettel.authen.run.StartApp.config;
 import com.hh.connector.process.TimerTask;
 import com.hh.util.ConfigUtils;
-
-import static com.viettel.authen.run.StartApp.config;
-
 import java.util.List;
 
 /**
  *
- * @author HienDM
+ * @author dvgp_admin
  */
 public class ReloadConfigTask extends TimerTask {
 

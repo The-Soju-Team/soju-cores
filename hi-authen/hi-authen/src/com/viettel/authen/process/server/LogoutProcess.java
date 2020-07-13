@@ -7,16 +7,16 @@ package com.viettel.authen.process.server;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.hh.connector.server.Server;
 import com.viettel.authen.run.AuthenFilter;
 import com.viettel.authen.run.ServerProcess;
 import com.viettel.authen.run.StartApp;
-
+import static com.viettel.authen.run.StartApp.server;
+import com.hh.connector.server.Server;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
  *
- * @author HienDM
+ * @author Ha
  */
 public class LogoutProcess extends ServerProcess {
     

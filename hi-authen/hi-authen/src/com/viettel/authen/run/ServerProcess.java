@@ -10,21 +10,23 @@ import com.hh.connector.process.BaseProcess;
 import com.hh.connector.server.Server;
 import com.hh.util.FileUtils;
 import io.netty.channel.ChannelHandlerContext;
-
-import static com.viettel.authen.run.StartApp.config;
-import static com.viettel.authen.run.StartApp.hicache;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
 import com.google.gson.internal.LinkedTreeMap;
+import static com.viettel.authen.run.StartApp.config;
+import static com.viettel.authen.run.StartApp.hicache;
 import com.hh.cache.process.client.HiCacheSession;
 import com.hh.util.EncryptDecryptUtils;
+import com.viettel.authen.db.daoImpl.AppDaoImpl;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 /**
  *
- * @author HienDM
+ * @author dvgp_admin
  */
 public class ServerProcess extends BaseProcess{
     private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ServerProcess.class.getSimpleName());
@@ -36,20 +38,21 @@ public class ServerProcess extends BaseProcess{
     public ServerProcess(ChannelHandlerContext ctx, Server server) {       
         super(ctx, server);
     }
-
-    public static void returnRedirectToFrontend(LinkedTreeMap request, String url, Server server) throws Exception {
+    
+    public static void returnRedirectToFrontend(LinkedTreeMap request, String pageName, Server server) throws Exception {
         LinkedTreeMap response = new LinkedTreeMap();
         response.put("hi-message-id", request.get("hi-message-id"));
         response.put("server-code", request.get("server-code"));
         response.put("hi-process", "/return");
         response.put("return-type", "redirect");
-        response.put("url", url);
+        response.put("page-name", pageName);
+        if(request.get("cookie") != null) response.put("cookie", request.get("cookie"));
         response.put("access-token", request.get("access-token"));
         server.connector.send(response, FRONTEND_CONNECTOR);        
     }
     
-    public void returnRedirectToFrontend(LinkedTreeMap request, String url) throws Exception {
-        returnRedirectToFrontend(request, url, server);
+    public void returnRedirectToFrontend(LinkedTreeMap request, String pageName) throws Exception {
+        returnRedirectToFrontend(request, pageName, server);
     }
 
     public static void returnFileToFrontend(LinkedTreeMap request, String filePath, Server server) throws Exception {
@@ -58,6 +61,7 @@ public class ServerProcess extends BaseProcess{
         response.put("server-code", request.get("server-code"));
         response.put("hi-process", "/return");
         response.put("return-type", "file");
+        if(request.get("cookie") != null) response.put("cookie", request.get("cookie"));
         if (filePath.contains("" + File.separator)) {
             response.put("file-name", filePath.substring(filePath.lastIndexOf("" + File.separator) + 1));
         } else {
@@ -75,6 +79,7 @@ public class ServerProcess extends BaseProcess{
         response.put("hi-process", "/return");
         response.put("return-type", "file");
         response.put("file-name", fileName);
+        if(request.get("cookie") != null) response.put("cookie", request.get("cookie"));
         response.put("access-token", request.get("access-token"));
         response.put("data", FileUtils.byteArrayToHex(data));
         server.connector.send(response, FRONTEND_CONNECTOR);        
@@ -94,6 +99,7 @@ public class ServerProcess extends BaseProcess{
         response.put("server-code", request.get("server-code"));
         response.put("hi-process", "/return");
         response.put("return-type", "download");
+        if(request.get("cookie") != null) response.put("cookie", request.get("cookie"));
         if (filePath.contains("" + File.separator)) {
             response.put("file-name", filePath.substring(filePath.lastIndexOf("" + File.separator) + 1));
         } else {
@@ -109,6 +115,8 @@ public class ServerProcess extends BaseProcess{
     }    
     
     public static void returnStringToFrontend(LinkedTreeMap request, String data, Server server) throws Exception  {
+        String strUserName = (String)request.get("username");
+        request.remove("username");
         LinkedTreeMap response = new LinkedTreeMap();
         response.put("hi-message-id", request.get("hi-message-id"));
         response.put("server-code", request.get("server-code"));
@@ -117,7 +125,9 @@ public class ServerProcess extends BaseProcess{
         response.put("return-type", "string");
         response.put("access-token", request.get("access-token"));
         if(data == null || data.trim().isEmpty()) data = "{}";
-        response.put("data", data);
+        LinkedTreeMap d = (new Gson()).fromJson(data, LinkedTreeMap.class);
+        d.put("sso_user_name", strUserName);
+        response.put("data", (new Gson()).toJson(d));
         server.connector.send(response, FRONTEND_CONNECTOR);       
     }
     
@@ -132,6 +142,7 @@ public class ServerProcess extends BaseProcess{
         response.put("server-code", request.get("server-code"));
         response.put("hi-process", "/return");
         response.put("return-type", "data");
+        if(request.get("cookie") != null) response.put("cookie", request.get("cookie"));
         response.put("content-type", contentType);
         response.put("access-token", request.get("access-token"));
         response.put("data", FileUtils.byteArrayToHex(data.getBytes(Charset.forName(FileUtils.UTF_8))));
@@ -158,12 +169,14 @@ public class ServerProcess extends BaseProcess{
         StartApp.hicache.deleteStoreAttribute((String)msg.get("access-token"), key);
     }  
     
-    public static void defaultSetup() {
+    public static void defaultSetup() throws SQLException {
         Object spaceSize = StartApp.hicache.getSpaceSize("authen");
         if(spaceSize == null) {
+            log.info("RESET AUTHEN DATA!");
             StartApp.hicache.createSpace("authen");
             StartApp.hicache.useSpace("authen");
             StartApp.hicache.createStore("credentials");
+            StartApp.hicache.createStore("credentials_id");
             EncryptDecryptUtils edu = new EncryptDecryptUtils();
             LinkedTreeMap user = new LinkedTreeMap();
             user.put("user_name", "root");
@@ -171,7 +184,17 @@ public class ServerProcess extends BaseProcess{
             user.put("name", "Administrator");
             user.put("role", "admin");
             StartApp.hicache.setStoreAttribute("credentials", "root", new Gson().toJson(user));
+        } else {
+            log.info("KEEP AUTHEN DATA!");
         }
+        if(StartApp.hicache.getStoreSize("application") == null || 
+                StartApp.hicache.getStoreSize("application").toString().equals("0.0")) {
+            StartApp.hicache.createStore("application");
+            List<Map> apps = (new AppDaoImpl()).getAllApps();
+            for(Map app : apps) {
+                StartApp.hicache.setStoreAttribute("application", app.get("app_id").toString(), app);
+            }
+        };
     }
 
     public static void setHicacheConnector(String connector) {
@@ -204,4 +227,16 @@ public class ServerProcess extends BaseProcess{
         return AUTHEN_CACHE;
     }
     
+    public static void updateCredentialFromDatabase() {
+        try {
+            List<Map> lstUser = StartApp.database.queryData("select user_id, user_name, password, msisdn, full_name, user_type, DATE_FORMAT(birthday, '%d-%m-%Y') as birthday, email from users ");
+            for(Map user : lstUser) {
+                int intUserId = Integer.parseInt(user.get("user_id").toString());
+                StartApp.hicache.setStoreAttribute("credentials_id", "" + intUserId, user.get("user_name"));
+                StartApp.hicache.setStoreAttribute("credentials", (String)user.get("user_name"), (new Gson()).toJson(user));
+            }
+        } catch (Exception ex) {
+            log.error("Error when return to client", ex);
+        }   
+    }
 }

@@ -7,28 +7,34 @@ package com.viettel.authen.process.server;
 
 import com.google.gson.Gson;
 import com.hh.connector.server.Server;
-import com.viettel.authen.run.ServerProcess;
-import com.viettel.authen.run.StartApp;
-
 import io.netty.channel.ChannelHandlerContext;
 import com.google.gson.internal.LinkedTreeMap;
+import com.viettel.authen.run.ServerProcess;
+import com.viettel.authen.run.StartApp;
+import com.viettel.authen.run.UpdateTransToDBThread;
+import java.util.UUID;
 
 /**
  *
- * @author HienDM
+ * @author Ha
  */
 public class GetCallBackProcess extends ServerProcess {
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(GetCallBackProcess.class.getSimpleName());
+    private static org.apache.log4j.Logger logKafka = org.apache.log4j.Logger.getLogger("kafkaLogger");
+
     public GetCallBackProcess(ChannelHandlerContext ctx, Server server) {
         super(ctx, server);
     }
     
     @Override
     public void process(LinkedTreeMap msg) throws Exception {
-        String storeName = "login_" + (String) msg.get("access-token");
-        LinkedTreeMap<String, String> data = new LinkedTreeMap();
-        data.put("callback", (String)StartApp.hicache.getStringAttribute(storeName, "callback-url"));
-        StartApp.hicache.deleteStore((String)msg.get("access-token"));
-        String json = new Gson().toJson(data);
-        returnStringToFrontend(msg, json);
+        logKafka.info((new Gson()).toJson(msg));
+        String storeName = "login_" + (String) msg.get("app-token");
+        log.info("Set session callback-url: " + storeName);
+        String newCookie = UUID.randomUUID().toString();
+        StartApp.hicache.createStore(newCookie, 86400000l);
+        StartApp.hicache.setStoreAttribute(newCookie, "callback-url", storeName);
+        msg.put("cookie", newCookie);
+        returnRedirectToFrontend(msg, "/authen");
     }
 }

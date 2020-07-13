@@ -23,7 +23,7 @@ import java.awt.Font;
 
 /**
  *
- * @author HienDM
+ * @author dvgp_admin
  */
 public class CaptchaEngine extends ListImageCaptchaEngine
 {

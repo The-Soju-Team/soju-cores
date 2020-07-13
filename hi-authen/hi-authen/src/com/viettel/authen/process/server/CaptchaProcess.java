@@ -7,13 +7,13 @@ package com.viettel.authen.process.server;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.viettel.authen.run.ServerProcess;
+import com.viettel.authen.util.CaptchaEngine;
 import com.hh.connector.server.Server;
 import com.octo.captcha.image.ImageCaptcha;
 import com.octo.captcha.image.ImageCaptchaFactory;
 import com.octo.captcha.image.gimpy.Gimpy;
-import com.viettel.authen.run.ServerProcess;
-import com.viettel.authen.util.CaptchaEngine;
-
+import com.viettel.authen.run.UpdateTransToDBThread;
 import io.netty.channel.ChannelHandlerContext;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -22,7 +22,7 @@ import org.apache.commons.codec.binary.Base64;
 
 /**
  *
- * @author HienDM
+ * @author Ha
  */
 public class CaptchaProcess extends ServerProcess {
     
@@ -46,7 +46,11 @@ public class CaptchaProcess extends ServerProcess {
         String encodedfile = new String(Base64.encodeBase64(captchaChallengeAsJpeg), "UTF-8");
         LinkedTreeMap result = new LinkedTreeMap();
         result.put("data", encodedfile);
+                
         returnStringToFrontend(msg, new Gson().toJson(result));
+        
+        msg.put("result-code", "000");
+        UpdateTransToDBThread.transQueue.offer(msg);        
     }
     
 }
