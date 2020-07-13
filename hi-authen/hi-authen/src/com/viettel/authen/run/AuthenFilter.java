@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AuthenFilter implements ServerFilter {
     public static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AuthenFilter.class.getSimpleName());
     public static AtomicInteger messageIds = new AtomicInteger(1);
-    public static final long sessionTimeout = 900000l;
+    public static final long sessionTimeout = 86400000l;
     
     @Override
     public boolean doFilter(Object msg, Server server) {
@@ -26,7 +26,7 @@ public class AuthenFilter implements ServerFilter {
             LinkedTreeMap message = (LinkedTreeMap) msg;            
             
             Object sessionSize = StartApp.hicache.getStoreSize((String)message.get("access-token"));        
-            if(sessionSize == null) StartApp.hicache.createStore((String)message.get("access-token"), 900000l);            
+            if(sessionSize == null) StartApp.hicache.createStore((String)message.get("access-token"), 86400000l);            
             
             if(message.get("hi-process").equals("logout") 
                     || message.get("hi-process").equals("login") 
@@ -59,25 +59,11 @@ public class AuthenFilter implements ServerFilter {
     }
     
     public static void sendCallBackURL(LinkedTreeMap message) {
-        if(ServerProcess.getAuthenConnector() != null) {
-            int index = messageIds.incrementAndGet();
-            if (index == 2000000000) {
-                messageIds = new AtomicInteger(1);
-            }                
-            LinkedTreeMap response = new LinkedTreeMap();
-            response.put("hi-message-id", "" + index);
-            response.put("server-code", StartApp.config.getConfig("server-code"));
-            response.put("hi-process", "call-back");
-            response.put("callback-url", StartApp.config.getConfig("authen-callback-url"));
-            response.put("access-token", (String)message.get("access-token"));
-            StartApp.server.connector.send(response, ServerProcess.getAuthenConnector());                   
-        } else {
-            String storeName = "login_" + (String) message.get("access-token");
-            StartApp.hicache.createStore(storeName, sessionTimeout);
-            StartApp.hicache.setStoreAttribute(
-                    storeName,
-                    "callback-url",
-                    StartApp.config.getConfig("authen-callback-url"));  
-        }
+        String storeName = "login_" + (String) message.get("access-token");
+        StartApp.hicache.createStore(storeName, sessionTimeout);
+        StartApp.hicache.setStoreAttribute(
+                storeName,
+                "callback-url",
+                StartApp.config.getConfig("authen-callback-url"));  
     }
 }
