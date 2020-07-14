@@ -259,7 +259,7 @@ public class ServerProcess extends BaseProcess{
 
             StartApp.hicache.useSpace("authen");
 
-            StartApp.hicache.deleteStore("usre_ips");
+            StartApp.hicache.deleteStore("user_ips");
 
             StartApp.hicache.createStore("user_ips");
 
