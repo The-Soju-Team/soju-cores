@@ -76,7 +76,22 @@ public class StartApp {
                 ServerProcess.defaultSetup();
                 if("1".equals(config.getConfig("update-credential"))) {
                     ServerProcess.updateCredentialFromDatabase();            
-                }                
+                }
+
+                (new Thread(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        while (true) {
+                            ServerProcess.loadIPBasedPermissionsFromDatabase();
+                            try {
+                                Thread.sleep(60000);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                })).start();
             }
         });
                 

@@ -234,15 +234,23 @@ public class ServerProcess extends BaseProcess{
     
     public static void updateCredentialFromDatabase() {
         try {
-            // List<Map> lstUser = StartApp.database.queryData("select user_id, user_name, password, msisdn, full_name, user_type, DATE_FORMAT(birthday, '%d-%m-%Y') as birthday, email from users ");
-            // for(Map user : lstUser) {
-            //     int intUserId = Integer.parseInt(user.get("user_id").toString());
-            //     StartApp.hicache.setStoreAttribute("credentials_id", "" + intUserId, user.get("user_name"));
-            //     StartApp.hicache.setStoreAttribute("credentials", (String)user.get("user_name"), (new Gson()).toJson(user));
-            // }
+            List<Map> lstUser = StartApp.database.queryData("select user_id, user_name, password, msisdn, full_name, user_type, DATE_FORMAT(birthday, '%d-%m-%Y') as birthday, email from users ");
+            for(Map user : lstUser) {
+                int intUserId = Integer.parseInt(user.get("user_id").toString());
+                StartApp.hicache.setStoreAttribute("credentials_id", "" + intUserId, user.get("user_name"));
+                StartApp.hicache.setStoreAttribute("credentials", (String)user.get("user_name"), (new Gson()).toJson(user));
+            }
 
-            // log.info("ABCDEF credentials loaded from DB");
+            log.info("ABCDEF credentials loaded from DB");
 
+        } catch (Exception ex) {
+            log.error("Error when return to client", ex);
+        }
+    }
+
+    public static void loadIPBasedPermissionsFromDatabase() {
+
+        try {
             List<Map> allowedIps = StartApp.database.queryData(" select user_name, allowed_ip from user_ip ");
             HashMap<String, ArrayList<String>> userIp = new HashMap<String, ArrayList<String>>();
 
@@ -260,8 +268,10 @@ public class ServerProcess extends BaseProcess{
             StartApp.hicache.useSpace("authen");
 
             StartApp.hicache.deleteStore("user_ips");
+            log.info("Store user_ips deleted");
 
             StartApp.hicache.createStore("user_ips");
+            log.info("Store user_ips created");
 
             for(Entry<String, ArrayList<String>> entry: userIp.entrySet()) {
                 // Map m = new HashMap();
@@ -275,9 +285,9 @@ public class ServerProcess extends BaseProcess{
             // log.info("ABCDEF credentials" + StartApp.hicache.getStringAttribute("credentials", "donnn"));
             // log.info("/ ABCDEF IP for donnn:");
             
-            // log.info("ABCDEF IP loaded from DB");
+            log.info("ABCDEF IP loaded from DB");
         } catch (Exception ex) {
-            log.error("Error when return to client", ex);
+            log.error("Error while loading user_ips from database", ex);
         }   
     }
 }
