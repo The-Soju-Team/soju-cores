@@ -69,7 +69,7 @@ public class StringUtils {
             return binaryAddress;
         }
 
-        Pattern patternWithAsterisk = Pattern.compile("^(25[0-5]|2[0-4]\\d?|1\\d\\d|\\d\\d?)\\.((25[0-5]|2[0-4]\\d?|1\\d\\d|\\d\\d?)\\.){0,2}\\*$");
+        Pattern patternWithAsterisk = Pattern.compile("^((25[0-5]|2[0-4]\\d?|1\\d\\d|\\d\\d?)\\.){0,3}\\*$");
 
         m = patternWithAsterisk.matcher(ip);
 
