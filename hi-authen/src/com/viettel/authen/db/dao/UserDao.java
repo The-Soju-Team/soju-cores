@@ -16,16 +16,17 @@ import java.util.Map;
  */
 
 public interface UserDao {
-    
-    public int insertUser(List lstParam) throws SQLException;
-    
-    public void updateUser(List lstParam, boolean changePassword) throws SQLException; 
-    
-    public List<List> searchUser(Integer numberRow, Integer pageLength, String name, String mobile, String fullName, Integer userType, Date fromDate, Date toDate) throws SQLException;
-        
-    public void deleteUser(String lstUser) throws SQLException;
-        
-    public Map getUserById(Integer userId) throws SQLException;    
-    
-    public void updateUserApp(Integer userId, List arrApp) throws SQLException;    
+
+	public int insertUser(List lstParam) throws SQLException;
+
+	public void updateUser(List lstParam, boolean changePassword) throws SQLException;
+
+	public List<List> searchUser(String userName, Integer numberRow, Integer pageLength, String name, String mobile,
+			String fullName, Integer userType, Date fromDate, Date toDate) throws SQLException;
+
+	public void deleteUser(String lstUser) throws SQLException;
+
+	public Map getUserById(Integer userId) throws SQLException;
+
+	public void updateUserApp(Integer userId, List arrApp) throws SQLException;
 }

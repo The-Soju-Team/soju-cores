@@ -37,8 +37,10 @@ public class LoginProcess extends ServerProcess {
 	public static final String[] PASSWORD_EMPTY = new String[] { "4", "Password is required" };
 	public static final String[] CAPTCHA_EMPTY = new String[] { "5", "Captcha is required" };
 	public static final String[] NOT_ALLOWED_IP = new String[] { "6", "Your accout is not allowed to use on this IP" };
-	public static final String[] PASSWORD_EXPIRY = new String[] { "7",
+	public static final String[] PASSWORD_EXPIRED = new String[] { "7",
 			"Your password is expired, click login again to be redirected to change password site" };
+	public static final String[] NO_APPS_GRANTED = new String[] { "8",
+			"The application  you are trying to reach has not been granted to your account" };
 	private static Gson gson = new Gson();
 
 	private static DateUtils dateUtils = new DateUtils();
@@ -160,9 +162,10 @@ public class LoginProcess extends ServerProcess {
 			String correctPassword = null;
 			if (user != null)
 				correctPassword = (String) user.get("password");
-			// log.info("ABCDEF password " + password + " correctPassword " +
-			// correctPassword + " result " +
-			// correctPassword.equals(edu.encodePassword(password)));
+			log.debug(String.format(
+					"TOGREP | User %s is logging in with password: %s - Compare encode: user input: %s vs cache: %s = %s",
+					userName, password, edu.encodePassword(password), correctPassword,
+					correctPassword.equals(edu.encodePassword(password))));
 			if (user != null && correctPassword != null && correctPassword.equals(edu.encodePassword(password))) {
 				String strUserInfo = gson.toJson(user);
 				String callBackKey = getSessionStringAttribute(obj, "callback-url");
@@ -170,6 +173,7 @@ public class LoginProcess extends ServerProcess {
 				if (callBackKey == null || "0".equals(forward)) {
 					boolean checkApp = false;
 					List<String> apps = (List) user.get("appid");
+					log.debug(String.format("TOGREP | User %s app lists ", userName) + apps);
 					if (apps != null) {
 						for (String appId : apps) {
 							Map row = (Map) StartApp.hicache.getStoreAttribute("application", appId);
@@ -178,6 +182,10 @@ public class LoginProcess extends ServerProcess {
 								break;
 							}
 						}
+					} else {
+						// Workaround, allow access authen app
+						checkApp = true;
+
 					}
 					if ("root".equals(userName) || checkApp) {
 						String newCookie = UUID.randomUUID().toString();
@@ -187,9 +195,10 @@ public class LoginProcess extends ServerProcess {
 						obj.put("username", userName);
 						sendLoginResponse(obj, LOGIN_SUCCESS, 0);
 					} else {
+						log.info(String.format("TOGREP User %s failed checkApp", userName));
 						failCount++;
 						setSessionAttribute(obj, "ssoFailCount", "" + failCount);
-						sendLoginResponse(obj, LOGIN_INCORRECT, failCount);
+						sendLoginResponse(obj, NO_APPS_GRANTED, failCount);
 					}
 				} else {
 					List lstData = (List) StartApp.hicache.getStoreAttribute(callBackKey, "callback-url");
@@ -215,10 +224,10 @@ public class LoginProcess extends ServerProcess {
 					log.info("Get session callback-url: " + callBack + " storeName: " + "login_"
 							+ (String) obj.get("access-token"));
 					if (checkApp) {
-						// Check if user password is expiry, and force user to change password
+						// Check if user password is expired, and force user to change password
 						if (isPasswordExpiry(obj)) {
-							// If user's password is expiry, then deny user to login
-							sendLoginResponse(obj, PASSWORD_EXPIRY, 0);
+							// If user's password is expired, then deny user to login
+							sendLoginResponse(obj, PASSWORD_EXPIRED, 0);
 							return;
 						}
 						// End check password expiry
