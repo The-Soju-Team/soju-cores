@@ -286,10 +286,6 @@ public class UserProcess extends ServerProcess {
 
 		user.put("user_id", userId);
 		user.put("appid", appIds);
-
-		StartApp.hicache.setStoreAttribute("credentials_id", "" + userId, userName);
-		StartApp.hicache.setStoreAttribute("credentials", userName, new Gson().toJson(user));
-
 		returnStringToFrontend(msg, new Gson().toJson(new HashMap()));
 	}
 
@@ -412,10 +408,6 @@ public class UserProcess extends ServerProcess {
 
 		Map user = udi.getUserById(intUserId);
 		user.put("appid", appIds);
-
-		StartApp.hicache.setStoreAttribute("credentials_id", "" + intUserId, user.get("user_name"));
-		StartApp.hicache.setStoreAttribute("credentials", (String) user.get("user_name"), (new Gson()).toJson(user));
-
 		returnStringToFrontend(msg, new Gson().toJson(new HashMap()));
 	}
 }
