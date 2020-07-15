@@ -131,7 +131,7 @@ public class UserDaoImpl implements UserDao {
 		HashMap userInfo = gson.fromJson(userJsonStringFromCache, HashMap.class);
 		String queryData = null;
 		String queryCount = null;
-		log.debug(String.format("TOGREP | userInfo of user:%s", userName) + userInfo);
+		log.debug(String.format("TOGREP | userInfo of user %s: ", userName) + userInfo);
 		double userTypeCache = Double.parseDouble(userInfo.get("user_type").toString());
 		if (userTypeCache != 1.0) {
 			queryData = "SELECT 1 as rownum, CONCAT('<a href=\"javascript:void(0)\" onclick=\"loadViewUser(',user_id,');\">',user_name,'</a>') as name, full_name, "
