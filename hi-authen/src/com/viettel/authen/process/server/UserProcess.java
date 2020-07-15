@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 public class UserProcess extends ServerProcess {
 	private static Logger log = Logger.getLogger(UserProcess.class.getSimpleName());
 	private static Gson gson = new Gson();
+	private static final String JSON_TYPE = "application/json";
 
 	public UserProcess(ChannelHandlerContext ctx, Server server) {
 		super(ctx, server);
@@ -48,34 +49,95 @@ public class UserProcess extends ServerProcess {
 
 	@Override
 	public void process(LinkedTreeMap msg) throws Exception {
+		HashMap<String, String> result = new HashMap<>();
 		String cmd = (String) msg.get(CommandConstants.COMMAND);
-		switch (cmd) {
-		case CommandConstants.UPLOAD_USER_PIC:
-			uploadUserPic(msg);
-			break;
-		case CommandConstants.ADD_USER:
-			addUser(msg);
-			break;
-		case CommandConstants.SEARCH_USER:
-			searchUser(msg);
-			break;
-		case CommandConstants.LOAD_VIEW_USER:
-			loadViewUser(msg);
-			break;
-		case CommandConstants.UPDATE_USER:
-			updateUser(msg);
-			break;
-		case CommandConstants.VIEW_USER_IMAGE:
-			viewUserImage(msg);
-			break;
-		case CommandConstants.LOAD_APP_DATA:
-			loadAppData(msg);
-		default:
-			this.returnStringToFrontend(msg, new Gson().toJson(new HashMap()));
-			break;
+		if (isPermissionGranted(msg)) {
+			switch (cmd) {
+			case CommandConstants.UPLOAD_USER_PIC:
+				uploadUserPic(msg);
+				break;
+			case CommandConstants.ADD_USER:
+				addUser(msg);
+				break;
+			case CommandConstants.SEARCH_USER:
+				searchUser(msg);
+				break;
+			case CommandConstants.LOAD_VIEW_USER:
+				loadViewUser(msg);
+				break;
+			case CommandConstants.UPDATE_USER:
+				updateUser(msg);
+				break;
+			case CommandConstants.VIEW_USER_IMAGE:
+				viewUserImage(msg);
+				break;
+			case CommandConstants.LOAD_APP_DATA:
+				loadAppData(msg);
+			default:
+				this.returnStringToFrontend(msg, new Gson().toJson(new HashMap()));
+				break;
+			}
+		} else {
+			result.put("message", "You are not allowed to do this action");
+			this.returnDataToFrontend(msg, gson.toJson(result), JSON_TYPE);
 		}
 		msg.put("result-code", "000");
 		UpdateTransToDBThread.transQueue.offer(msg);
+	}
+
+	private boolean isPermissionGranted(LinkedTreeMap msg) {
+		HashMap userInfo = gson.fromJson(
+				StartApp.hicache.getStringAttribute(msg.get("access-token").toString(), "sso_username"), HashMap.class);
+		double userType = Double.parseDouble(userInfo.get("user_type").toString());
+		if (userType == 1.0) { // Well if he is a administrator, let him do whatever he wants
+			return true;
+		}
+		String cmd = (String) msg.get(CommandConstants.COMMAND);
+		switch (cmd) {
+		case CommandConstants.UPLOAD_USER_PIC:
+			break;
+		case CommandConstants.ADD_USER:
+			return false;
+		case CommandConstants.SEARCH_USER:
+			break;
+		case CommandConstants.LOAD_VIEW_USER:
+			try {
+				Map user = (new UserDaoImpl()).getUserById(Integer.parseInt((String) msg.get("userid")));
+				if (userInfo.get("user_name").equals(user.get("user_name"))) {
+					return true;
+				} else {
+					log.debug(String.format("TOGREP | User %s is trying to inject viewing user %s ==== DENY ====",
+							userInfo.get("user_name").toString(), user.get("user_name")));
+					return false;
+				}
+			} catch (NumberFormatException | SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		case CommandConstants.UPDATE_USER:
+			try {
+				Map user = (new UserDaoImpl()).getUserById(Integer.parseInt((String) msg.get("userid")));
+				if (userInfo.get("user_name").equals(user.get("user_name"))) {
+					return true;
+				} else {
+					log.debug(String.format("TOGREP | User %s is trying to inject updating user %s ==== DENY ====",
+							userInfo.get("user_name").toString(), user.get("user_name")));
+					return false;
+				}
+			} catch (NumberFormatException | SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		case CommandConstants.VIEW_USER_IMAGE:
+			break;
+		case CommandConstants.LOAD_APP_DATA:
+			break;
+		default:
+			break;
+		}
+		return true;
 	}
 
 	public void uploadUserPic(LinkedTreeMap msg) throws Exception {
@@ -406,8 +468,8 @@ public class UserProcess extends ServerProcess {
 		}
 		udi.updateUserApp(intUserId, appIds);
 
-		Map user = udi.getUserById(intUserId);
-		user.put("appid", appIds);
+//		Map user = udi.getUserById(intUserId);
+//		user.put("appid", appIds);
 		returnStringToFrontend(msg, new Gson().toJson(new HashMap()));
 	}
 }

@@ -225,6 +225,7 @@ public class UserDaoImpl implements UserDao {
 			}
 
 			StartApp.database.executeQueryBatch("insert into user_app (user_id, app_id) values (?, ?) ", lstUserApp);
+			updateHiCache(userId, UPDATE_TYPE);
 		}
 	}
 
