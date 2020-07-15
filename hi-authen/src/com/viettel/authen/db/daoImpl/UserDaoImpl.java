@@ -145,7 +145,7 @@ public class UserDaoImpl implements UserDao {
 					+ " msisdn, " + " CASE user_type " + " WHEN 1 THEN 'Quản trị' " + " WHEN 2 THEN 'Người dùng' "
 					+ " END AS user_type" + " , DATE_FORMAT(create_date, '%d-%m-%Y') as create_date, "
 					+ " CONCAT('<input type=\"checkbox\" name=\"userid\" onclick=\"validateCheckAll(this)\" value=\"',user_id,'\"/>') as user_id "
-					+ " FROM users ";
+					+ " FROM users WHERE 1 = 1 ";
 			queryCount = " SELECT count(user_id) FROM users WHERE is_enable = 1 ";
 			String query = " ";
 			if (name != null && !name.trim().isEmpty()) {
@@ -191,6 +191,7 @@ public class UserDaoImpl implements UserDao {
 			lstUser = StartApp.database.queryDataToList(queryData);
 			lstCount = StartApp.database.queryDataToList(queryCount);
 		} else {
+			log.debug(String.format("TOGREP | Search User Query: %s", queryData));
 			lstUser = StartApp.database.queryDataToList(queryData, lstParam);
 			lstCount = StartApp.database.queryDataToList(queryCount, lstParamCount);
 		}
