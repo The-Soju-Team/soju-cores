@@ -72,9 +72,9 @@ public class UserDaoImpl implements UserDao {
 					user.put("email", resultMap.get("email").toString());
 					user.put("birthday", resultMap.get("birthday").toString());
 					user.put("password", resultMap.get("password").toString());
-					user.put("user_type", resultMap.get("user_type").toString());
+					user.put("user_type", resultMap.get("user_type"));
 					user.put("create_date", resultMap.get("create_date").toString());
-					user.put("user_id", resultMap.get("user_id").toString());
+					user.put("user_id", Integer.parseInt(resultMap.get("user_id").toString()));
 
 					// Get user app list
 					List<String> userAppIds = getUserAppByUserId(userId);
