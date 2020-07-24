@@ -106,7 +106,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	public int insertUser(List lstParam) throws SQLException {
-		String sql = "insert into users(user_name, full_name, msisdn, email, birthday, password, user_type, create_date, is_enable, password_expiry_date) values (?,?,?,?,?,?,?,?,1. now() + interval 60 day)";
+		String sql = "insert into users(user_name, full_name, msisdn, email, birthday, password, user_type, create_date, is_enable, password_expiry_date) values (?,?,?,?,?,?,?,?,1, now() + interval 60 day)";
 		int userId = StartApp.database.insertData(sql, lstParam);
 		updateHiCache(userId, UPDATE_TYPE);
 		return userId;
