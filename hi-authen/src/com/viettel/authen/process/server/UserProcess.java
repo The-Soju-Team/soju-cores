@@ -329,12 +329,18 @@ public class UserProcess extends ServerProcess {
 		try {
 			userId = udi.insertUser(lstParam);
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			if (ex.getMessage().contains("Duplicate entry")) {
 				HashMap returnData = new HashMap();
 				returnData.put("error_code", "createuser_04");
 				returnData.put("error_message", "Số điện thoại đã tồn tại");
 				returnData.put("response_message", "Số điện thoại đã tồn tại");
 				returnStringToFrontend(msg, new Gson().toJson(returnData));
+				return;
+			} else {
+				HashMap returnData = new HashMap();
+				returnData.put("error_message", "Đã có lỗi xảy ra");
+				returnData.put("response_message", "Đã có lôi dảy ra");
 				return;
 			}
 		}

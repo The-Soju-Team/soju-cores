@@ -254,6 +254,7 @@ public class LoginProcess extends ServerProcess {
 	}
 
 	private boolean isPasswordExpiry(LinkedTreeMap msg) {
+		log.debug(String.format("TOGREP | Checking password expiry of user: %s", msg.get("userName").toString()));
 		String expiryDate = StartApp.hicache.getStringAttribute("expiry_password", msg.get("userName").toString());
 		Calendar cal = Calendar.getInstance();
 		Calendar expiryCal = dateUtils.stringToCalendar(expiryDate, "yyyy-MM-dd");
