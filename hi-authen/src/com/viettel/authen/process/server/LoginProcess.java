@@ -162,6 +162,7 @@ public class LoginProcess extends ServerProcess {
 				user = gson.fromJson(json, LinkedTreeMap.class);
 			String correctPassword = null;
 			if (user != null) {
+
 				correctPassword = (String) user.get("password");
 				log.debug("TOGREP | User: " + user);
 				log.debug(String.format(
@@ -250,10 +251,12 @@ public class LoginProcess extends ServerProcess {
 					setSessionAttribute(obj, "ssoFailCount", "" + failCount);
 					sendLoginResponse(obj, LOGIN_INCORRECT, failCount);
 				}
+			} else {
+				log.info("TOGREP | User NULL CMNR MAY OI");
+				failCount++;
+				sendLoginResponse(obj, USER_NOT_FOUND, failCount);
+				return;
 			}
-		} else {
-			sendLoginResponse(obj, USER_NOT_FOUND, failCount);
-			return;
 		}
 		obj.put("result-code", "000");
 		UpdateTransToDBThread.transQueue.offer(obj);
