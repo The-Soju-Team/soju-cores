@@ -41,6 +41,7 @@ public class LoginProcess extends ServerProcess {
 			"Your password is expired, click login again to be redirected to change password site" };
 	public static final String[] NO_APPS_GRANTED = new String[] { "8",
 			"The application  you are trying to reach has not been granted to your account" };
+	public static final String[] USER_NOT_FOUND = new String[] { "9", "User not found" };
 	private static Gson gson = new Gson();
 
 	private static DateUtils dateUtils = new DateUtils();
@@ -160,94 +161,99 @@ public class LoginProcess extends ServerProcess {
 			if (json != null)
 				user = gson.fromJson(json, LinkedTreeMap.class);
 			String correctPassword = null;
-			if (user != null)
+			if (user != null) {
 				correctPassword = (String) user.get("password");
-			log.debug(String.format(
-					"TOGREP | User %s is logging in with password: %s - Compare encode: user input: %s vs cache: %s = %s",
-					userName, password, edu.encodePassword(password), correctPassword,
-					correctPassword.equals(edu.encodePassword(password))));
-			if (user != null && correctPassword != null && correctPassword.equals(edu.encodePassword(password))) {
-				String strUserInfo = gson.toJson(user);
-				String callBackKey = getSessionStringAttribute(obj, "callback-url");
-				removeSessionAttribute(obj, "callback-url");
-				if (callBackKey == null || "0".equals(forward)) {
-					boolean checkApp = false;
-					List<String> apps = (List) user.get("appid");
-					log.debug(String.format("TOGREP | User %s app lists ", userName) + apps);
-					if (apps != null) {
-						for (String appId : apps) {
-							Map row = (Map) StartApp.hicache.getStoreAttribute("application", appId);
-							if ("bi_authen".equals(row.get("app_code"))) {
-								checkApp = true;
-								break;
+				log.debug("TOGREP | User: " + user);
+				log.debug(String.format(
+						"TOGREP | User %s is logging in with password: %s - Compare encode: user input: %s vs cache: %s = %s",
+						userName, password, edu.encodePassword(password), correctPassword,
+						correctPassword.equals(edu.encodePassword(password))));
+				if (user != null && correctPassword != null && correctPassword.equals(edu.encodePassword(password))) {
+					String strUserInfo = gson.toJson(user);
+					String callBackKey = getSessionStringAttribute(obj, "callback-url");
+					removeSessionAttribute(obj, "callback-url");
+					if (callBackKey == null || "0".equals(forward)) {
+						boolean checkApp = false;
+						List<String> apps = (List) user.get("appid");
+						log.debug(String.format("TOGREP | User %s app lists ", userName) + apps);
+						if (apps != null) {
+							for (String appId : apps) {
+								Map row = (Map) StartApp.hicache.getStoreAttribute("application", appId);
+								if ("bi_authen".equals(row.get("app_code"))) {
+									checkApp = true;
+									break;
+								}
 							}
+						} else {
+							// Workaround, allow access authen app
+							checkApp = true;
+
+						}
+						if ("root".equals(userName) || checkApp) {
+							String newCookie = UUID.randomUUID().toString();
+							StartApp.hicache.createStore(newCookie, 86400000l);
+							StartApp.hicache.setStoreAttribute(newCookie, "sso_username", strUserInfo);
+							obj.put("cookie", newCookie);
+							obj.put("username", userName);
+							sendLoginResponse(obj, LOGIN_SUCCESS, 0);
+						} else {
+							log.info(String.format("TOGREP User %s failed checkApp", userName));
+							failCount++;
+							setSessionAttribute(obj, "ssoFailCount", "" + failCount);
+							sendLoginResponse(obj, NO_APPS_GRANTED, failCount);
 						}
 					} else {
-						// Workaround, allow access authen app
-						checkApp = true;
-
-					}
-					if ("root".equals(userName) || checkApp) {
-						String newCookie = UUID.randomUUID().toString();
-						StartApp.hicache.createStore(newCookie, 86400000l);
-						StartApp.hicache.setStoreAttribute(newCookie, "sso_username", strUserInfo);
-						obj.put("cookie", newCookie);
-						obj.put("username", userName);
-						sendLoginResponse(obj, LOGIN_SUCCESS, 0);
-					} else {
-						log.info(String.format("TOGREP User %s failed checkApp", userName));
-						failCount++;
-						setSessionAttribute(obj, "ssoFailCount", "" + failCount);
-						sendLoginResponse(obj, NO_APPS_GRANTED, failCount);
+						List lstData = (List) StartApp.hicache.getStoreAttribute(callBackKey, "callback-url");
+						String callBack = (String) lstData.get(0);
+						String appCode = (String) lstData.get(1);
+						List<String> apps = (List) user.get("appid");
+						// log.info("ABCDEF Get app_code: " + appCode);
+						boolean checkApp = false;
+						if (apps != null) {
+							for (String appId : apps) {
+								// log.info("ABCDEF loop app_id: " + appId);
+								Map row = (Map) StartApp.hicache.getStoreAttribute("application", appId);
+								// log.info("ABCDEF loop app_code: " + row.get("app_code"));
+								if (appCode.equals(row.get("app_code"))) {
+									checkApp = true;
+									break;
+								}
+							}
+						} else {
+							log.info("ABCDEF apps null");
+						}
+						// log.info("ABCDEF checkApp " + checkApp);
+						log.info("Get session callback-url: " + callBack + " storeName: " + "login_"
+								+ (String) obj.get("access-token"));
+						if (checkApp) {
+							// Check if user password is expired, and force user to change password
+							if (isPasswordExpiry(obj)) {
+								// If user's password is expired, then deny user to login
+								sendLoginResponse(obj, PASSWORD_EXPIRED, 0);
+								return;
+							}
+							// End check password expiry
+							String newCookie = UUID.randomUUID().toString();
+							StartApp.hicache.createStore(newCookie, 86400000l);
+							StartApp.hicache.setStoreAttribute(newCookie, "sso_username", strUserInfo);
+							obj.put("call_back", callBack + "&sso-token=" + newCookie);
+							obj.put("cookie", newCookie);
+							sendLoginResponse(obj, LOGIN_SUCCESS, 0);
+						} else {
+							failCount++;
+							setSessionAttribute(obj, "ssoFailCount", "" + failCount);
+							sendLoginResponse(obj, LOGIN_INCORRECT, failCount);
+						}
 					}
 				} else {
-					List lstData = (List) StartApp.hicache.getStoreAttribute(callBackKey, "callback-url");
-					String callBack = (String) lstData.get(0);
-					String appCode = (String) lstData.get(1);
-					List<String> apps = (List) user.get("appid");
-					// log.info("ABCDEF Get app_code: " + appCode);
-					boolean checkApp = false;
-					if (apps != null) {
-						for (String appId : apps) {
-							// log.info("ABCDEF loop app_id: " + appId);
-							Map row = (Map) StartApp.hicache.getStoreAttribute("application", appId);
-							// log.info("ABCDEF loop app_code: " + row.get("app_code"));
-							if (appCode.equals(row.get("app_code"))) {
-								checkApp = true;
-								break;
-							}
-						}
-					} else {
-						log.info("ABCDEF apps null");
-					}
-					// log.info("ABCDEF checkApp " + checkApp);
-					log.info("Get session callback-url: " + callBack + " storeName: " + "login_"
-							+ (String) obj.get("access-token"));
-					if (checkApp) {
-						// Check if user password is expired, and force user to change password
-						if (isPasswordExpiry(obj)) {
-							// If user's password is expired, then deny user to login
-							sendLoginResponse(obj, PASSWORD_EXPIRED, 0);
-							return;
-						}
-						// End check password expiry
-						String newCookie = UUID.randomUUID().toString();
-						StartApp.hicache.createStore(newCookie, 86400000l);
-						StartApp.hicache.setStoreAttribute(newCookie, "sso_username", strUserInfo);
-						obj.put("call_back", callBack + "&sso-token=" + newCookie);
-						obj.put("cookie", newCookie);
-						sendLoginResponse(obj, LOGIN_SUCCESS, 0);
-					} else {
-						failCount++;
-						setSessionAttribute(obj, "ssoFailCount", "" + failCount);
-						sendLoginResponse(obj, LOGIN_INCORRECT, failCount);
-					}
+					failCount++;
+					setSessionAttribute(obj, "ssoFailCount", "" + failCount);
+					sendLoginResponse(obj, LOGIN_INCORRECT, failCount);
 				}
-			} else {
-				failCount++;
-				setSessionAttribute(obj, "ssoFailCount", "" + failCount);
-				sendLoginResponse(obj, LOGIN_INCORRECT, failCount);
 			}
+		} else {
+			sendLoginResponse(obj, USER_NOT_FOUND, failCount);
+			return;
 		}
 		obj.put("result-code", "000");
 		UpdateTransToDBThread.transQueue.offer(obj);
