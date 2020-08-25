@@ -217,7 +217,7 @@ public class HttpUtils {
 		int beginIndex = 1;
 		int endIndex = originalClientIp.indexOf(":");
 		originalClientIp = originalClientIp.substring(beginIndex, endIndex);
-		message.put("hi-process", message.get("hi-process"));
+		message.put("hi-process", message.get("hi-process").toString().trim());
 		message.put("original-ip-request", originalClientIp);
 		message.put("original-ip-request-full", httpExchange.getRemoteAddress().toString());
 		log.info(String.format("Receving request from client: %s", message.get("original-ip-request").toString()));
@@ -357,13 +357,11 @@ public class HttpUtils {
 				log.debug(String.format("Content-type: %s", contentType));
 				int length = Integer
 						.parseInt(headers.get("Content-length").toString().replace("[", "").replace("]", ""));
-				switch (contentType) {
-				case JSON_TYPE:
+				if (contentType.toLowerCase().contains(JSON_TYPE.toLowerCase())) {
+					log.info("TOGREP | JSON Request Detected");
 					parsePostJSONParams(httpExchange);
-					break;
-				default:
+				} else {
 					parameters = parseFile(parameters, httpExchange.getRequestBody(), contentType, length);
-					break;
 				}
 			} else {
 				try (InputStreamReader isr = new InputStreamReader(httpExchange.getRequestBody(), "utf-8");
