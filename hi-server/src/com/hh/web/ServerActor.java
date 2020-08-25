@@ -40,7 +40,7 @@ public class ServerActor {
 	/**
 	 * 
 	 * @param url input URL
-	 * @return return a proper endpoint
+	 * @return return a proper end-point
 	 */
 	private String uriParse(String url) {
 		// abc.xyz/risk would return 200, but abc.xyz/risk/ would return 404, this is
