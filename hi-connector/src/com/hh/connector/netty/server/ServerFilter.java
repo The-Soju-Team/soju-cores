@@ -12,5 +12,5 @@ import com.hh.connector.server.Server;
  * @author vtsoft
  */
 public interface ServerFilter {
-    public boolean doFilter(Object msg, Server server);
+	public boolean doFilter(Object msg, Server server);
 }
