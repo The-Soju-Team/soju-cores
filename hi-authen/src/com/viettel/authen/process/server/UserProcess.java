@@ -52,7 +52,7 @@ public class UserProcess extends ServerProcess {
     public void process(LinkedTreeMap msg) throws Exception {
         HashMap<String, String> result = new HashMap<>();
         String cmd = (String) msg.get(CommandConstants.COMMAND);
-        if (isPermissionGranted(msg)) {
+        if (PermissionChecker.isPermissionGranted(msg)) {
             switch (cmd) {
                 case CommandConstants.UPLOAD_USER_PIC:
                     uploadUserPic(msg);
@@ -84,59 +84,6 @@ public class UserProcess extends ServerProcess {
         }
         msg.put("result-code", "000");
         UpdateTransToDBThread.transQueue.offer(msg);
-    }
-
-    private boolean isPermissionGranted(LinkedTreeMap msg) {
-        HashMap userInfo = gson.fromJson(
-                StartApp.hicache.getStringAttribute(msg.get("access-token").toString(), "sso_username"), HashMap.class);
-        double userType = Double.parseDouble(userInfo.get("user_type").toString());
-        if (userType == 1.0) { // Well if he is a administrator, let him do whatever he wants
-            return true;
-        }
-        String cmd = (String) msg.get(CommandConstants.COMMAND);
-        switch (cmd) {
-            case CommandConstants.UPLOAD_USER_PIC:
-                break;
-            case CommandConstants.ADD_USER:
-            case CommandConstants.LOAD_APP_DATA:
-                return false;
-            case CommandConstants.SEARCH_USER:
-                break;
-            case CommandConstants.LOAD_VIEW_USER:
-                try {
-                    Map user = (new UserDaoImpl()).getUserById(Integer.parseInt((String) msg.get("userid")));
-                    if (userInfo.get("user_name").equals(user.get("user_name"))) {
-                        return true;
-                    } else {
-                        log.debug(String.format("TOGREP | User %s is trying to inject viewing user %s ==== DENY ====",
-                                userInfo.get("user_name").toString(), user.get("user_name")));
-                        return false;
-                    }
-                } catch (NumberFormatException | SQLException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            case CommandConstants.UPDATE_USER:
-                try {
-                    Map user = (new UserDaoImpl()).getUserById(Integer.parseInt((String) msg.get("userid")));
-                    if (userInfo.get("user_name").equals(user.get("user_name"))) {
-                        return true;
-                    } else {
-                        log.debug(String.format("TOGREP | User %s is trying to inject updating user %s ==== DENY ====",
-                                userInfo.get("user_name").toString(), user.get("user_name")));
-                        return false;
-                    }
-                } catch (NumberFormatException | SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    return false;
-                }
-            case CommandConstants.VIEW_USER_IMAGE:
-                break;
-            default:
-                break;
-        }
-        return true;
     }
 
     public void uploadUserPic(LinkedTreeMap msg) throws Exception {
