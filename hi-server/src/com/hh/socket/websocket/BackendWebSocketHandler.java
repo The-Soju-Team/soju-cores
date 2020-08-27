@@ -8,13 +8,11 @@ import com.hh.connector.server.Server;
 import com.hh.web.HttpUtils;
 
 
-public class BackendWebSocketHandler implements WebSocketHandler
-{
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ServerDecoder.class.getSimpleName());    
-    
+public class BackendWebSocketHandler implements WebSocketHandler {
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ServerDecoder.class.getSimpleName());
+
     @Override
-    public void onWebSocketConnect(WebSocket sock, final WebSocketRequest request, final Server server)
-    {
+    public void onWebSocketConnect(WebSocket sock, final WebSocketRequest request, final Server server) {
         sock.onMessage(new WebSocket.Callback() {
             @Override
             public void call(WebSocket sock) {

@@ -5,40 +5,47 @@
  */
 package com.hh.server;
 
-import com.hh.util.ConfigUtils;
 import com.hh.web.PageFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- *
  * @author HienDM
  */
 public class WebImpl {
     public static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(WebImpl.class.getSimpleName());
     private static WebImpl instance;
-    public List<String> lstConnector = new ArrayList();
     private static HashMap<String, PageFactory> pageFactory = new HashMap();
     private static HashMap<String, String> actionConnector = new HashMap();
-    
+    public List<String> lstConnector = new ArrayList();
+
     public static WebImpl getInstance() {
         if (instance == null) {
             instance = new WebImpl();
         }
         return instance;
-    }    
-    
+    }
+
+    public static PageFactory getPageFactory(String page) {
+        return pageFactory.get(page);
+    }
+
+    public static String getConnectorFromAction(String action) {
+        return actionConnector.get(action);
+    }
+
     public void initWebHandler() {
         reload();
     }
-    
+
     public void reload() {
         initConnector();
         initPages();
         initActions();
     }
-    
+
     public void initConnector() {
         lstConnector = new ArrayList();
         int count = 1;
@@ -47,7 +54,7 @@ public class WebImpl {
             count++;
         }
     }
-    
+
     public void initPages() {
         pageFactory = new HashMap();
         for (String connectorName : lstConnector) {
@@ -55,7 +62,7 @@ public class WebImpl {
             while (!HHServer.config.getPage(connectorName + ".page" + count).isEmpty()) {
                 String page = HHServer.config.getPage(connectorName + ".page" + count);
                 String template = HHServer.config.getPage(connectorName + ".page" + count + ".template");
-                if(template != null && !template.isEmpty()) {
+                if (template != null && !template.isEmpty()) {
                     PageFactory pf = new PageFactory(template);
                     int childCount = 1;
                     while (!HHServer.config.getPage(connectorName + ".page" + count + ".child" + childCount).isEmpty()) {
@@ -69,7 +76,7 @@ public class WebImpl {
             }
         }
     }
-    
+
     public void initActions() {
         actionConnector = new HashMap();
         for (String connectorName : lstConnector) {
@@ -81,20 +88,12 @@ public class WebImpl {
             }
         }
     }
-    
+
     public void addPageFactory(String page, PageFactory factory) {
         pageFactory.put(page, factory);
     }
-    
+
     public void addActionConnector(String action, String connector) {
         actionConnector.put(action, connector);
-    }    
-    
-    public static PageFactory getPageFactory(String page) {
-        return pageFactory.get(page);
-    }
-    
-    public static String getConnectorFromAction(String action) {
-        return actionConnector.get(action);
     }
 }

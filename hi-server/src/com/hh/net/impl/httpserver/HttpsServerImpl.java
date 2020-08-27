@@ -25,70 +25,71 @@
 
 package com.hh.net.impl.httpserver;
 
+import com.hh.net.httpserver.HttpContext;
 import com.hh.net.httpserver.HttpHandler;
 import com.hh.net.httpserver.HttpsConfigurator;
-import com.hh.net.httpserver.HttpContext;
 import com.hh.net.httpserver.HttpsServer;
-import java.net.*;
-import java.io.*;
-import java.util.concurrent.*;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
 
 public class HttpsServerImpl extends HttpsServer {
 
     ServerImpl server;
 
-    HttpsServerImpl () throws IOException {
-        this (new InetSocketAddress(443), 0);
+    HttpsServerImpl() throws IOException {
+        this(new InetSocketAddress(443), 0);
     }
 
-    HttpsServerImpl (
-        InetSocketAddress addr, int backlog
+    HttpsServerImpl(
+            InetSocketAddress addr, int backlog
     ) throws IOException {
-        server = new ServerImpl (this, "https", addr, backlog);
+        server = new ServerImpl(this, "https", addr, backlog);
     }
 
-    public void setHttpsConfigurator (HttpsConfigurator config) {
-        server.setHttpsConfigurator (config);
-    }
-
-    public HttpsConfigurator getHttpsConfigurator () {
+    public HttpsConfigurator getHttpsConfigurator() {
         return server.getHttpsConfigurator();
     }
 
-    public void bind (InetSocketAddress addr, int backlog) throws IOException {
-        server.bind (addr, backlog);
+    public void setHttpsConfigurator(HttpsConfigurator config) {
+        server.setHttpsConfigurator(config);
     }
 
-    public void start () {
+    public void bind(InetSocketAddress addr, int backlog) throws IOException {
+        server.bind(addr, backlog);
+    }
+
+    public void start() {
         server.start();
     }
 
-    public void setExecutor (Executor executor) {
-        server.setExecutor(executor);
-    }
-
-    public Executor getExecutor () {
+    public Executor getExecutor() {
         return server.getExecutor();
     }
 
-    public void stop (int delay) {
-        server.stop (delay);
+    public void setExecutor(Executor executor) {
+        server.setExecutor(executor);
     }
 
-    public HttpContextImpl createContext (String path, HttpHandler handler) {
-        return server.createContext (path, handler);
+    public void stop(int delay) {
+        server.stop(delay);
     }
 
-    public HttpContextImpl createContext (String path) {
-        return server.createContext (path);
+    public HttpContextImpl createContext(String path, HttpHandler handler) {
+        return server.createContext(path, handler);
     }
 
-    public void removeContext (String path) throws IllegalArgumentException {
-        server.removeContext (path);
+    public HttpContextImpl createContext(String path) {
+        return server.createContext(path);
     }
 
-    public void removeContext (HttpContext context) throws IllegalArgumentException {
-        server.removeContext (context);
+    public void removeContext(String path) throws IllegalArgumentException {
+        server.removeContext(path);
+    }
+
+    public void removeContext(HttpContext context) throws IllegalArgumentException {
+        server.removeContext(context);
     }
 
     public InetSocketAddress getAddress() {

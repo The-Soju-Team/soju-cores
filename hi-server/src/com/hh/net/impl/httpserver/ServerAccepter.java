@@ -5,24 +5,14 @@
  */
 package com.hh.net.impl.httpserver;
 
-import akka.actor.ActorRef;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
 import akka.actor.UntypedActor;
-import java.io.BufferedInputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.nio.channels.CancelledKeyException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.util.Date;
 import java.util.logging.Level;
-import javax.net.ssl.SSLEngine;
 
 /**
- *
  * @author hiendm1
  */
 public class ServerAccepter extends UntypedActor {
@@ -39,14 +29,15 @@ public class ServerAccepter extends UntypedActor {
     public void onReceive(Object o) {
         try {
             handleRequest();
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             server.logger.log(Level.FINER, "ServerImpl.Exchange (1)", ex);
             try {
                 getContext().stop(getSelf());
-            } catch (Exception e) {}            
-        }         
+            } catch (Exception e) {
+            }
+        }
     }
-    
+
     private void handleRequest() throws Exception {
         if (key.equals(server.listenerKey)) {
 //            if (server.terminating) {
@@ -71,7 +62,7 @@ public class ServerAccepter extends UntypedActor {
             newkey.attach(c);
             server.requestStarted(c);
             server.allConnections.add(c);
-        }     
+        }
     }
-    
+
 }

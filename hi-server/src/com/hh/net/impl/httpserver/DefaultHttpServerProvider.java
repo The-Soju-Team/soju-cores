@@ -25,18 +25,19 @@
 
 package com.hh.net.impl.httpserver;
 
-import com.hh.net.httpserver.spi.HttpServerProvider;
-import com.hh.net.httpserver.HttpsServer;
 import com.hh.net.httpserver.HttpServer;
-import java.net.*;
-import java.io.*;
+import com.hh.net.httpserver.HttpsServer;
+import com.hh.net.httpserver.spi.HttpServerProvider;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
 
 public class DefaultHttpServerProvider extends HttpServerProvider {
-    public HttpServer createHttpServer (InetSocketAddress addr, int backlog) throws IOException {
-        return new HttpServerImpl (addr, backlog);
+    public HttpServer createHttpServer(InetSocketAddress addr, int backlog) throws IOException {
+        return new HttpServerImpl(addr, backlog);
     }
 
-    public HttpsServer createHttpsServer (InetSocketAddress addr, int backlog) throws IOException {
-        return new HttpsServerImpl (addr, backlog);
+    public HttpsServer createHttpsServer(InetSocketAddress addr, int backlog) throws IOException {
+        return new HttpsServerImpl(addr, backlog);
     }
 }

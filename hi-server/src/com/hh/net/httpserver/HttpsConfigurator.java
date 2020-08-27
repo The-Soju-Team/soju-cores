@@ -25,7 +25,8 @@
 
 package com.hh.net.httpserver;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 
 
 /**
@@ -58,6 +59,7 @@ import javax.net.ssl.*;
  *     }
  * });
  * </blockquote></pre>
+ *
  * @since 1.6
  */
 public class HttpsConfigurator {
@@ -66,18 +68,20 @@ public class HttpsConfigurator {
 
     /**
      * Creates an Https configuration, with the given SSLContext.
+     *
      * @param context the SSLContext to use for this configurator
      * @throws NullPointerException if no SSLContext supplied
      */
-    public HttpsConfigurator (SSLContext context) {
+    public HttpsConfigurator(SSLContext context) {
         if (context == null) {
-            throw new NullPointerException ("null SSLContext");
+            throw new NullPointerException("null SSLContext");
         }
         this.context = context;
     }
 
     /**
      * Returns the SSLContext for this HttpsConfigurator.
+     *
      * @return the SSLContext
      */
     public SSLContext getSSLContext() {
@@ -85,25 +89,26 @@ public class HttpsConfigurator {
     }
 
 //BEGIN_TIGER_EXCLUDE
-   /**
-    * Called by the HttpsServer to configure the parameters
-    * for a https connection currently being established.
-    * The implementation of configure() must call
-    * {@link HttpsParameters#setSSLParameters(SSLParameters)}
-    * in order to set the SSL parameters for the connection.
-    * <p>
-    * The default implementation of this method uses the
-    * SSLParameters returned from <p>
-    * <code>getSSLContext().getDefaultSSLParameters()</code>
-    * <p>
-    * configure() may be overridden in order to modify this behavior.
-    * See, the example <a href="#example">above</a>.
-    * @param params the HttpsParameters to be configured.
-    *
-    * @since 1.6
-    */
-    public void configure (HttpsParameters params) {
-        params.setSSLParameters (getSSLContext().getDefaultSSLParameters());
+
+    /**
+     * Called by the HttpsServer to configure the parameters
+     * for a https connection currently being established.
+     * The implementation of configure() must call
+     * {@link HttpsParameters#setSSLParameters(SSLParameters)}
+     * in order to set the SSL parameters for the connection.
+     * <p>
+     * The default implementation of this method uses the
+     * SSLParameters returned from <p>
+     * <code>getSSLContext().getDefaultSSLParameters()</code>
+     * <p>
+     * configure() may be overridden in order to modify this behavior.
+     * See, the example <a href="#example">above</a>.
+     *
+     * @param params the HttpsParameters to be configured.
+     * @since 1.6
+     */
+    public void configure(HttpsParameters params) {
+        params.setSSLParameters(getSSLContext().getDefaultSSLParameters());
     }
 //END_TIGER_EXCLUDE
 }

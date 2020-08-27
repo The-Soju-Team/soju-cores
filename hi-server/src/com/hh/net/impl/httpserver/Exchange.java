@@ -5,22 +5,18 @@
  */
 package com.hh.net.impl.httpserver;
 
-import akka.actor.ActorRef;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
 import akka.actor.UntypedActor;
+
+import javax.net.ssl.SSLEngine;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.nio.channels.SocketChannel;
 import java.util.Date;
 import java.util.logging.Level;
-import javax.net.ssl.SSLEngine;
 
 /**
- *
  * @author hiendm1
  */
 public class Exchange extends UntypedActor {
@@ -48,17 +44,18 @@ public class Exchange extends UntypedActor {
         try {
             try {
                 handleRequest();
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 server.logger.log(Level.FINER, "ServerImpl.Exchange (1)", ex);
                 try {
                     getContext().stop(getSelf());
-                } catch (Exception e) {}            
-            }    
+                } catch (Exception e) {
+                }
+            }
         } catch (Throwable e) {
             server.logger.log(Level.FINER, "Co loi Fatal ", e);
         }
     }
-    
+
     private void handleRequest() throws Exception {
         /* context will be null for new connections */
         context = connection.getHttpContext();
@@ -119,7 +116,7 @@ public class Exchange extends UntypedActor {
             }
 
             RequestProcessor rp = new RequestProcessor(this, req, start, space,
-                            requestLine, method, newconnection, engine, sslStreams);
+                    requestLine, method, newconnection, engine, sslStreams);
             rp.handleRequest();
 
         } catch (IOException e1) {
@@ -131,7 +128,7 @@ public class Exchange extends UntypedActor {
         } catch (Exception e4) {
             server.logger.log(Level.FINER, "ServerImpl.Exchange (2)", e4);
             connection.close();
-        }      
+        }
     }
 
     void reject(int code, String requestStr, String message) {
@@ -174,9 +171,9 @@ public class Exchange extends UntypedActor {
         }
     }
 
-    void requestCompleted (HttpConnection c) {
+    void requestCompleted(HttpConnection c) {
         assert c.getState() == HttpConnection.State.REQUEST;
         c.rspStartedTime = new Date().getTime();
-        c.setState (HttpConnection.State.RESPONSE);
-    }    
+        c.setState(HttpConnection.State.RESPONSE);
+    }
 }

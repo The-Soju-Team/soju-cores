@@ -5,6 +5,14 @@
  */
 package com.hh.webservice.jersey;
 
+import com.hh.net.httpserver.*;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.internal.MapPropertiesDelegate;
+import org.glassfish.jersey.server.*;
+import org.glassfish.jersey.server.spi.Container;
+import org.glassfish.jersey.server.spi.ContainerResponseWriter;
+
+import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -18,29 +26,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriBuilder;
-
-import org.glassfish.jersey.internal.MapPropertiesDelegate;
-import org.glassfish.jersey.server.ApplicationHandler;
-import org.glassfish.jersey.server.ContainerException;
-import org.glassfish.jersey.server.ContainerRequest;
-import org.glassfish.jersey.server.ContainerResponse;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.spi.Container;
-import org.glassfish.jersey.server.spi.ContainerResponseWriter;
-
-import org.glassfish.hk2.api.ServiceLocator;
-
-import com.hh.net.httpserver.Headers;
-import com.hh.net.httpserver.HttpExchange;
-import com.hh.net.httpserver.HttpHandler;
-import com.hh.net.httpserver.HttpServer;
-import com.hh.net.httpserver.HttpsExchange;
-
 /**
  * Jersey {@code Container} implementation based on Java SE {@link HttpServer}.
  *
@@ -53,8 +38,9 @@ public class HandlerContainer implements HttpHandler, Container {
 
     private volatile ApplicationHandler appHandler;
 
-    public HandlerContainer() {}
-    
+    public HandlerContainer() {
+    }
+
     /**
      * Create new lightweight Java SE HTTP server container.
      *
@@ -64,18 +50,18 @@ public class HandlerContainer implements HttpHandler, Container {
         this.appHandler = new ApplicationHandler(application);
     }
 
-    public void setApplication(Application application) {
-        this.appHandler = new ApplicationHandler(application);
-    }        
-    
     /**
      * Create new lightweight Java SE HTTP server container.
      *
-     * @param application JAX-RS / Jersey application to be deployed on the container.
+     * @param application   JAX-RS / Jersey application to be deployed on the container.
      * @param parentLocator parent HK2 service locator.
      */
     HandlerContainer(final Application application, final ServiceLocator parentLocator) {
         this.appHandler = new ApplicationHandler(application, null, parentLocator);
+    }
+
+    public void setApplication(Application application) {
+        this.appHandler = new ApplicationHandler(application);
     }
 
     @Override
@@ -134,7 +120,7 @@ public class HandlerContainer implements HttpHandler, Container {
             // then commit it and log warning
             responseWriter.closeAndLogWarning();
         }
-        
+
     }
 
     private URI getBaseUri(final HttpExchange exchange, final String decodedBasePath, final String scheme) {
@@ -163,7 +149,7 @@ public class HandlerContainer implements HttpHandler, Container {
     }
 
     private String getServerAddress(final URI baseUri) throws URISyntaxException {
-        return new URI(baseUri.getScheme(), null,  baseUri.getHost(), baseUri.getPort(), null, null, null).toString();
+        return new URI(baseUri.getScheme(), null, baseUri.getHost(), baseUri.getPort(), null, null, null).toString();
     }
 
     private SecurityContext getSecurityContext(final Principal principal, final boolean isSecure) {
@@ -217,7 +203,7 @@ public class HandlerContainer implements HttpHandler, Container {
 
     /**
      * Inform this container that the server has been started.
-     *
+     * <p>
      * This method must be implicitly called after the server containing this container is started.
      */
     void onServerStart() {
@@ -226,7 +212,7 @@ public class HandlerContainer implements HttpHandler, Container {
 
     /**
      * Inform this container that the server is being stopped.
-     *
+     * <p>
      * This method must be implicitly called before the server containing this container is stopped.
      */
     void onServerStop() {
@@ -334,7 +320,7 @@ public class HandlerContainer implements HttpHandler, Container {
 
         /**
          * Commits the response and logs a warning message.
-         *
+         * <p>
          * This method should be called by the container at the end of the
          * handle method to make sure that the ResponseWriter was committed.
          */

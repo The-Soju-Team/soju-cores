@@ -6,7 +6,6 @@
 package com.hh.server;
 
 /**
- *
  * @author HienDM
  */
 public class RestImpl {

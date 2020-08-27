@@ -5,23 +5,18 @@
  */
 package com.hh.webservice.jersey;
 
+import com.hh.net.httpserver.*;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.spi.Container;
+
+import javax.net.ssl.SSLContext;
+import javax.ws.rs.ProcessingException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.concurrent.Executor;
 import java.util.logging.Logger;
-import javax.ws.rs.ProcessingException;
-import javax.net.ssl.SSLContext;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.spi.Container;
-
-import org.glassfish.hk2.api.ServiceLocator;
-
-import com.hh.net.httpserver.HttpContext;
-import com.hh.net.httpserver.HttpHandler;
-import com.hh.net.httpserver.HttpServer;
-import com.hh.net.httpserver.HttpsConfigurator;
-import com.hh.net.httpserver.HttpsServer;
 
 
 /**
@@ -33,6 +28,13 @@ import com.hh.net.httpserver.HttpsServer;
 public final class ServerFactory {
 
     private static final Logger LOG = Logger.getLogger(ServerFactory.class.getName());
+
+    /**
+     * Prevents instantiation.
+     */
+    private ServerFactory() {
+        throw new AssertionError("Instantiation not allowed.");
+    }
 
     /**
      * Create and start the {@link HttpServer JDK HttpServer} with the Jersey application deployed
@@ -139,12 +141,12 @@ public final class ServerFactory {
      * The {@code start} flag controls whether or not the returned {@link HttpServer JDK HttpServer} is started.
      * </p>
      *
-     * @param uri               the {@link URI uri} on which the Jersey application will be deployed.
-     * @param configuration     the Jersey server-side application configuration.
-     * @param parentLocator     {@link org.glassfish.hk2.api.ServiceLocator} to become a parent of the locator used by
-     *                          {@link org.glassfish.jersey.server.ApplicationHandler}
-     * @param sslContext        custom {@link SSLContext} to be passed to the server
-     * @param start             if set to {@code false}, the created server will not be automatically started.
+     * @param uri           the {@link URI uri} on which the Jersey application will be deployed.
+     * @param configuration the Jersey server-side application configuration.
+     * @param parentLocator {@link org.glassfish.hk2.api.ServiceLocator} to become a parent of the locator used by
+     *                      {@link org.glassfish.jersey.server.ApplicationHandler}
+     * @param sslContext    custom {@link SSLContext} to be passed to the server
+     * @param start         if set to {@code false}, the created server will not be automatically started.
      * @return Newly created {@link HttpServer}.
      * @throws ProcessingException thrown when problems during server creation occurs.
      * @since 2.18
@@ -245,13 +247,13 @@ public final class ServerFactory {
         return new HttpsServer() {
 
             @Override
-            public void setHttpsConfigurator(final HttpsConfigurator httpsConfigurator) {
-                delegate.setHttpsConfigurator(httpsConfigurator);
+            public HttpsConfigurator getHttpsConfigurator() {
+                return delegate.getHttpsConfigurator();
             }
 
             @Override
-            public HttpsConfigurator getHttpsConfigurator() {
-                return delegate.getHttpsConfigurator();
+            public void setHttpsConfigurator(final HttpsConfigurator httpsConfigurator) {
+                delegate.setHttpsConfigurator(httpsConfigurator);
             }
 
             @Override
@@ -266,13 +268,11 @@ public final class ServerFactory {
             }
 
             @Override
-            public void setExecutor(final Executor executor) {
-                delegate.setExecutor(executor);
-            }
-
-            @Override
             public Executor getExecutor() {
                 return delegate.getExecutor();
+            }            @Override
+            public void setExecutor(final Executor executor) {
+                delegate.setExecutor(executor);
             }
 
             @Override
@@ -305,6 +305,8 @@ public final class ServerFactory {
             public InetSocketAddress getAddress() {
                 return delegate.getAddress();
             }
+
+
         };
     }
 
@@ -323,13 +325,11 @@ public final class ServerFactory {
             }
 
             @Override
-            public void setExecutor(final Executor executor) {
-                delegate.setExecutor(executor);
-            }
-
-            @Override
             public Executor getExecutor() {
                 return delegate.getExecutor();
+            }            @Override
+            public void setExecutor(final Executor executor) {
+                delegate.setExecutor(executor);
             }
 
             @Override
@@ -362,13 +362,8 @@ public final class ServerFactory {
             public InetSocketAddress getAddress() {
                 return delegate.getAddress();
             }
-        };
-    }
 
-    /**
-     * Prevents instantiation.
-     */
-    private ServerFactory() {
-        throw new AssertionError("Instantiation not allowed.");
+
+        };
     }
 }
