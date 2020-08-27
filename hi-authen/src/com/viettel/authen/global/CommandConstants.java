@@ -3,7 +3,7 @@ package com.viettel.authen.global;
 public class CommandConstants {
 
     public static final String COMMAND = "cmd";
-    
+
     //-------- user ---------------------------
     public static final String UPLOAD_USER_PIC = "UPDATE_USER_PIC";
     public static final String UPLOAD_USER_FILE = "UPLOAD_USER_FILE";
@@ -15,4 +15,5 @@ public class CommandConstants {
     public static final String VIEW_USER_IMAGE = "VIEW_USER_IMAGE";
     public static final String UPDATE_USER = "UPDATE_USER";
     public static final String LOAD_APP_DATA = "LOAD_APP_DATA";
+    public static final String SEARCH_APP = "SEARCH_APP";
 }

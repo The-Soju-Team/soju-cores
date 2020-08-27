@@ -29,7 +29,7 @@ public class StringUtils {
 
     private static String charToBinaryString(char ch) {
         StringBuilder sb = new StringBuilder();
-        for(int i = 7; i >= 0; i--) {
+        for (int i = 7; i >= 0; i--) {
             sb.append(ch >> i & 1);
         }
         return sb.toString();
@@ -55,7 +55,7 @@ public class StringUtils {
             // log.info("ip " + ip + " matches patternAllNumber");
             String binaryAddress = "";
             String binaryAddress1 = "";
-            for(int i = 1; i <= 4; i++) {
+            for (int i = 1; i <= 4; i++) {
                 String g = m.group(i);
                 char ch = (char) Integer.parseInt(g);
                 String binaryByte = StringUtils.padding(Integer.toBinaryString(ch), 8);
@@ -77,12 +77,12 @@ public class StringUtils {
             // log.info("ip " + ip + " matches patternWithAsterisk");
             String[] parts = ip.split("\\.");
             String binaryAddress = "";
-            for(int i = 0; i < parts.length - 1; i++) {
+            for (int i = 0; i < parts.length - 1; i++) {
                 char ch = (char) Integer.parseInt(parts[i]);
                 binaryAddress += StringUtils.padding(charToBinaryString(ch), 8);
             }
             if (needPadding) {
-                for(int i = 0; i < 4 - parts.length + 1; i++) {
+                for (int i = 0; i < 4 - parts.length + 1; i++) {
                     binaryAddress += "00000000";
                 }
             }
@@ -98,7 +98,7 @@ public class StringUtils {
             // log.info("ip " + ip + " matches patternWithMask");
             String binaryAddress = "";
             String binaryAddress1 = "";
-            for(int i = 1; i <= 4; i++) {
+            for (int i = 1; i <= 4; i++) {
                 String g = m.group(i);
                 char ch = (char) Integer.parseInt(g);
                 String binaryByte = StringUtils.padding(Integer.toBinaryString(ch), 8);
@@ -113,7 +113,7 @@ public class StringUtils {
             binaryAddress1 = binaryAddress1.substring(0, mask);
             // log.info("Semantic Binary: " + binaryAddress);
             if (needPadding) {
-                for(int i = 0; i < 32 - mask; i++) {
+                for (int i = 0; i < 32 - mask; i++) {
                     binaryAddress += "0";
                     binaryAddress1 += "0";
                 }

@@ -13,7 +13,6 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.viettel.authen.db.dao.UpdateEventDao;
 
 /**
- *
  * @author HienDM
  */
 public class UpdateTransToDBThread extends Thread {

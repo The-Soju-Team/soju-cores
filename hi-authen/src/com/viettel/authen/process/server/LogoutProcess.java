@@ -10,23 +10,24 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.viettel.authen.run.AuthenFilter;
 import com.viettel.authen.run.ServerProcess;
 import com.viettel.authen.run.StartApp;
+
 import static com.viettel.authen.run.StartApp.server;
+
 import com.hh.connector.server.Server;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
- *
  * @author Ha
  */
 public class LogoutProcess extends ServerProcess {
-    
+
     public LogoutProcess(ChannelHandlerContext ctx, Server server) {
         super(ctx, server);
     }
-    
+
     @Override
     public void process(LinkedTreeMap message) throws Exception {
-        StartApp.hicache.deleteStore((String)message.get("access-token"));
+        StartApp.hicache.deleteStore((String) message.get("access-token"));
         AuthenFilter.sendCallBackURL(message);
         LinkedTreeMap data = new LinkedTreeMap();
         data.put("response_code", "TIMEOUT");
