@@ -14,7 +14,7 @@ import org.apache.log4j.*;
 
 
 public class PermissionChecker {
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
     private static final Logger log = Logger.getLogger(PermissionChecker.class);
 
     public static boolean isPermissionGranted(LinkedTreeMap msg) {
@@ -27,13 +27,13 @@ public class PermissionChecker {
         String cmd = (String) msg.get(CommandConstants.COMMAND);
         switch (cmd) {
             case CommandConstants.UPLOAD_USER_PIC:
+            case CommandConstants.SEARCH_USER:
+            case CommandConstants.VIEW_USER_IMAGE:
                 break;
             case CommandConstants.ADD_USER:
             case CommandConstants.LOAD_APP_DATA:
             case CommandConstants.SEARCH_APP:
                 return false;
-            case CommandConstants.SEARCH_USER:
-                break;
             case CommandConstants.LOAD_VIEW_USER:
                 try {
                     Map user = (new UserDaoImpl()).getUserById(Integer.parseInt((String) msg.get("userid")));
@@ -63,10 +63,6 @@ public class PermissionChecker {
                     e.printStackTrace();
                     return false;
                 }
-            case CommandConstants.VIEW_USER_IMAGE:
-                break;
-            default:
-                break;
         }
         return true;
     }
