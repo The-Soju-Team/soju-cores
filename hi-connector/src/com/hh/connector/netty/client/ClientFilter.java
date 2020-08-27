@@ -8,7 +8,6 @@ package com.hh.connector.netty.client;
 import com.hh.connector.server.Server;
 
 /**
- *
  * @author vtsoft
  */
 public interface ClientFilter {
