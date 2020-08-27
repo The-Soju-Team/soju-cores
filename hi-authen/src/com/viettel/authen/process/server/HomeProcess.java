@@ -11,14 +11,13 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.viettel.authen.run.ServerProcess;
 
 /**
- *
  * @author Ha
  */
 public class HomeProcess extends ServerProcess {
     public HomeProcess(ChannelHandlerContext ctx, Server server) {
         super(ctx, server);
     }
-    
+
     @Override
     public void process(LinkedTreeMap msg) throws Exception {
         returnStringToFrontend(msg, "");

@@ -7,21 +7,22 @@ package com.viettel.authen.db.dao;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.viettel.authen.run.StartApp;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 
 /**
- *
  * @author dvgp_admin
  */
 public class UpdateEventDao {
     private static Logger log = Logger.getLogger(UpdateEventDao.class.getSimpleName());
-    
+
     public static void updateDBExecute(List<LinkedTreeMap> lstMsg) throws Exception {
         List lstParam = new ArrayList();
-        for(LinkedTreeMap msg : lstMsg) {
+        for (LinkedTreeMap msg : lstMsg) {
             List lstRow = new ArrayList();
             lstRow.add(msg.get("hi-process"));
             lstRow.add(new Date());

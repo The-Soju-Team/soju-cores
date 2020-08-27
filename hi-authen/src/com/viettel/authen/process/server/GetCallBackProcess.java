@@ -12,10 +12,10 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.viettel.authen.run.ServerProcess;
 import com.viettel.authen.run.StartApp;
 import com.viettel.authen.run.UpdateTransToDBThread;
+
 import java.util.UUID;
 
 /**
- *
  * @author Ha
  */
 public class GetCallBackProcess extends ServerProcess {
@@ -25,7 +25,7 @@ public class GetCallBackProcess extends ServerProcess {
     public GetCallBackProcess(ChannelHandlerContext ctx, Server server) {
         super(ctx, server);
     }
-    
+
     @Override
     public void process(LinkedTreeMap msg) throws Exception {
         logKafka.info((new Gson()).toJson(msg));

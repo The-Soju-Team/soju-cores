@@ -18,30 +18,28 @@ import com.octo.captcha.component.word.wordgenerator.RandomWordGenerator;
 import com.octo.captcha.component.word.wordgenerator.WordGenerator;
 import com.octo.captcha.engine.image.ListImageCaptchaEngine;
 import com.octo.captcha.image.gimpy.GimpyFactory;
+
 import java.awt.Color;
 import java.awt.Font;
 
 /**
- *
  * @author dvgp_admin
  */
-public class CaptchaEngine extends ListImageCaptchaEngine
-{
-  protected void buildInitialFactories()
-  {
-    WordGenerator wordGenerator = new RandomWordGenerator("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
-    
-    TextPaster textPaster = new NonLinearTextPaster(4, 4, new RandomListColorGenerator(new Color[] { Color.BLACK }), Boolean.TRUE);
-    
-    BackgroundGenerator backgroundGenerator = new GradientBackgroundGenerator(150, 35, Color.WHITE, Color.WHITE);
-    
-    Font[] fontList = new Font[1];
-    fontList[0] = new Font("Tahoma", Font.BOLD, 27);
-    
-    FontGenerator fontGenerator = new RandomFontGenerator(27, 27, fontList);
-    
-    WordToImage wordToImage = new ComposedWordToImage(fontGenerator, backgroundGenerator, textPaster);
-    
-    addFactory(new GimpyFactory(wordGenerator, wordToImage));
-  }
+public class CaptchaEngine extends ListImageCaptchaEngine {
+    protected void buildInitialFactories() {
+        WordGenerator wordGenerator = new RandomWordGenerator("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+
+        TextPaster textPaster = new NonLinearTextPaster(4, 4, new RandomListColorGenerator(new Color[]{Color.BLACK}), Boolean.TRUE);
+
+        BackgroundGenerator backgroundGenerator = new GradientBackgroundGenerator(150, 35, Color.WHITE, Color.WHITE);
+
+        Font[] fontList = new Font[1];
+        fontList[0] = new Font("Tahoma", Font.BOLD, 27);
+
+        FontGenerator fontGenerator = new RandomFontGenerator(27, 27, fontList);
+
+        WordToImage wordToImage = new ComposedWordToImage(fontGenerator, backgroundGenerator, textPaster);
+
+        addFactory(new GimpyFactory(wordGenerator, wordToImage));
+    }
 }

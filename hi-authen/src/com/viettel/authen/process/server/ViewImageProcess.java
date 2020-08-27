@@ -11,20 +11,20 @@ import com.viettel.authen.run.ServerProcess;
 import com.viettel.authen.run.StartApp;
 import com.hh.connector.server.Server;
 import io.netty.channel.ChannelHandlerContext;
+
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
 /**
- *
  * @author Ha
  */
 public class ViewImageProcess extends ServerProcess {
-    
+
     public ViewImageProcess(ChannelHandlerContext ctx, Server server) {
         super(ctx, server);
     }
-    
+
     @Override
     public void process(LinkedTreeMap msg) throws Exception {
         String fileName = (String) msg.get("filename");
@@ -52,7 +52,7 @@ public class ViewImageProcess extends ServerProcess {
         File tmpFile = new File(filePath);
         if (!tmpFile.exists()) {
             filePath = StartApp.config.getConfig("DataDirectory") + File.separator + "user" + File.separator + "no-image.jpg";
-        } 
+        }
         returnFileToFrontend(msg, filePath);
     }
 }

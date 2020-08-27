@@ -7,6 +7,7 @@ package com.viettel.authen.db.daoImpl;
 
 import com.viettel.authen.db.dao.AppDao;
 import com.viettel.authen.run.StartApp;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,27 +15,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author HienDM
  */
 
 public class AppDaoImpl implements AppDao {
-        
+
     public int insertApp(List lstParam) throws SQLException {
         String sql = "insert into application(app_name, app_code, ip, port) values (?,?,?,?)";
         return StartApp.database.insertData(sql, lstParam);
     }
-    
+
     public void updateApp(List lstParam) throws SQLException {
         String sql = "update application set app_name = ?, app_code = ?, ip = ?, port = ? ";
         sql += " where app_id = ?";
         StartApp.database.executeQuery(sql, lstParam);
-    }    
-    
+    }
+
     public List<Map> getAllApps() throws SQLException {
         return StartApp.database.queryData("select * from application");
     }
-    
+
     public List<List> searchApp(Integer numberRow, Integer pageLength, String appName, String appCode) throws SQLException {
         List lstParam = new ArrayList();
         List lstParamCount = new ArrayList();
@@ -43,12 +43,12 @@ public class AppDaoImpl implements AppDao {
                 + " FROM application ";
         String queryCount = " SELECT count(app_id) FROM application ";
         String query = " ";
-        if(appName != null && !appName.trim().isEmpty()) {
+        if (appName != null && !appName.trim().isEmpty()) {
             query += " AND app_name like ? ";
             lstParam.add("%" + appName.trim() + "%");
             lstParamCount.add("%" + appName.trim() + "%");
         }
-        if(appCode != null && !appCode.trim().isEmpty()) {
+        if (appCode != null && !appCode.trim().isEmpty()) {
             query += " AND app_code like ? ";
             lstParam.add("%" + appCode.trim() + "%");
             lstParamCount.add("%" + appCode.trim() + "%");
@@ -66,23 +66,23 @@ public class AppDaoImpl implements AppDao {
         lstResult.add(lstApp);
         return lstResult;
     }
-    
+
     public void deleteApp(String lstApp) throws SQLException {
         StartApp.database.executeQuery("delete from user_app where app_id in (" + lstApp + ")");
         StartApp.database.executeQuery("delete from application where app_id in (" + lstApp + ")");
     }
-        
+
     public Map getAppById(Integer appId) throws SQLException {
         List lstParam = new ArrayList();
         lstParam.add(appId);
         List<Map> lstApp = StartApp.database.queryData("select app_id, app_name, app_code, ip, port from application where app_id = ?", lstParam);
-        if(lstApp != null && !lstApp.isEmpty()) return lstApp.get(0);
+        if (lstApp != null && !lstApp.isEmpty()) return lstApp.get(0);
         else return null;
     }
-    
+
     public List<List> getAppByUserId(Integer userId) throws SQLException {
         List lstParam = new ArrayList();
         lstParam.add(userId);
         return StartApp.database.queryDataToList("select '' as stt, b.app_name, b.app_id from user_app as a inner join application as b on a.app_id = b.app_id where a.user_id = ?", lstParam);
-    }    
+    }
 }
