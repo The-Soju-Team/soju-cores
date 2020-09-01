@@ -96,6 +96,7 @@ public class ServerDispatcher extends UntypedActor {
                     return;
                 }
             } else {
+                log.info(String.format("Username or password is invalid from %s and server-code %s : ", ipAddress, msg.get("server-code")) + msg);
                 String errorMessage = "username or password is invalid";
                 if (msg.containsKey("content")) {
                     msg.remove("content");
