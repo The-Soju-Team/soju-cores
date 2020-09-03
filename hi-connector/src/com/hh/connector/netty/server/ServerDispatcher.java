@@ -21,7 +21,7 @@ import java.util.Map;
  * @author HienDM
  */
 public class ServerDispatcher extends UntypedActor {
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger
             .getLogger(ServerDispatcher.class.getSimpleName());
     public ChannelHandlerContext ctx;
     public Server server;
@@ -41,6 +41,8 @@ public class ServerDispatcher extends UntypedActor {
                 try {
                     getContext().stop(getSelf());
                 } catch (Exception e) {
+                    // Well, at least print out the stack trace
+                    e.printStackTrace();
                 }
             }
         } catch (Throwable e) {

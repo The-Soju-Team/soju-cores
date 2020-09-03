@@ -252,8 +252,12 @@ public class HttpUtils {
                 }
             }
             if ("download".equals(responseData.get("return-type"))) {
-                baseAction.returnDownloadFile(FileUtils.hexToByteArray((String) responseData.get("data")),
-                        (String) responseData.get("file-name"));
+                if (responseData.containsKey("hdfs-file-path")) {
+                    baseAction.returnDownloadFile(responseData.get("file-name").toString(), responseData.get("hdfs-file-path").toString());
+                } else {
+                    baseAction.returnDownloadFile(FileUtils.hexToByteArray((String) responseData.get("data")),
+                            (String) responseData.get("file-name"));
+                }
             } else if ("file".equals(responseData.get("return-type"))) {
                 baseAction.returnFile(FileUtils.hexToByteArray((String) responseData.get("data")),
                         (String) responseData.get("file-name"));

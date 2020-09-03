@@ -10,6 +10,7 @@ import com.hh.net.httpserver.Headers;
 import com.hh.server.HHServer;
 import com.hh.server.WebImpl;
 import com.hh.util.FileUtils;
+import com.hh.utils.HDFSUtils;
 import com.hh.web.HttpUtils;
 import com.hh.web.PageFactory;
 import org.apache.commons.io.IOUtils;
@@ -211,14 +212,58 @@ public class BaseAction {
         }
     }
 
+    public void returnDownloadFile(String fileName, String hdfsPath) throws Exception {
+        log.info("TOGREP | Returning Download File");
+        String downloadedFile = HDFSUtils.downLoadFromHDFS166ToLocal(hdfsPath);
+        if (downloadedFile != null) {
+            byte[] buf = new byte[1024];
+            InputStream is = null;
+            ByteArrayOutputStream out = null;
+            try {
+                is = new BufferedInputStream(new FileInputStream(downloadedFile));
+                out = new ByteArrayOutputStream();
+                int n = 0;
+                while (-1 != (n = is.read(buf))) {
+                    out.write(buf, 0, n);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (out != null) {
+                    out.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            }
+            byte[] response = out.toByteArray();
+            httpUtils.httpExchange.getResponseHeaders().set("Content-Type", "application/octet-stream");
+            httpUtils.httpExchange.getResponseHeaders().add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            httpUtils.httpExchange.getResponseHeaders().add("Content-Length", response.length + "");
+            httpUtils.httpExchange.sendResponseHeaders(200, response.length);
+            log.info("TOGREP | Returning Download File Output Stream Writing");
+            try (OutputStream os = httpUtils.httpExchange.getResponseBody();) {
+                os.write(response);
+                os.close();
+            }
+            log.info("TOGREP | Returning Download File Done Output Stream Writing");
+        } else {
+            log.info("TOGREP | Cannot download file");
+        }
+    }
+
     public void returnDownloadFile(byte[] data, String fileName) throws FileNotFoundException, IOException {
+        log.info("TOGREP | Returning Download File");
         httpUtils.httpExchange.getResponseHeaders().set("Content-Type", "application/octet-stream");
         httpUtils.httpExchange.getResponseHeaders().add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        httpUtils.httpExchange.getResponseHeaders().add("Content-Length", data.length + "");
         httpUtils.httpExchange.sendResponseHeaders(200, data.length);
+        log.info("TOGREP | Returning Download File Output Stream Writing");
         try (OutputStream os = httpUtils.httpExchange.getResponseBody();) {
             os.write(data);
             os.close();
         }
+        log.info("TOGREP | Returning Download File Done Output Stream Writing");
     }
 
     public void returnFile(String filePath) throws FileNotFoundException, IOException {
