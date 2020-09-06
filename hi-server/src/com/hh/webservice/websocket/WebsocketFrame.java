@@ -8,16 +8,9 @@ package com.hh.webservice.websocket;
 import java.nio.ByteBuffer;
 
 /**
- *
  * @author hiendm1
  */
-public class WebsocketFrame {    
-    public static class Frame {
-        byte opcode;
-        boolean fin;
-        byte payload[];
-    }
-
+public class WebsocketFrame {
     public static Frame decodeWebsocketFrame(byte raw[]) {
         // easier to do this via ByteBuffer
         ByteBuffer buf = ByteBuffer.wrap(raw);
@@ -74,7 +67,7 @@ public class WebsocketFrame {
 
         return frame;
     }
-    
+
     public static byte[] encodeWebsocketFrame(byte[] rawData) {
         int frameCount = 0;
         byte[] frame = new byte[10];
@@ -118,5 +111,11 @@ public class WebsocketFrame {
             bLim++;
         }
         return reply;
+    }
+
+    public static class Frame {
+        byte opcode;
+        boolean fin;
+        byte payload[];
     }
 }

@@ -14,8 +14,12 @@ import com.hh.web.FileInfo;
 import com.viettel.authen.db.dao.UserDao;
 import com.viettel.authen.db.daoImpl.AppDaoImpl;
 import com.viettel.authen.db.daoImpl.UserDaoImpl;
+import com.viettel.authen.global.CommandConstants;
 import com.viettel.authen.run.ServerProcess;
+import com.viettel.authen.run.StartApp;
+import com.viettel.authen.run.UpdateTransToDBThread;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,18 +27,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import com.viettel.authen.global.CommandConstants;
-import com.viettel.authen.run.StartApp;
-import com.viettel.authen.run.UpdateTransToDBThread;
-import org.apache.log4j.Logger;
+import java.util.*;
 
 /**
  * @author HienDM
@@ -411,7 +404,8 @@ public class UserProcess extends ServerProcess {
             }
             log.error("Error when update user to db", ex);
         }
-        if (updateUserApp(userType, udi, msg, intUserId)) {
+
+        if (updateUserApp(udi, msg, intUserId)) {
             log.debug("TOGREP | User updated app successfully");
         } else {
             log.debug("TOGREP | It does look like an user was trying update his user app");
@@ -421,8 +415,11 @@ public class UserProcess extends ServerProcess {
         returnStringToFrontend(msg, new Gson().toJson(new HashMap()));
     }
 
-    private boolean updateUserApp(String userType, UserDaoImpl udi, LinkedTreeMap msg, int intUserId) throws SQLException {
-        if (userType.equals("1.0")) {
+    private boolean updateUserApp(UserDaoImpl udi, LinkedTreeMap msg, int intUserId) throws SQLException {
+        HashMap userInfo = gson.fromJson(
+                StartApp.hicache.getStringAttribute(msg.get("access-token").toString(), "sso_username"), HashMap.class);
+        double userType = Double.parseDouble(userInfo.get("user_type").toString());
+        if (userType == 1.0) { // Well if he is a administrator, let him do whatever he wants
             List appIds = new ArrayList();
             if (msg.get("appid") instanceof String) {
                 appIds.add(msg.get("appid"));

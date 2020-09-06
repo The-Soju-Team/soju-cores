@@ -36,9 +36,28 @@ package com.hh.net.httpserver;
 public abstract class Authenticator {
 
     /**
+     * called to authenticate each incoming request. The implementation
+     * must return a Failure, Success or Retry object as appropriate :-
+     * <p>
+     * Failure means the authentication has completed, but has failed
+     * due to invalid credentials.
+     * <p>
+     * Sucess means that the authentication
+     * has succeeded, and a Principal object representing the user
+     * can be retrieved by calling Sucess.getPrincipal() .
+     * <p>
+     * Retry means that another HTTP exchange is required. Any response
+     * headers needing to be sent back to the client are set in the
+     * given HttpExchange. The response code to be returned must be provided
+     * in the Retry object. Retry may occur multiple times.
+     */
+    public abstract Result authenticate(HttpExchange exch);
+
+    /**
      * Base class for return type from authenticate() method
      */
-    public abstract static class Result {}
+    public abstract static class Result {
+    }
 
     /**
      * Indicates an authentication failure. The authentication
@@ -48,7 +67,7 @@ public abstract class Authenticator {
 
         private int responseCode;
 
-        public Failure (int responseCode) {
+        public Failure(int responseCode) {
             this.responseCode = responseCode;
         }
 
@@ -68,9 +87,10 @@ public abstract class Authenticator {
     public static class Success extends Result {
         private HttpPrincipal principal;
 
-        public Success (HttpPrincipal p) {
+        public Success(HttpPrincipal p) {
             principal = p;
         }
+
         /**
          * returns the authenticated user Principal
          */
@@ -90,7 +110,7 @@ public abstract class Authenticator {
 
         private int responseCode;
 
-        public Retry (int responseCode) {
+        public Retry(int responseCode) {
             this.responseCode = responseCode;
         }
 
@@ -101,22 +121,4 @@ public abstract class Authenticator {
             return responseCode;
         }
     }
-
-    /**
-     * called to authenticate each incoming request. The implementation
-     * must return a Failure, Success or Retry object as appropriate :-
-     * <p>
-     * Failure means the authentication has completed, but has failed
-     * due to invalid credentials.
-     * <p>
-     * Sucess means that the authentication
-     * has succeeded, and a Principal object representing the user
-     * can be retrieved by calling Sucess.getPrincipal() .
-     * <p>
-     * Retry means that another HTTP exchange is required. Any response
-     * headers needing to be sent back to the client are set in the
-     * given HttpExchange. The response code to be returned must be provided
-     * in the Retry object. Retry may occur multiple times.
-     */
-    public abstract Result authenticate (HttpExchange exch);
 }

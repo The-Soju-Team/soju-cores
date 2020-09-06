@@ -25,9 +25,9 @@
 
 package com.hh.net.impl.httpserver;
 
-import java.util.logging.Logger;
 import java.security.PrivilegedAction;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Parameters that users will not likely need to set
@@ -36,140 +36,132 @@ import java.util.Properties;
 
 class ServerConfig {
 
-    static int clockTick;
-
-    static final int DEFAULT_CLOCK_TICK = 10000 ; // 10 sec.
-
+    static final int DEFAULT_CLOCK_TICK = 10000; // 10 sec.
     /* These values must be a reasonable multiple of clockTick */
-    static final long DEFAULT_IDLE_INTERVAL = 30 ; // 5 min
-    static final int DEFAULT_MAX_IDLE_CONNECTIONS = 100 ;
-
+    static final long DEFAULT_IDLE_INTERVAL = 30; // 5 min
+    static final int DEFAULT_MAX_IDLE_CONNECTIONS = 100;
     static final long DEFAULT_MAX_REQ_TIME = 600; // -1: forever, don vi giay
     static final long DEFAULT_MAX_RSP_TIME = 600; // -1: forever, don vi giay
     static final long DEFAULT_TIMER_MILLIS = 1000;
-    static final int  DEFAULT_MAX_REQ_HEADERS = 200;
+    static final int DEFAULT_MAX_REQ_HEADERS = 200;
     static final long DEFAULT_DRAIN_AMOUNT = 64 * 1024;
-
+    static int clockTick;
     static long idleInterval;
     static long drainAmount;    // max # of bytes to drain from an inputstream
     static int maxIdleConnections;
-    // The maximum number of request headers allowable
-    private static int maxReqHeaders;
     // max time a request or response is allowed to take
     static long maxReqTime;
     static long maxRspTime;
     static long timerMillis;
     static boolean debug;
-
     // the value of the TCP_NODELAY socket-level option
     static boolean noDelay;
+    // The maximum number of request headers allowable
+    private static int maxReqHeaders;
 
     static {
         java.security.AccessController.doPrivileged(
-            new PrivilegedAction<Void>() {
-                @Override
-                public Void run () {
-                    System.out.println("CONFIG HI-SERVER");
-                    
-                    idleInterval = Long.getLong("sun.net.httpserver.idleInterval",
-                            DEFAULT_IDLE_INTERVAL) * 1000;
+                new PrivilegedAction<Void>() {
+                    @Override
+                    public Void run() {
+                        System.out.println("CONFIG HI-SERVER");
 
-                    clockTick = Integer.getInteger("sun.net.httpserver.clockTick",
-                            DEFAULT_CLOCK_TICK);
+                        idleInterval = Long.getLong("sun.net.httpserver.idleInterval",
+                                DEFAULT_IDLE_INTERVAL) * 1000;
 
-                    maxIdleConnections = Integer.getInteger(
-                            "sun.net.httpserver.maxIdleConnections",
-                            DEFAULT_MAX_IDLE_CONNECTIONS);
+                        clockTick = Integer.getInteger("sun.net.httpserver.clockTick",
+                                DEFAULT_CLOCK_TICK);
 
-                    drainAmount = Long.getLong("sun.net.httpserver.drainAmount",
-                            DEFAULT_DRAIN_AMOUNT);
+                        maxIdleConnections = Integer.getInteger(
+                                "sun.net.httpserver.maxIdleConnections",
+                                DEFAULT_MAX_IDLE_CONNECTIONS);
 
-                    maxReqHeaders = Integer.getInteger(
-                            "sun.net.httpserver.maxReqHeaders",
-                            DEFAULT_MAX_REQ_HEADERS);
+                        drainAmount = Long.getLong("sun.net.httpserver.drainAmount",
+                                DEFAULT_DRAIN_AMOUNT);
 
-                    maxReqTime = Long.getLong("sun.net.httpserver.maxReqTime",
-                            DEFAULT_MAX_REQ_TIME);
+                        maxReqHeaders = Integer.getInteger(
+                                "sun.net.httpserver.maxReqHeaders",
+                                DEFAULT_MAX_REQ_HEADERS);
 
-                    maxRspTime = Long.getLong("sun.net.httpserver.maxRspTime",
-                            DEFAULT_MAX_RSP_TIME);
+                        maxReqTime = Long.getLong("sun.net.httpserver.maxReqTime",
+                                DEFAULT_MAX_REQ_TIME);
 
-                    timerMillis = Long.getLong("sun.net.httpserver.timerMillis",
-                            DEFAULT_TIMER_MILLIS);
+                        maxRspTime = Long.getLong("sun.net.httpserver.maxRspTime",
+                                DEFAULT_MAX_RSP_TIME);
 
-                    debug = Boolean.getBoolean("sun.net.httpserver.debug");
+                        timerMillis = Long.getLong("sun.net.httpserver.timerMillis",
+                                DEFAULT_TIMER_MILLIS);
 
-                    noDelay = Boolean.getBoolean("sun.net.httpserver.nodelay");
+                        debug = Boolean.getBoolean("sun.net.httpserver.debug");
 
-                    Properties config = new Properties();
-                    
-                    if(config.get("DEFAULT_MAX_REQ_TIME") != null)
-                        maxReqTime = Long.valueOf(config.get("DEFAULT_MAX_REQ_TIME").toString()).longValue();
-                    
-                    if(config.get("DEFAULT_MAX_RSP_TIME") != null)
-                        maxRspTime = Long.valueOf(config.get("DEFAULT_MAX_RSP_TIME").toString()).longValue();                    
-                    
-                    return null;
-                }
-            });
+                        noDelay = Boolean.getBoolean("sun.net.httpserver.nodelay");
+
+                        Properties config = new Properties();
+
+                        if (config.get("DEFAULT_MAX_REQ_TIME") != null)
+                            maxReqTime = Long.valueOf(config.get("DEFAULT_MAX_REQ_TIME").toString()).longValue();
+
+                        if (config.get("DEFAULT_MAX_RSP_TIME") != null)
+                            maxRspTime = Long.valueOf(config.get("DEFAULT_MAX_RSP_TIME").toString()).longValue();
+
+                        return null;
+                    }
+                });
 
     }
 
 
-    static void checkLegacyProperties (final Logger logger) {
+    static void checkLegacyProperties(final Logger logger) {
 
         // legacy properties that are no longer used
         // print a warning to logger if they are set.
 
         java.security.AccessController.doPrivileged(
-            new PrivilegedAction<Void>() {
-                public Void run () {
-                    if (System.getProperty("sun.net.httpserver.readTimeout")
-                                                !=null)
-                    {
-                        logger.warning ("sun.net.httpserver.readTimeout "+
-                            "property is no longer used. "+
-                            "Use sun.net.httpserver.maxReqTime instead."
-                        );
+                new PrivilegedAction<Void>() {
+                    public Void run() {
+                        if (System.getProperty("sun.net.httpserver.readTimeout")
+                                != null) {
+                            logger.warning("sun.net.httpserver.readTimeout " +
+                                    "property is no longer used. " +
+                                    "Use sun.net.httpserver.maxReqTime instead."
+                            );
+                        }
+                        if (System.getProperty("sun.net.httpserver.writeTimeout")
+                                != null) {
+                            logger.warning("sun.net.httpserver.writeTimeout " +
+                                    "property is no longer used. Use " +
+                                    "sun.net.httpserver.maxRspTime instead."
+                            );
+                        }
+                        if (System.getProperty("sun.net.httpserver.selCacheTimeout")
+                                != null) {
+                            logger.warning("sun.net.httpserver.selCacheTimeout " +
+                                    "property is no longer used."
+                            );
+                        }
+                        return null;
                     }
-                    if (System.getProperty("sun.net.httpserver.writeTimeout")
-                                                !=null)
-                    {
-                        logger.warning ("sun.net.httpserver.writeTimeout "+
-                            "property is no longer used. Use "+
-                            "sun.net.httpserver.maxRspTime instead."
-                        );
-                    }
-                    if (System.getProperty("sun.net.httpserver.selCacheTimeout")
-                                                !=null)
-                    {
-                        logger.warning ("sun.net.httpserver.selCacheTimeout "+
-                            "property is no longer used."
-                        );
-                    }
-                    return null;
                 }
-            }
         );
     }
 
-    static boolean debugEnabled () {
+    static boolean debugEnabled() {
         return debug;
     }
 
-    static long getIdleInterval () {
+    static long getIdleInterval() {
         return idleInterval;
     }
 
-    static int getClockTick () {
+    static int getClockTick() {
         return clockTick;
     }
 
-    static int getMaxIdleConnections () {
+    static int getMaxIdleConnections() {
         return maxIdleConnections;
     }
 
-    static long getDrainAmount () {
+    static long getDrainAmount() {
         return drainAmount;
     }
 
@@ -177,15 +169,15 @@ class ServerConfig {
         return maxReqHeaders;
     }
 
-    static long getMaxReqTime () {
+    static long getMaxReqTime() {
         return maxReqTime;
     }
 
-    static long getMaxRspTime () {
+    static long getMaxRspTime() {
         return maxRspTime;
     }
 
-    static long getTimerMillis () {
+    static long getTimerMillis() {
         return timerMillis;
     }
 

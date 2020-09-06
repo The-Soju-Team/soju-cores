@@ -8,10 +8,10 @@ package com.hh.net.impl.httpserver;
 import com.hh.net.httpserver.Filter;
 import com.hh.net.httpserver.HttpExchange;
 import com.hh.net.httpserver.HttpHandler;
+
 import java.io.IOException;
 
 /**
- *
  * @author hiendm1
  */
 public class LinkHandler implements HttpHandler {

@@ -22,14 +22,12 @@ package com.hh.socket.websocket;
 import com.hh.connector.server.Server;
 
 
-
 /**
  * Implement this role with your component in order to provide a websocket
  * service.
  * See the example: in EchoWebSocketHandler
  */
 
-public interface WebSocketHandler
-{
+public interface WebSocketHandler {
     public void onWebSocketConnect(WebSocket sock, WebSocketRequest request, Server server);
 }

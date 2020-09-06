@@ -7,15 +7,15 @@ package com.hh.net.impl.httpserver;
 
 import com.hh.net.httpserver.Filter;
 import com.hh.net.httpserver.Headers;
+
+import javax.net.ssl.SSLEngine;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
-import javax.net.ssl.SSLEngine;
 
 /**
- *
  * @author hiendm1
  */
 public class RequestProcessor {
@@ -30,8 +30,8 @@ public class RequestProcessor {
     SSLEngine engine;
     SSLStreams sslStreams;
 
-    RequestProcessor(Exchange exchange, Request req, int start, int space, String requestLine, 
-            String method, boolean newconnection, SSLEngine engine, SSLStreams sslStreams) throws IOException {
+    RequestProcessor(Exchange exchange, Request req, int start, int space, String requestLine,
+                     String method, boolean newconnection, SSLEngine engine, SSLStreams sslStreams) throws IOException {
         this.exchange = exchange;
         this.req = req;
         this.space = space;
@@ -42,8 +42,8 @@ public class RequestProcessor {
         this.engine = engine;
         this.sslStreams = sslStreams;
     }
-    
-    public void handleRequest() throws Exception {    
+
+    public void handleRequest() throws Exception {
         try {
             String uriStr = requestLine.substring(start, space);
             URI uri = new URI(uriStr);
@@ -150,6 +150,6 @@ public class RequestProcessor {
         } catch (Exception e4) {
             exchange.server.logger.log(Level.FINER, "ServerImpl.Exchange (2)", e4);
             exchange.connection.close();
-        }        
+        }
     }
 }

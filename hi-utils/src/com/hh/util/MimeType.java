@@ -8,22 +8,12 @@ package com.hh.util;
 import java.util.HashMap;
 
 /**
- *
  * @author dvgp_admin
  */
 public class MimeType {
     private static MimeType instance;
     private HashMap<String, String> mimeType = new HashMap();
-    
-    public static MimeType getInstance() {
-        if(instance == null) instance = new MimeType();
-        return instance;
-    }
-    
-    public String getMimeType(String key) {
-        return mimeType.get(key);
-    }
-    
+
     private MimeType() {
         mimeType.put(".appcache", "text/cache-manifest");
         mimeType.put(".x3d", "application/vnd.hzn-3d-crossword");
@@ -711,5 +701,14 @@ public class MimeType {
         mimeType.put(".zip", "application/zip");
         mimeType.put(".zmm", "application/vnd.handheld-entertainment+xml");
         mimeType.put(".zaz", "application/vnd.zzazz.deck+xml");
+    }
+
+    public static MimeType getInstance() {
+        if (instance == null) instance = new MimeType();
+        return instance;
+    }
+
+    public String getMimeType(String key) {
+        return mimeType.get(key);
     }
 }

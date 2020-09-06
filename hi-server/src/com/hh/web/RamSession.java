@@ -7,18 +7,17 @@ package com.hh.web;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import static com.hh.web.HttpSession.sessionTimeout;
+
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author hiendm1
  */
 public class RamSession extends HttpSession {
+    public static Cache<Object, Object> cache;
     private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(RamSession.class.getSimpleName());
     private static RamSession session;
-    public static Cache<Object, Object> cache;
 
     public RamSession() {
         cache = CacheBuilder.newBuilder()
@@ -28,10 +27,10 @@ public class RamSession extends HttpSession {
     }
 
     public static RamSession getInstance() {
-        if (session == null)session = new RamSession();
+        if (session == null) session = new RamSession();
         return session;
     }
-    
+
     @Override
     public void createSession(String sessionId) {
         try {
@@ -46,8 +45,8 @@ public class RamSession extends HttpSession {
     @Override
     public Object getSessionAttribute(String sessionId, String key) {
         try {
-            HashMap<String, Object> httpSession = (HashMap<String, Object>)cache.getIfPresent(sessionId);
-            if(httpSession != null) return httpSession.get(key);
+            HashMap<String, Object> httpSession = (HashMap<String, Object>) cache.getIfPresent(sessionId);
+            if (httpSession != null) return httpSession.get(key);
             else return null;
         } catch (Exception ex) {
             log.error("RamSession error: ", ex);
@@ -58,8 +57,8 @@ public class RamSession extends HttpSession {
     @Override
     public void setSessionAttribute(String sessionId, String key, Object value) {
         try {
-            HashMap<String, Object> httpSession = (HashMap<String, Object>)cache.getIfPresent(sessionId);
-            if(httpSession != null) {
+            HashMap<String, Object> httpSession = (HashMap<String, Object>) cache.getIfPresent(sessionId);
+            if (httpSession != null) {
                 httpSession.put(key, value);
                 cache.put(sessionId, httpSession);
             }
@@ -75,8 +74,8 @@ public class RamSession extends HttpSession {
 
     @Override
     public void removeSessionAttribute(String sessionId, String key) {
-        HashMap<String, Object> httpSession = (HashMap<String, Object>)cache.getIfPresent(sessionId);
-        if(httpSession != null) {
+        HashMap<String, Object> httpSession = (HashMap<String, Object>) cache.getIfPresent(sessionId);
+        if (httpSession != null) {
             httpSession.remove(key);
             cache.put(sessionId, httpSession);
         }

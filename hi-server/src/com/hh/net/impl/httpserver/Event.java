@@ -29,14 +29,14 @@ class Event {
 
     ExchangeImpl exchange;
 
-    protected Event (ExchangeImpl t) {
+    protected Event(ExchangeImpl t) {
         this.exchange = t;
     }
 }
 
 class WriteFinishedEvent extends Event {
-    WriteFinishedEvent (ExchangeImpl t) {
-        super (t);
+    WriteFinishedEvent(ExchangeImpl t) {
+        super(t);
         assert !t.writefinished;
         t.writefinished = true;
     }

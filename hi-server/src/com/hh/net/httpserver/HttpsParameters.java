@@ -24,9 +24,9 @@
  */
 
 package com.hh.net.httpserver;
-import java.net.InetSocketAddress;
-//BEGIN_TIGER_EXCLUDE
+
 import javax.net.ssl.SSLParameters;
+import java.net.InetSocketAddress;
 //END_TIGER_EXCLUDE
 
 /**
@@ -47,6 +47,7 @@ import javax.net.ssl.SSLParameters;
  * provided via
  * {@link #setSSLParameters(SSLParameters)} then those parameter settings
  * are used, and any settings made in this object are ignored.
+ *
  * @since 1.6
  */
 public abstract class HttpsParameters {
@@ -56,7 +57,8 @@ public abstract class HttpsParameters {
     private boolean wantClientAuth;
     private boolean needClientAuth;
 
-    protected HttpsParameters() {}
+    protected HttpsParameters() {
+    }
 
     /**
      * Returns the HttpsConfigurator for this HttpsParameters.
@@ -70,18 +72,20 @@ public abstract class HttpsParameters {
     public abstract InetSocketAddress getClientAddress();
 
 //BEGIN_TIGER_EXCLUDE
+
     /**
      * Sets the SSLParameters to use for this HttpsParameters.
      * The parameters must be supported by the SSLContext contained
      * by the HttpsConfigurator associated with this HttpsParameters.
      * If no parameters are set, then the default behavior is to use
      * the default parameters from the associated SSLContext.
+     *
      * @param params the SSLParameters to set. If <code>null</code>
-     * then the existing parameters (if any) remain unchanged.
+     *               then the existing parameters (if any) remain unchanged.
      * @throws IllegalArgumentException if any of the parameters are
-     *   invalid or unsupported.
+     *                                  invalid or unsupported.
      */
-    public abstract void setSSLParameters (SSLParameters params);
+    public abstract void setSSLParameters(SSLParameters params);
 //END_TIGER_EXCLUDE
 
     /**

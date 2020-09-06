@@ -20,68 +20,42 @@
 package com.hh.socket.websocket;
 
 //import com.viettel.ipcc.agentserver.websock.server.WebSocketServer;
+
 import com.hh.connector.server.Server;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
-
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.websocketx.ContinuationWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.websocketx.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GenericFutureListener;
+
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class NettyWebSocketService  extends Thread implements WebSocketService
-{
+public class NettyWebSocketService extends Thread implements WebSocketService {
     private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(NettyWebSocketService.class.getSimpleName());
     private Map<String, String> keyByUserWiki = new HashMap<String, String>();
 
     private WebSocketConfig conf;
-    
+
     private Server server;
-    
+
     public void setConnector(Server server) {
         this.server = server;
-    }        
+    }
 
-    private void initialize0() throws Exception
-    {
+    private void initialize0() throws Exception {
         final SslContext sslCtx = null;
 //        if (this.conf.sslEnabled()) {
 //            if (this.conf.getCertChainFilename() != null) {
@@ -111,9 +85,9 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
         b.childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE);
         b.localAddress(new InetSocketAddress(conf.getPort()));
         b.group(bossGroup, workerGroup)
-            .channel(NioServerSocketChannel.class)
-            .handler(new LoggingHandler(LogLevel.INFO))
-            .childHandler(new WebSocketServerInitializer(sslCtx, this));
+                .channel(NioServerSocketChannel.class)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new WebSocketServerInitializer(sslCtx, this));
 
         Channel ch = b.bind().sync().channel();
 
@@ -124,10 +98,9 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
             }
         });
     }
-    
+
     @Override
-    public void run()
-    {
+    public void run() {
         try {
             initialize0();
         } catch (Exception e) {
@@ -135,8 +108,15 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
         }
     }
 
-    private static final class WebSocketServerInitializer extends ChannelInitializer<SocketChannel>
-    {
+    public WebSocketConfig getConf() {
+        return conf;
+    }
+
+    public void setConf(WebSocketConfig conf) {
+        this.conf = conf;
+    }
+
+    private static final class WebSocketServerInitializer extends ChannelInitializer<SocketChannel> {
         private final SslContext sslCtx;
         private final NettyWebSocketService nwss;
 
@@ -157,16 +137,41 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
         }
     }
 
-    private static final class WebSocketServerHandler extends SimpleChannelInboundHandler<Object>
-    {
+    private static final class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
         private final NettyWebSocketService nwss;
         private WebSocketServerHandshaker handshaker;
         private NettyWebSocket nws;
         private StringBuilder frames;
 
-        public WebSocketServerHandler(NettyWebSocketService nwss)
-        {
+        public WebSocketServerHandler(NettyWebSocketService nwss) {
             this.nwss = nwss;
+        }
+
+        private static void sendHttpResponse(ChannelHandlerContext ctx,
+                                             FullHttpRequest req,
+                                             FullHttpResponse res) {
+            // Generate an error page if response getStatus code is not OK (200).
+            if (res.getStatus().code() != 200) {
+                ByteBuf buf = Unpooled.copiedBuffer(res.getStatus().toString(), CharsetUtil.UTF_8);
+                res.content().writeBytes(buf);
+                buf.release();
+                HttpHeaders.setContentLength(res, res.content().readableBytes());
+            }
+
+            // Send the response and close the connection if necessary.
+            ChannelFuture f = ctx.channel().writeAndFlush(res);
+            if (!HttpHeaders.isKeepAlive(req) || res.getStatus().code() != 200) {
+                f.addListener(ChannelFutureListener.CLOSE);
+            }
+        }
+
+        private static String getWebSocketLocation(FullHttpRequest req, boolean ssl) {
+            String location = req.headers().get(HttpHeaders.Names.HOST) + "/";
+            if (ssl) {
+                return "wss://" + location;
+            } else {
+                return "ws://" + location;
+            }
         }
 
         @Override
@@ -178,7 +183,6 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
             }
         }
 
-
         @Override
         public void channelReadComplete(ChannelHandlerContext ctx) {
             ctx.flush();
@@ -186,24 +190,23 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
 
         private void handleHttpReqB(ChannelHandlerContext ctx,
                                     FullHttpRequest req,
-                                    WebSocketRequest wsRequest)
-        {
+                                    WebSocketRequest wsRequest) {
             WebSocketHandler handler = new BackendWebSocketHandler();
-            
+
             if (handler == null) {
                 ByteBuf content = Unpooled.copiedBuffer(
-                    "ERROR: no registered component for path [" + wsRequest.getHandlerName() + "]",
-                    StandardCharsets.UTF_8);
+                        "ERROR: no registered component for path [" + wsRequest.getHandlerName() + "]",
+                        StandardCharsets.UTF_8);
                 sendHttpResponse(ctx, req,
-                                 new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                                                             HttpResponseStatus.NOT_FOUND,
-                                                             content));
+                        new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
+                                HttpResponseStatus.NOT_FOUND,
+                                content));
                 return;
             }
 
             String loc = getWebSocketLocation(req, this.nwss.conf.sslEnabled());
             WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
-                loc, null, false, this.nwss.conf.maxFrameSize());
+                    loc, null, false, this.nwss.conf.maxFrameSize());
             handshaker = wsFactory.newHandshaker(req);
             if (handshaker == null) {
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
@@ -232,8 +235,8 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
             // Handle a bad request.
             if (!req.getDecoderResult().isSuccess()) {
                 sendHttpResponse(ctx, req,
-                                 new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                                                             HttpResponseStatus.BAD_REQUEST));
+                        new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
+                                HttpResponseStatus.BAD_REQUEST));
                 return;
             }
 
@@ -242,20 +245,18 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
 
             if (req.getMethod() != HttpMethod.GET) {
                 log.debug("request method not GET");
-            } 
-            else {
+            } else {
                 // success
                 handleHttpReqB(ctx, req, wsRequest);
                 return;
             }
             // failure
             sendHttpResponse(ctx, req,
-                             new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                                                         HttpResponseStatus.FORBIDDEN));
+                    new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
+                            HttpResponseStatus.FORBIDDEN));
         }
 
-        private synchronized void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame)
-        {
+        private synchronized void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
             // Check for closing frame
             if (frame instanceof CloseWebSocketFrame) {
                 handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
@@ -273,7 +274,7 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
                     msg = ((ContinuationWebSocketFrame) frame).text();
                 } else {
                     throw new UnsupportedOperationException(
-                        "unsupported frame fragment type " + frame.getClass().getName());
+                            "unsupported frame fragment type " + frame.getClass().getName());
                 }
                 if (this.frames == null) {
                     this.frames = new StringBuilder();
@@ -281,7 +282,7 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
                 this.frames.append(msg);
                 if (this.frames.length() > this.nwss.conf.maxFrameSize()) {
                     throw new RuntimeException("Frame size too big [" + this.frames.length() +
-                        "] max frame size [" + this.nwss.conf.maxFrameSize() + "]");
+                            "] max frame size [" + this.nwss.conf.maxFrameSize() + "]");
                 }
                 if (frame.isFinalFragment()) {
                     final String fullMsg = this.frames.toString();
@@ -292,33 +293,13 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
             }
             if (!(frame instanceof TextWebSocketFrame)) {
                 throw new UnsupportedOperationException(
-                    String.format("%s frame types not supported", frame.getClass().getName()));
+                        String.format("%s frame types not supported", frame.getClass().getName()));
             }
 
             final String msg = ((TextWebSocketFrame) frame).text();
-            
-            
-            
+
+
             this.nws.message(msg);
-        }
-
-        private static void sendHttpResponse(ChannelHandlerContext ctx,
-                                             FullHttpRequest req,
-                                             FullHttpResponse res)
-        {
-            // Generate an error page if response getStatus code is not OK (200).
-            if (res.getStatus().code() != 200) {
-                ByteBuf buf = Unpooled.copiedBuffer(res.getStatus().toString(), CharsetUtil.UTF_8);
-                res.content().writeBytes(buf);
-                buf.release();
-                HttpHeaders.setContentLength(res, res.content().readableBytes());
-            }
-
-            // Send the response and close the connection if necessary.
-            ChannelFuture f = ctx.channel().writeAndFlush(res);
-            if (!HttpHeaders.isKeepAlive(req) || res.getStatus().code() != 200) {
-                f.addListener(ChannelFutureListener.CLOSE);
-            }
         }
 
         @Override
@@ -327,22 +308,5 @@ public class NettyWebSocketService  extends Thread implements WebSocketService
             //                      ExceptionUtils.getStackTrace(cause));
             ctx.close();
         }
-
-        private static String getWebSocketLocation(FullHttpRequest req, boolean ssl) {
-            String location = req.headers().get(HttpHeaders.Names.HOST) + "/";
-            if (ssl) {
-                return "wss://" + location;
-            } else {
-                return "ws://" + location;
-            }
-        }
-    }
-
-    public WebSocketConfig getConf() {
-        return conf;
-    }
-
-    public void setConf(WebSocketConfig conf) {
-        this.conf = conf;
     }
 }

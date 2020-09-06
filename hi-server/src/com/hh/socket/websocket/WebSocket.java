@@ -20,43 +20,58 @@
 package com.hh.socket.websocket;
 
 import io.netty.channel.ChannelHandlerContext;
+
 import java.util.List;
 import java.util.Map;
 
 /**
  * The WebSocket which is passed to the registered WebSocketHandler.
  */
-public interface WebSocket
-{
-    /** @return the *handler* (path is a misleading statement). */
+public interface WebSocket {
+    /**
+     * @return the *handler* (path is a misleading statement).
+     */
     String getPath();
 
-    /** @return the wiki where this websocket was registered. */
+    /**
+     * @return the wiki where this websocket was registered.
+     */
     String getWiki();
 
-    /** @return the query string parameters received from connection request. */
+    /**
+     * @return the query string parameters received from connection request.
+     */
     Map<String, List<String>> getParameters();
 
-    /** @param message send a message on the websocket */
+    /**
+     * @param message send a message on the websocket
+     */
     void send(String message);
 
-    /** @return null unless inside of onMessage() callback in which case return   */
+    /**
+     * @return null unless inside of onMessage() callback in which case return
+     */
     String recv();
 
-    /** @param cb a Callback to be called when a websocket message comes in for this handler. */
+    /**
+     * @param cb a Callback to be called when a websocket message comes in for this handler.
+     */
     void onMessage(Callback cb);
 
-    /** @param cb a Callback to be called when it is detected that the client has disconnected. */
+    /**
+     * @param cb a Callback to be called when it is detected that the client has disconnected.
+     */
     void onDisconnect(Callback cb);
+
+    ChannelHandlerContext getChannelHandlerContext();
 
     /**
      * A Callback Function as an object.
      */
-    interface Callback
-    {
-        /** ... */
+    interface Callback {
+        /**
+         * ...
+         */
         void call(WebSocket ws);
     }
-    
-    ChannelHandlerContext getChannelHandlerContext();
 }

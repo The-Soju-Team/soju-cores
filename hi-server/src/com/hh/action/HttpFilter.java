@@ -8,7 +8,6 @@ package com.hh.action;
 import com.hh.web.HttpUtils;
 
 /**
- *
  * @author vtsoft
  */
 public interface HttpFilter {

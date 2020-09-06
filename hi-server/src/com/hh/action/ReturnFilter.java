@@ -6,7 +6,6 @@
 package com.hh.action;
 
 /**
- *
  * @author HienDM
  */
 public interface ReturnFilter {

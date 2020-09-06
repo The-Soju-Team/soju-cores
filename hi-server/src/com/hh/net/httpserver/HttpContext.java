@@ -24,7 +24,9 @@
  */
 
 package com.hh.net.httpserver;
-import java.util.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * HttpContext represents a mapping between the root URI path of an application
@@ -36,38 +38,43 @@ import java.util.*;
  * <p>
  * A chain of {@link Filter} objects can be added to a HttpContext. All exchanges processed by the
  * context can be pre- and post-processed by each Filter in the chain.
+ *
  * @since 1.6
  */
 public abstract class HttpContext {
 
-    protected HttpContext () {
+    protected HttpContext() {
     }
 
     /**
      * returns the handler for this context
+     *
      * @return the HttpHandler for this context
      */
-    public abstract HttpHandler getHandler () ;
+    public abstract HttpHandler getHandler();
 
     /**
      * Sets the handler for this context, if not already set.
+     *
      * @param h the handler to set for this context
      * @throws IllegalArgumentException if this context's handler is already set.
-     * @throws NullPointerException if handler is <code>null</code>
+     * @throws NullPointerException     if handler is <code>null</code>
      */
-    public abstract void setHandler (HttpHandler h) ;
+    public abstract void setHandler(HttpHandler h);
 
     /**
      * returns the path this context was created with
+     *
      * @return this context's path
      */
-    public abstract String getPath() ;
+    public abstract String getPath();
 
     /**
      * returns the server this context was created with
+     *
      * @return this context's server
      */
-    public abstract HttpServer getServer () ;
+    public abstract HttpServer getServer();
 
     /**
      * returns a mutable Map, which can be used to pass
@@ -77,7 +84,7 @@ public abstract class HttpContext {
      * Every attribute stored in this Map will be visible to
      * every HttpExchange processed by this context
      */
-    public abstract Map<String,Object> getAttributes() ;
+    public abstract Map<String, Object> getAttributes();
 
     /**
      * returns this context's list of Filters. This is the
@@ -92,19 +99,21 @@ public abstract class HttpContext {
      * is establised on a context, all client requests must be
      * authenticated, and the given object will be invoked to validate each
      * request. Each call to this method replaces any previous value set.
+     *
      * @param auth the authenticator to set. If <code>null</code> then any
-     *         previously set authenticator is removed,
-     *         and client authentication will no longer be required.
+     *             previously set authenticator is removed,
+     *             and client authentication will no longer be required.
      * @return the previous Authenticator, if any set, or <code>null</code>
-     *         otherwise.
+     * otherwise.
      */
-    public abstract Authenticator setAuthenticator (Authenticator auth);
+    public abstract Authenticator setAuthenticator(Authenticator auth);
 
     /**
      * Returns the currently set Authenticator for this context
      * if one exists.
+     *
      * @return this HttpContext's Authenticator, or <code>null</code>
-     *         if none is set.
+     * if none is set.
      */
-    public abstract Authenticator getAuthenticator ();
+    public abstract Authenticator getAuthenticator();
 }

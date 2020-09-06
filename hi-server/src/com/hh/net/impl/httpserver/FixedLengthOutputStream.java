@@ -25,7 +25,9 @@
 
 package com.hh.net.impl.httpserver;
 
-import java.io.*;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * a class which allows the caller to write up to a defined
@@ -35,34 +37,33 @@ import java.io.*;
  * normal close() does not close the underlying stream
  */
 
-class FixedLengthOutputStream extends FilterOutputStream
-{
+class FixedLengthOutputStream extends FilterOutputStream {
+    ExchangeImpl t;
     private long remaining;
     private boolean eof = false;
     private boolean closed = false;
-    ExchangeImpl t;
 
-    FixedLengthOutputStream (ExchangeImpl t, OutputStream src, long len) {
-        super (src);
+    FixedLengthOutputStream(ExchangeImpl t, OutputStream src, long len) {
+        super(src);
         this.t = t;
         this.remaining = len;
     }
 
-    public void write (int b) throws IOException {
+    public void write(int b) throws IOException {
         if (closed) {
-            throw new IOException ("stream closed");
+            throw new IOException("stream closed");
         }
         eof = (remaining == 0);
         if (eof) {
             throw new StreamClosedException();
         }
         out.write(b);
-        remaining --;
+        remaining--;
     }
 
-    public void write (byte[]b, int off, int len) throws IOException {
+    public void write(byte[] b, int off, int len) throws IOException {
         if (closed) {
-            throw new IOException ("stream closed");
+            throw new IOException("stream closed");
         }
         eof = (remaining == 0);
         if (eof) {
@@ -70,32 +71,32 @@ class FixedLengthOutputStream extends FilterOutputStream
         }
         if (len > remaining) {
             // stream is still open, caller can retry
-            throw new IOException ("too many bytes to write to stream");
+            throw new IOException("too many bytes to write to stream");
         }
         out.write(b, off, len);
         remaining -= len;
     }
 
-    public void close () throws IOException {
+    public void close() throws IOException {
         if (closed) {
             return;
         }
         closed = true;
         if (remaining > 0) {
             t.close();
-            throw new IOException ("insufficient bytes written to stream");
+            throw new IOException("insufficient bytes written to stream");
         }
         flush();
         eof = true;
-        try(LeftOverInputStream is = t.getOriginalInputStream();)
-        {
+        try (LeftOverInputStream is = t.getOriginalInputStream();) {
             if (!is.isClosed()) {
                 try {
                     is.close();
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                }
             }
-            WriteFinishedEvent e = new WriteFinishedEvent (t);
-            t.getHttpContext().getServerImpl().addEvent (e);
+            WriteFinishedEvent e = new WriteFinishedEvent(t);
+            t.getHttpContext().getServerImpl().addEvent(e);
         }
     }
 

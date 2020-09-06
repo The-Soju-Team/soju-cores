@@ -1,9 +1,7 @@
 package com.hh.socket.websocket;
 
-import io.netty.channel.ChannelHandlerContext;
 import java.util.List;
 import java.util.Map;
-
 
 
 /**
@@ -11,8 +9,7 @@ import java.util.Map;
  *
  * @version $Id$
  */
-public interface WebSocketRequest
-{
+public interface WebSocketRequest {
     boolean isValid();
 
     String getKey();
