@@ -2,7 +2,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>viettel.com.bi.com.hh.connector</groupId>
+    <groupId>viettel.com.bi</groupId>
     <artifactId>hi-connector</artifactId>
     <version>1.0</version>
     <build>
@@ -37,7 +37,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <version>2.6</version>
+                    <version>2.2</version>
                 </configuration>
             </plugin>
 
@@ -88,10 +88,10 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
-         <dependency>
-             <groupId>io.netty</groupId>
-             <artifactId>netty-all</artifactId>
-             <version>4.1.23.Final</version>
-         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.23.Final</version>
+        </dependency>
     </dependencies>
 </project>
