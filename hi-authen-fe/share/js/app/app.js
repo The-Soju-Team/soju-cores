@@ -293,25 +293,6 @@ doLogin = function(loginToken) {
 	});
 }
 
-submitLogin = function () {
-	$.ajax({
-		url: 'http://10.58.244.170:8448/login-token?userName=' + document.getElementById('userName').value,
-		success: function (res) {
-			console.log(res);
-			if (res.loginToken) {
-				console.log('loginToken', res.loginToken);
-				doLogin(res.loginToken)
-			} else {
-				alert('Không thể đăng nhập. Vui lòng thử lại sau')
-			}
-		},
-		error: function (err) {
-			console.log(err);
-			alert('Không thể đăng nhập. Vui lòng thử lại sau.')
-		}
-	})
-}
-
 validateClient = function() {
     closeAllMessage();
 

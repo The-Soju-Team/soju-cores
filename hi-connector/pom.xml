@@ -15,7 +15,6 @@
                 </excludes>
             </resource>
         </resources>
-        <testSourceDirectory>test</testSourceDirectory>
         <testResources>
             <testResource>
                 <directory>test</directory>
@@ -30,14 +29,10 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
-                        <manifest>
-                            <mainClass>com.viettel.analysis.run.StartApp</mainClass>
-                        </manifest>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <version>2.2</version>
                 </configuration>
             </plugin>
 
@@ -51,7 +46,6 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.viettel.analysis.run.StartApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
