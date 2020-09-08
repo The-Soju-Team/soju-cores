@@ -16,7 +16,7 @@ import com.hh.web.HttpSession;
 import com.hh.web.RamSession;
 import com.hh.web.RedisSession;
 import com.hh.webservice.websocket.IWebsocketConnection;
-import com.hh.webservice.ws.Endpoint;
+// import com.hh.webservice.ws.Endpoint;
 import com.typesafe.config.ConfigFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -155,14 +155,14 @@ public class HHServer {
     }
 
     public void addSoapAplication(String soapBinding, String path, Class app) throws Exception {
-        HttpContext context = null;
-        if (config.getConfig("http-ssl").equals("true")) {
-            context = httpsServer.createContext("/ws" + path);
-        } else {
-            context = httpServer.createContext("/ws" + path);
-        }
-        Endpoint endpoint = Endpoint.create(soapBinding, app.newInstance());
-        endpoint.publish(context);
+        // HttpContext context = null;
+        // if (config.getConfig("http-ssl").equals("true")) {
+        //     context = httpsServer.createContext("/ws" + path);
+        // } else {
+        //     context = httpServer.createContext("/ws" + path);
+        // }
+        // Endpoint endpoint = Endpoint.create(soapBinding, app.newInstance());
+        // endpoint.publish(context);
     }
 
     public void start() throws Exception {

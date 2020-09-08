@@ -242,9 +242,8 @@ public class BaseAction {
             httpUtils.httpExchange.getResponseHeaders().add("Content-Length", response.length + "");
             httpUtils.httpExchange.sendResponseHeaders(200, response.length);
             log.info("TOGREP | Returning Download File Output Stream Writing");
-            try (OutputStream os = httpUtils.httpExchange.getResponseBody();) {
+            try (OutputStream os = httpUtils.httpExchange.getResponseBody()) {
                 os.write(response);
-                os.close();
             }
             log.info("TOGREP | Returning Download File Done Output Stream Writing");
         } else {
@@ -261,7 +260,6 @@ public class BaseAction {
         log.info("TOGREP | Returning Download File Output Stream Writing");
         try (OutputStream os = httpUtils.httpExchange.getResponseBody();) {
             os.write(data);
-            os.close();
         }
         log.info("TOGREP | Returning Download File Done Output Stream Writing");
     }
@@ -277,7 +275,6 @@ public class BaseAction {
             try (OutputStream os = httpUtils.httpExchange.getResponseBody();) {
                 IOUtils.copy(is, os);
                 is.close();
-                os.close();
             }
         }
     }
@@ -291,7 +288,6 @@ public class BaseAction {
         httpUtils.httpExchange.sendResponseHeaders(200, 0);
         try (GZIPOutputStream os = new GZIPOutputStream(httpUtils.httpExchange.getResponseBody());) {
             os.write(data);
-            os.close();
         }
     }
 

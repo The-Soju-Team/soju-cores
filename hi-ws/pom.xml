@@ -1,10 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>viettel.com.bi</groupId>
-    <artifactId>hi-frontend</artifactId>
+    <artifactId>hi-ws</artifactId>
     <version>1.0</version>
+
     <build>
         <sourceDirectory>src</sourceDirectory>
         <resources>
@@ -29,6 +32,8 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
+                        <manifest>
+                        </manifest>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -53,11 +58,16 @@
 
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <compilerArgs>
+                        <arg>-XDignore.symbol.file</arg>
+                    </compilerArgs>
+                    <fork>true</fork>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -67,28 +77,30 @@
     <properties>
         <version-jdk>1.8</version-jdk>
     </properties>
-
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
+        <!-- https://mvnrepository.com/artifact/org.glassfish.gmbal/gmbal -->
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0</version>
+            <groupId>org.glassfish.gmbal</groupId>
+            <artifactId>gmbal</artifactId>
+            <version>4.0.0-b001</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.sun.xml/relaxngDatatype -->
         <dependency>
-            <groupId>viettel.com.bi</groupId>
-            <artifactId>hi-connector</artifactId>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>relaxngDatatype</artifactId>
             <version>1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.sun.org.apache.xml.internal/resolver -->
+        <dependency>
+            <groupId>com.sun.org.apache.xml.internal</groupId>
+            <artifactId>resolver</artifactId>
+            <version>20050927</version>
         </dependency>
         <dependency>
             <groupId>viettel.com.bi</groupId>
             <artifactId>hi-server</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>viettel.com.bi</groupId>
-            <artifactId>hi-ws</artifactId>
-            <version>1.0</version>
-        </dependency>
+
     </dependencies>
 </project>
