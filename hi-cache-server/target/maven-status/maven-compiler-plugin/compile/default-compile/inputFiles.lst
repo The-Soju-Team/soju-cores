@@ -1,9 +1,0 @@
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/process/server/ApiProcess.java
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/process/server/CommitDiskThread.java
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/process/server/MemManager.java
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/process/server/ApiManager.java
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/run/StopApp.java
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/process/server/CommitDbThread.java
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/process/server/LoadCacheProcess.java
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/run/StartApp.java
-/home/truongnx25/gitProjects/core/hi-cache/hi-cache-server/src/com/hh/cache/process/server/ClearMemTask.java
