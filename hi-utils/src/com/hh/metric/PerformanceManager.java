@@ -1,5 +1,8 @@
-package com.hh.cache.process.server;
+package com.hh.metric;
 
+/**
+ * @author TruongNX25
+ */
 
 import org.apache.log4j.Logger;
 
@@ -19,7 +22,7 @@ public class PerformanceManager implements Runnable {
     public void run() {
         while (true) {
             try {
-                LRU();
+                getCurrentMem();
                 Thread.sleep(60000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -28,7 +31,7 @@ public class PerformanceManager implements Runnable {
     }
 
     // Least recently used algo
-    private static void LRU() {
+    private static void getCurrentMem() {
         Runtime runtime = Runtime.getRuntime();
         runtime.gc();
         long memory = runtime.totalMemory() - runtime.freeMemory();
@@ -38,3 +41,4 @@ public class PerformanceManager implements Runnable {
         log.info("Used memory is bytes: " + memory + " bytes");
     }
 }
+
