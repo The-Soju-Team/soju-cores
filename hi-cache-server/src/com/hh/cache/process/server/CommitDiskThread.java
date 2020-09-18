@@ -5,51 +5,66 @@
  */
 package com.hh.cache.process.server;
 
+import com.hh.cache.run.StartApp;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- *
  * @author HienDM
  */
 public class CommitDiskThread extends Thread {
     private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CommitDiskThread.class.getSimpleName());
-    
+
     public static FileOutputStream cacheWriter;
     public static ConcurrentLinkedQueue<byte[]> content = new ConcurrentLinkedQueue();
-    
+    private static final File cacheFile = new File(StartApp.config.getConfig("data-path") + "/cache.log").getAbsoluteFile();
+
     @Override
     public void run() {
+        writeCacheToFile();
+    }
+
+    private static synchronized void writeCacheToFile() {
         while (true) {
+            log.info("Committing Cache To Disk");
             try {
-                if(cacheWriter != null) {
-                    byte[] data = null;
-                    while (!content.isEmpty()) {
-                        data = content.poll();
-                        if(data != null) cacheWriter.write(data);                
-                    }
-                    if(data != null) {
-                        cacheWriter.flush();
-                        log.debug("write data to disk");
-                    }
+                if (cacheWriter == null) {
+                    cacheWriter = new FileOutputStream(cacheFile, true);
                 }
+                byte[] data = null;
+                while (!content.isEmpty()) {
+                    data = content.poll();
+                    if (data != null) cacheWriter.write(data);
+                }
+                if (data != null) {
+                    cacheWriter.flush();
+                    log.debug("write data to disk");
+                }
+                log.info("Done Committing Cache To Disk");
+                log.info("Compressing Cache To Disk");
                 LoadCacheProcess.compressCache();
-                Thread.sleep(1000l);
-            } catch(Exception ex) {
+                log.info("Done Compressing Cache To Disk");
+                Thread.sleep(30000l);
+            } catch (Exception ex) {
                 log.error("Error when commit to disk", ex);
-            }              
+            } finally {
+
+            }
         }
     }
-    
+
     private static byte[] reverseBit(byte[] input) {
-        for(int i = 0; i < input.length; i++) {
-            input[i] = (byte)~input[i];
+        for (int i = 0; i < input.length; i++) {
+            input[i] = (byte) ~input[i];
         }
         return input;
-    } 
-    
+    }
+
     public static void append(String json) {
+        log.info(content.size());
         log.debug("COMMAND: " + json);
         byte[] bytes = (json + "\n").getBytes();
         int length = bytes.length;
