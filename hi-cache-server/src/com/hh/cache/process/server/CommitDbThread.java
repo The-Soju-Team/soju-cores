@@ -5,30 +5,27 @@
  */
 package com.hh.cache.process.server;
 
-import java.io.FileOutputStream;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import org.apache.log4j.Logger;
 
 /**
- *
  * @author HienDM
  */
-public class CommitDbThread extends Thread {
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CommitDbThread.class.getSimpleName());
-    
-    public static FileOutputStream cacheWriter;
-    public static ConcurrentLinkedQueue<byte[]> content = new ConcurrentLinkedQueue();
-    
+public class CommitDbThread implements Runnable {
+    private static final Logger log = org.apache.log4j.Logger.getLogger(CommitDbThread.class);
+
     @Override
     public void run() {
         while (true) {
             try {
+                log.info("Committing Cache Data To Database");
                 MemManager.commitCacheToDb();
+                log.info("Done Committing Cache To Database");
                 Thread.sleep(30000l);
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 log.error("Error when commit to disk", ex);
-            }              
+            }
         }
     }
-    
+
 
 }
