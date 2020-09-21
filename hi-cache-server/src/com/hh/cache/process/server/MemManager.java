@@ -580,7 +580,7 @@ public class MemManager implements ApiManager {
             } else if (startIndex != null) {
                 long count = 0;
                 LinkedTreeMap data = new LinkedTreeMap();
-                Map.Entry<Object, Object> item = null;
+                Map.Entry<Object, Object> item =  null;
                 for (Object entry : ((LinkedTreeMap) store).entrySet()) {
                     item = (Map.Entry<Object, Object>) entry;
                     if (count >= startIndex) {

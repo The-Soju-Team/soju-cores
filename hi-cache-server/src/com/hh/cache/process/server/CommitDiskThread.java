@@ -16,26 +16,14 @@ import com.hh.cache.run.StartApp;
  * @author HienDM
  */
 public class CommitDiskThread extends Thread {
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CommitDiskThread.class.getSimpleName());
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger
+            .getLogger(CommitDiskThread.class.getSimpleName());
 
     public static FileOutputStream cacheWriter;
     public static ConcurrentLinkedQueue<byte[]> content = new ConcurrentLinkedQueue();
-    private static final File cacheFile = new File(StartApp.config.getConfig("data-path") + "/cache.log").getAbsoluteFile();
-    private static final int MAX_SIZE_CONTENT_COMMIT_TO_DISK;
-    static {
-        int config = 1000;
-        try {
-            config = new Integer(StartApp.config.getConfig("max_size_content_commit_to_disk"));
-            if (0 > config) {
-                log.error("MAX_SIZE_CONTENT_COMMIT_TO_DISK config error !!!  " + config);
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            log.error("MAX_SIZE_CONTENT_COMMIT_TO_DISK default 1000  ");
-            config = 1000;
-        }
-        MAX_SIZE_CONTENT_COMMIT_TO_DISK = config;
-    }
+    private static final File cacheFile = new File(StartApp.config.getConfig("data-path") + "/cache.log")
+            .getAbsoluteFile();
+
     @Override
     public void run() {
         writeCacheToFile();
@@ -83,9 +71,5 @@ public class CommitDiskThread extends Thread {
         System.arraycopy(lengthArr, 0, data, 0, 4); // add do dai vao 4 byte dau
         System.arraycopy(bytes, 0, data, 4, length); // add du lieu Object
         content.offer(data);
-
-        //        if (content.size() > MAX_SIZE_CONTENT_COMMIT_TO_DISK) {
-        //            content.poll();
-        //        }
     }
 }
