@@ -30,7 +30,6 @@ public class PerformanceManager implements Runnable {
         }
     }
 
-    // Least recently used algo
     private static void getCurrentMem() {
         Runtime runtime = Runtime.getRuntime();
         runtime.gc();
