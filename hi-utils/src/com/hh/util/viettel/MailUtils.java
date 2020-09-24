@@ -54,7 +54,7 @@ public class MailUtils {
         scheduler.start();
 
         // Init queue
-        mailQueue = new ConcurrentHashMap<String, ArrayList<Object>>();
+        mailQueue = new ConcurrentHashMap<>();
 
         password = config.getConfig("mail-password");
 
