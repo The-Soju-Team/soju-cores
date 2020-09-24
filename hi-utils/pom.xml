@@ -152,5 +152,17 @@
             <artifactId>trove4j</artifactId>
             <version>3.0.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/it.sauronsoftware.cron4j/cron4j -->
+        <dependency>
+            <groupId>it.sauronsoftware.cron4j</groupId>
+            <artifactId>cron4j</artifactId>
+            <version>2.2.5</version>
+        </dependency>
     </dependencies>
 </project>
