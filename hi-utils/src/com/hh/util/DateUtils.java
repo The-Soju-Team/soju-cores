@@ -11,8 +11,7 @@ import java.util.Date;
 public class DateUtils {
     public String calendarToString(Calendar cal, String dateFormat) {
         SimpleDateFormat spf = new SimpleDateFormat(dateFormat);
-        String returnDate = spf.format(cal.getTime());
-        return returnDate;
+        return spf.format(cal.getTime());
     }
 
     public Calendar stringToCalendar(String theDate, String dateFormat) {
