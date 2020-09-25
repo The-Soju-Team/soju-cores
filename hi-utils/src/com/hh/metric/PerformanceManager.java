@@ -35,9 +35,9 @@ public class PerformanceManager implements Runnable {
         runtime.gc();
         long memory = runtime.totalMemory() - runtime.freeMemory();
         log.info("Total memory: " + bytesToMegabytes(runtime.totalMemory()) + " MB");
-        log.info("Used memory is megabytes: "
+        log.info("Used memory in megabytes is: "
                 + bytesToMegabytes(memory) + " MB");
-        log.info("Used memory is bytes: " + memory + " bytes");
+        log.info("Used memory in bytes is: " + memory + " bytes");
     }
 }
 

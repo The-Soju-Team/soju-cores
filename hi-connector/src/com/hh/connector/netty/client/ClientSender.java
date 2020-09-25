@@ -12,7 +12,6 @@ import com.hh.connector.server.Config;
 import com.hh.connector.server.Server;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Future;
 
@@ -66,15 +65,12 @@ public class ClientSender extends UntypedActor {
                 /*
                 gửi bản tin đi thông qua channel và nhận kết quả qua ChannelFuture.
                  */
-                future.addListener(new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture future) throws Exception {
-                        if (future.isSuccess()) {
-                            log.info(serverCode.toUpperCase() + " SEND_SUCCESS_NETTY: " + address);
-                        } else {
-                            log.info(serverCode.toUpperCase() + "SEND_FAIL_NETTY: " + address);
-                            log.info("CAUSE: " + future.cause());
-                        }
+                future.addListener((ChannelFutureListener) future1 -> {
+                    if (future1.isSuccess()) {
+                        log.info(serverCode.toUpperCase() + " SEND_SUCCESS_NETTY: " + address);
+                    } else {
+                        log.info(serverCode.toUpperCase() + "SEND_FAIL_NETTY: " + address);
+                        log.info("CAUSE: " + future1.cause());
                     }
                 });
             } else {

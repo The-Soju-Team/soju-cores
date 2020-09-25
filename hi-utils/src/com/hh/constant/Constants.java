@@ -21,7 +21,6 @@ import java.util.Map;
 public class Constants {
 
     public static ConfigUtils config;
-
     // For QueryUtils only
     public static Map<String, String> dataSource;
     public static Map<String, HashMap> dataConfig;
@@ -54,33 +53,29 @@ public class Constants {
     public static final String USE_KERBEROS_IN_HDFS = "1";
 
     // end Netrowk Operator Code
-    public static final String HDFS_URL = config.getConfig("hdfs-url");
-    public static final String HDFS_KEYTAB_USER = config.getConfig("hdfs-keytab-user");
-    public static final String HDFS_KEYTAB_PATH = config.getConfig("hdfs-keytab-path");
-    public static final String KERBEROS_HDFS_NAMENODE_PRINCIPAL = config
-            .getConfig("kerberos-hdfs-namenode-principal");
-    public static final String KERBEROS_HDFS_DATANODE_PRINCIPAL = config
-            .getConfig("kerberos-hdfs-datanode-principal");
-    public static final String KERBEROS_YARN_RESOURCEMANAGER_PRINCIPAL = config
-            .getConfig("kerberos-yarn-resourcemanager-principal");
-
-    public static final String KERBEROS_REALM = config.getConfig("kerberos-realm");
-    public static final String KERBEROS_KDC = config.getConfig("kerberos-kdc");
+    public String HDFS_URL = config.getConfig("hdfs-url");
+    public String HDFS_KEYTAB_USER = config.getConfig("hdfs-keytab-user");
+    public String HDFS_KEYTAB_PATH = config.getConfig("hdfs-keytab-path");
+    public String KERBEROS_HDFS_NAMENODE_PRINCIPAL = config.getConfig("kerberos-hdfs-namenode-principal");
+    public String KERBEROS_HDFS_DATANODE_PRINCIPAL = config.getConfig("kerberos-hdfs-datanode-principal");
+    public String KERBEROS_YARN_RESOURCEMANAGER_PRINCIPAL = config.getConfig("kerberos-yarn-resourcemanager-principal");
+    public String KERBEROS_REALM = config.getConfig("kerberos-realm");
+    public String KERBEROS_KDC = config.getConfig("kerberos-kdc");
     public static FileSystem fileSystem = null;
 
-    private Constants() {
+    public Constants() {
 
     }
 
-    public static void getHDFSSystemFile() throws Exception {
+    public void getHDFSSystemFile() throws Exception {
         if (fileSystem == null) {
             if ("1".equals(USE_KERBEROS_IN_HDFS)) {
                 // set kerberos host and realm
                 // System.setProperty("java.security.krb5.realm", "BIGDATA.VN");
-                System.setProperty("java.security.krb5.realm", Constants.KERBEROS_REALM);
+                System.setProperty("java.security.krb5.realm", this.KERBEROS_REALM);
                 // log.info("=== 1");
                 // System.setProperty("java.security.krb5.kdc", "10.58.244.224");
-                System.setProperty("java.security.krb5.kdc", Constants.KERBEROS_KDC);
+                System.setProperty("java.security.krb5.kdc", this.KERBEROS_KDC);
                 // System.setProperty("java.security.krb5.kdc", "127.0.0.1");
                 // log.info("=== 2");
 
@@ -90,7 +85,7 @@ public class Constants {
                 configuration.set("hadoop.security.authentication", "kerberos");
                 configuration.set("hadoop.security.authorization", "true");
                 // configuration.set("fs.defaultFS", "hdfs://10.58.244.172:8020");
-                configuration.set("fs.defaultFS", Constants.HDFS_URL);
+                configuration.set("fs.defaultFS", this.HDFS_URL);
                 configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
 
                 configuration.set("ipc.client.fallback-to-simple-auth-allowed", "true"); // allow connect to INSECURE
@@ -111,7 +106,7 @@ public class Constants {
                 // configuration.set("dfs.namenode.kerberos.principal.pattern",
                 // "nn/host172.bigdata.vn@BIGDATA.VN");
                 configuration.set("dfs.namenode.kerberos.principal.pattern",
-                        Constants.KERBEROS_HDFS_NAMENODE_PRINCIPAL);
+                        this.KERBEROS_HDFS_NAMENODE_PRINCIPAL);
 
                 // log.info("=== 6");
 
@@ -122,8 +117,8 @@ public class Constants {
                 // "src/main/resources/dbathgate.keytab");
                 // UserGroupInformation.loginUserFromKeytab("bi_admin@BIGDATA.VN",
                 // "/home/donnn/Downloads/keytabs/admin.bi.keytab");
-                UserGroupInformation.loginUserFromKeytab(Constants.HDFS_KEYTAB_USER,
-                        Constants.HDFS_KEYTAB_PATH);
+                UserGroupInformation.loginUserFromKeytab(this.HDFS_KEYTAB_USER,
+                        this.HDFS_KEYTAB_PATH);
 
                 // log.info("=== 8");
 
@@ -142,11 +137,11 @@ public class Constants {
 
                 // set principal
                 sparkConfiguration.set("spark.hadoop.dfs.namenode.kerberos.principal",
-                        Constants.KERBEROS_HDFS_NAMENODE_PRINCIPAL);
+                        this.KERBEROS_HDFS_NAMENODE_PRINCIPAL);
                 sparkConfiguration.set("spark.hadoop.dfs.datanode.kerberos.principal",
-                        Constants.KERBEROS_HDFS_DATANODE_PRINCIPAL);
+                        this.KERBEROS_HDFS_DATANODE_PRINCIPAL);
                 sparkConfiguration.set("spark.hadoop.yarn.resourcemanager.principal",
-                        Constants.KERBEROS_YARN_RESOURCEMANAGER_PRINCIPAL);
+                        this.KERBEROS_YARN_RESOURCEMANAGER_PRINCIPAL);
 
                 // config kerberos token for all spark-sessions
                 UserGroupInformation.setConfiguration(SparkHadoopUtil.get().newConfiguration(sparkConfiguration));

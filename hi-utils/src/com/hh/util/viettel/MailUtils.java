@@ -109,7 +109,7 @@ public class MailUtils {
             log.info("Message is ready");
             Transport.send(msg);
 
-            log.info("Email Sent Successfully");
+            log.info(String.format("Email Sent Successfully to %s", recipient));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -176,7 +176,7 @@ public class MailUtils {
             log.info("Message is ready");
             Transport.send(msg);
 
-            log.info("Email Sent Successfully");
+            log.info(String.format("Email Sent Successfully to %s", recipient));
         } catch (Exception e) {
             e.printStackTrace();
         }
