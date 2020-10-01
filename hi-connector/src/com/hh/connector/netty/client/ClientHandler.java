@@ -60,13 +60,10 @@ public class ClientHandler extends SimpleChannelInboundHandler {
             ByteBuf buf = ctx.alloc().directBuffer().writeBytes(
                     ServerDecoder.mapToByteArray(Config.pingMessage(server.config.getConfig("server-code"))));
             ChannelFuture future = ctx.writeAndFlush(buf);
-            future.addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    if (!future.isSuccess()) {
-                        log.info("SEND PING FAIL: ");
-                        log.info("CAUSE: " + future.cause());
-                    }
+            future.addListener((ChannelFutureListener) future1 -> {
+                if (!future1.isSuccess()) {
+                    log.info("SEND PING FAIL: ");
+                    log.info("CAUSE: " + future1.cause());
                 }
             });
         }

@@ -1,5 +1,7 @@
 package com.hh.util;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +16,7 @@ import java.util.Properties;
  */
 
 public class ConfigUtils {
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ConfigUtils.class.getSimpleName());
+    private static final Logger log = Logger.getLogger(ConfigUtils.class.getSimpleName());
     private String CONFIG_PATH;
     private String CONNECTOR_PATH;
     private String PROCESS_SERVER_PATH;

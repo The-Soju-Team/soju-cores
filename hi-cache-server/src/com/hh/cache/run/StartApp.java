@@ -8,12 +8,13 @@ package com.hh.cache.run;
 import com.hh.cache.process.server.CommitDbThread;
 import com.hh.cache.process.server.LoadCacheProcess;
 import com.hh.cache.process.server.MemManager;
-import com.hh.cache.process.server.PerformanceManager;
 import com.hh.connector.server.Server;
+import com.hh.metric.PerformanceManager;
 import com.hh.rdbms.DbcpConnector;
 import com.hh.util.ConfigUtils;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 /**
@@ -22,7 +23,7 @@ import org.apache.log4j.PatternLayout;
 public class StartApp {
     public static ConfigUtils config;
     public static Server server = new Server();
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(MemManager.class.getSimpleName());
+    private static final Logger log = org.apache.log4j.Logger.getLogger(MemManager.class.getSimpleName());
     public static DbcpConnector db;
 
     /**
@@ -48,7 +49,6 @@ public class StartApp {
             Thread commitThread = new Thread(new CommitDbThread());
             commitThread.start();
         }
-
         server.start(configPath);
 
         LoadCacheProcess.reloadCache();
