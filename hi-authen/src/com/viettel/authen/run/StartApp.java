@@ -9,15 +9,15 @@ import com.hh.cache.process.client.HiCacheSession;
 import com.hh.connector.process.TimerProcess;
 import com.hh.connector.server.LoadAfterReady;
 import com.hh.connector.server.Server;
+import com.hh.metric.PerformanceManager;
 import com.hh.rdbms.DbcpConnector;
 import com.hh.util.ConfigUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author HienDM
@@ -77,7 +77,8 @@ public class StartApp {
                 }
             }
         });
-
+        Thread performanceThread = new Thread(new PerformanceManager());
+        performanceThread.start();
 //        Properties props = new Properties();
 //        props.load(new FileInputStream(configPath + "/log4j.properties"));
 //        PropertyConfigurator.configure(props);               

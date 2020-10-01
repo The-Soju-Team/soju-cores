@@ -5,17 +5,13 @@
  */
 package com.viettel.authen.db.daoImpl;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gson.Gson;
 import com.viettel.authen.db.dao.UserDao;
 import com.viettel.authen.run.StartApp;
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
+
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author HienDM
@@ -34,11 +30,8 @@ public class UserDaoImpl implements UserDao {
     // This is not an optimize way to do this, but we need a work around now so
     // please forgive me!
 
-    /**
-     * @param userName: User name that you want to update the information to hicache
-     */
     private void updateHiCacheUserCredential(Map resultMap, Map<Object, Object> user, int userId) {
-        log.debug("TOGREP | User information updated: " + resultMap);
+        log.info("TOGREP | User information updated: " + user);
 
         // Set user information
         StartApp.hicache.useSpace("authen");
@@ -47,11 +40,38 @@ public class UserDaoImpl implements UserDao {
     }
 
     private void updateHiCachePasswordExpiry(Map resultMap, Map<Object, Object> user) {
+        log.info("TOGREP | User's expiry password updated: " + user);
         StartApp.hicache.useSpace("authen");
         StartApp.hicache.setStoreAttribute("expiry_password", user.get("user_name").toString(),
                 resultMap.get("password_expiry_date").toString());
     }
 
+    public void insertUserInfoToHiCache(Map resultMap, int userId) throws SQLException {
+        Map<Object, Object> user = new HashMap<>();
+        user.put("user_name", resultMap.get("user_name").toString());
+        user.put("full_name", resultMap.get("full_name").toString());
+        user.put("mobile", resultMap.get("msisdn").toString());
+        user.put("email", resultMap.get("email").toString());
+        user.put("birthday", resultMap.get("birthday").toString());
+        user.put("password", resultMap.get("password").toString());
+        user.put("user_type", resultMap.get("user_type"));
+        user.put("create_date", resultMap.get("create_date").toString());
+        user.put("user_id", Integer.parseInt(resultMap.get("user_id").toString()));
+
+        // Get user app list
+        List<String> userAppIds = getUserAppByUserId(userId);
+        log.debug(String.format("TOGREP | User app ids for user:%s ", user.get("user_name").toString())
+                + userAppIds);
+        user.put("appid", userAppIds);
+
+        // Update user information
+        updateHiCacheUserCredential(resultMap, user, userId);
+        // Set expiry password
+        updateHiCachePasswordExpiry(resultMap, user);
+
+        // Other function should be called here
+    }
+    
     private void updateHiCache(int userId, int type) {
         switch (type) {
             case UPDATE_TYPE:
@@ -61,32 +81,8 @@ public class UserDaoImpl implements UserDao {
                     List params = new ArrayList<>();
                     params.add(userId);
                     List<Map> result = StartApp.database.queryData(sql, params);
-                    if (result != null && result.size() != 0) {
-//					StartApp.hicache.delete
-                        Map<Object, Object> user = new HashMap<>();
-                        Map resultMap = result.get(0);
-                        user.put("user_name", resultMap.get("user_name").toString());
-                        user.put("full_name", resultMap.get("full_name").toString());
-                        user.put("mobile", resultMap.get("msisdn").toString());
-                        user.put("email", resultMap.get("email").toString());
-                        user.put("birthday", resultMap.get("birthday").toString());
-                        user.put("password", resultMap.get("password").toString());
-                        user.put("user_type", resultMap.get("user_type"));
-                        user.put("create_date", resultMap.get("create_date").toString());
-                        user.put("user_id", Integer.parseInt(resultMap.get("user_id").toString()));
-
-                        // Get user app list
-                        List<String> userAppIds = getUserAppByUserId(userId);
-                        log.debug(String.format("TOGREP | User app ids for user:%s ", user.get("user_name").toString())
-                                + userAppIds);
-                        user.put("appid", userAppIds);
-
-                        // Update user information
-                        updateHiCacheUserCredential(resultMap, user, userId);
-                        // Set expiry password
-                        updateHiCachePasswordExpiry(resultMap, user);
-
-                        // Other function should be called here
+                    if (result != null && result.size() > 0) {
+                        insertUserInfoToHiCache(result.get(0), userId);
                     }
                     log.debug(String.format("TOGREP | Done updating HiCache for userId %d - userName: %s", userId,
                             result.get(0).get("user_name").toString()));

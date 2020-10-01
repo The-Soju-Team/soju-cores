@@ -5,12 +5,6 @@
  */
 package com.viettel.authen.process.server;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.hh.connector.server.Server;
@@ -20,8 +14,9 @@ import com.viettel.authen.run.StartApp;
 import com.viettel.authen.run.UpdateTransToDBThread;
 import com.viettel.authen.util.DateUtils;
 import com.viettel.authen.util.StringUtils;
-
 import io.netty.channel.ChannelHandlerContext;
+
+import java.util.*;
 
 /**
  * @author HienDM
@@ -241,7 +236,7 @@ public class LoginProcess extends ServerProcess {
                         } else {
                             failCount++;
                             setSessionAttribute(obj, "ssoFailCount", "" + failCount);
-                            sendLoginResponse(obj, LOGIN_INCORRECT, failCount);
+                            sendLoginResponse(obj, NO_APPS_GRANTED, failCount);
                         }
                     }
                 } else {

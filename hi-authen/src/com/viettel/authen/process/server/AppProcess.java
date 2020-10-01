@@ -11,18 +11,17 @@ import com.hh.connector.server.Server;
 import com.viettel.authen.db.dao.AppDao;
 import com.viettel.authen.db.daoImpl.AppDaoImpl;
 import com.viettel.authen.global.BackendConstants;
+import com.viettel.authen.global.CommandConstants;
 import com.viettel.authen.run.ServerProcess;
+import com.viettel.authen.run.StartApp;
+import com.viettel.authen.run.UpdateTransToDBThread;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.viettel.authen.global.CommandConstants;
-import com.viettel.authen.run.StartApp;
-import com.viettel.authen.run.UpdateTransToDBThread;
-import org.apache.log4j.Logger;
 
 /**
  * @author HienDM

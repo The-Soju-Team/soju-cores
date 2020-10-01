@@ -6,24 +6,20 @@
 package com.viettel.authen.run;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.hh.cache.process.client.HiCacheSession;
 import com.hh.connector.process.BaseProcess;
 import com.hh.connector.server.Server;
+import com.hh.util.EncryptDecryptUtils;
 import com.hh.util.FileUtils;
+import com.viettel.authen.db.daoImpl.AppDaoImpl;
+import com.viettel.authen.db.daoImpl.UserDaoImpl;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
-
-import com.google.gson.internal.LinkedTreeMap;
-
-import static com.viettel.authen.run.StartApp.config;
-import static com.viettel.authen.run.StartApp.hicache;
-
-import com.hh.cache.process.client.HiCacheSession;
-import com.hh.util.EncryptDecryptUtils;
-import com.viettel.authen.db.daoImpl.AppDaoImpl;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.io.IOUtils;
+import static com.viettel.authen.run.StartApp.config;
+import static com.viettel.authen.run.StartApp.hicache;
 
 /**
  * @author dvgp_admin
@@ -293,6 +290,54 @@ public class ServerProcess extends BaseProcess {
      * Insert user info from database to hicache
      */
     private static void insertUserInfoToHiCache() {
+        insertUserToHiCache();
+        insertUserExpiryPasswordToHiCache();
+        insertAppInfoToHiCache();
+    }
+
+    private static void insertAppInfoToHiCache() {
+        String query = "SELECT * FROM bi_authen.application";
+        try {
+            List<Map> result = StartApp.database.queryData(query);
+            if (result != null && result.size() != 0) {
+                for (Map m : result) {
+                    HashMap app = new HashMap();
+                    app.put("app_name", m.get("app_name"));
+                    app.put("app_code", m.get("app_code"));
+                    app.put("ip", m.get("ip"));
+                    app.put("port", m.get("port"));
+                    app.put("app_id", new Integer(m.get("app_id").toString()));
+                    StartApp.hicache.setStoreAttribute("application", "" + app.get("app_id"), app);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void insertUserToHiCache() {
+        String query = "SELECT * FROM users";
+        try {
+            List<Map> result = StartApp.database.queryData(query);
+            if (result != null && result.size() != 0) {
+                UserDaoImpl user = new UserDaoImpl();
+                for (Map m : result) {
+                    try {
+                        log.info("TOGREP | Inserting User " + m.toString() + " to hi-cache");
+                        user.insertUserInfoToHiCache(m, new Integer(m.get("user_id").toString()));
+                        log.info("TOGREP | Done Inserting User " + m.toString() + " to hi-cache");
+                    } catch (Exception e) {
+                        log.info("TOGREP | Error Inserting User " + m.toString() + " to hi-cache");
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private static void insertUserExpiryPasswordToHiCache() {
         List<Map> userAndExpiryPassword;
         try {
             userAndExpiryPassword = StartApp.database.queryData(QUERY_GET_USER_AND_EXPIRY_DATE);
@@ -315,7 +360,7 @@ public class ServerProcess extends BaseProcess {
     }
 
     /**
-     * Insert data to hicache for better performance
+     * Insert data to hi-cache for better performance
      */
     public static void updateCredentialFromDatabase() {
         insertAllowedIPSToHiCache();
