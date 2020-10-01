@@ -50,9 +50,9 @@ public class Constants {
     public static final String NETWORK_OPERATOR_ID_VIETTEL = "04";
     public static final String NETWORK_OPERATOR_ID_VIETNAMOBILE = "05";
     public static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    public static final String USE_KERBEROS_IN_HDFS = "1";
+    public String USE_KERBEROS_IN_HDFS = config.getConfig("use-kerberos-in-hdfs");
 
-    // end Netrowk Operator Code
+    // end Network Operator Code
     public String HDFS_URL = config.getConfig("hdfs-url");
     public String HDFS_KEYTAB_USER = config.getConfig("hdfs-keytab-user");
     public String HDFS_KEYTAB_PATH = config.getConfig("hdfs-keytab-path");
@@ -67,6 +67,11 @@ public class Constants {
 
     }
 
+    /**
+     * Init HDFSFileSystem, this method should be called from other method
+     *
+     * @throws Exception
+     */
     public void getHDFSSystemFile() throws Exception {
         if (fileSystem == null) {
             if ("1".equals(USE_KERBEROS_IN_HDFS)) {

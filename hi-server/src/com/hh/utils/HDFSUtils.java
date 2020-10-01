@@ -42,7 +42,7 @@ public class HDFSUtils {
      */
     public static String downLoadFromHDFS166ToLocal(String src) throws Exception {
         // Hard-code, well, no choice at the moment guys
-        String dest = "/u02/donnn/deploy/frontend/hdfs-download-local";
+        String dest = "/home/bi-deploy/frontend/hdfs-download-local";
         if (dest != null && dest.length() > 0) {
             try {
                 FileSystem fs = getHDFSSystemFile();
