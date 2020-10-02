@@ -5,7 +5,6 @@ import com.hh.util.ConfigUtils;
 import org.apache.log4j.Logger;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Vector;
 import java.util.concurrent.locks.ReentrantLock;
@@ -15,16 +14,18 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 
 public class SparkUtils {
+    public static final Logger log = Logger.getLogger(SparkUtils.class);
+
+    @Deprecated // Useful only in local session
     private static final int MAXIMUM_JOB = 20;
-    public static Logger log = Logger.getLogger(SparkUtils.class);
-    private static int NO_OF_SPARK_SESSION = 2;
+    private static final int NO_OF_SPARK_SESSION = 2;
     private static int currentNumberOfJobs = 0;
-    private static Vector<SparkSession> listSpark = new Vector<>();
-    private static int[] availableFlag = new int[NO_OF_SPARK_SESSION];
-    private static ReentrantLock lock = new ReentrantLock();
-    private static ConfigUtils config;
+    private static final Vector<SparkSession> listSpark = new Vector<>();
+    private static final int[] availableFlag = new int[NO_OF_SPARK_SESSION];
+    private static final ReentrantLock lock = new ReentrantLock();
+
     /**
-     * isPrivateApp: allow an app to run full resource from (8h pm -> 9
+     * isPrivateApp: allow an app to run full resource from (8h pm -> 7h am)
      */
     private static String isPrivateApp = "public";
 
@@ -32,6 +33,9 @@ public class SparkUtils {
 
     }
 
+    /**
+     * Create SparkSession using preconfig in StartApp.config
+     */
     public static void createSparkSession() {
         // Create spark session if null;
         lock.lock();
@@ -46,11 +50,15 @@ public class SparkUtils {
                 isPrivateApp = appType;
             }
             for (int i = 0; i < NO_OF_SPARK_SESSION; i++) {
-                SparkSession spark; /**
+                SparkSession spark;
+                /**
                  * We need to add our jar path to avoid class cast exception
                  * https://stackoverflow.com/questions/39953245/how-to-fix-java-lang-classcastexception-cannot-assign-instance-of-scala-collect
                  */
                 if ((hour >= 20 || hour <= 7) && isPrivateApp.equals("private")) {
+                    /**
+                     * This block is used for creating spark session for our private app, it should have more memory, CPU cores to do the jobs faster
+                     */
                     spark = SparkSession.builder().appName(Constants.config.getConfig("spark.appname"))
                             .config("spark.master", Constants.config.getConfig("spark.master"))
                             .config("spark.executor.memory", Constants.config.getConfig("spark.executor.memory"))
@@ -111,40 +119,24 @@ public class SparkUtils {
 
     }
 
+    /**
+     * We no longer need this method, it used to be return the available flag, but since we change our spark session from local -> cluster, standalone, this method is useless
+     *
+     * @return 0
+     */
+    @Deprecated
     private static int checkAvailableFlag() {
         currentNumberOfJobs++;
         return 0;
-        // log.info("TOGREP | Getting available Spark Session");
-        // lock.lock();
-        // int size = availableFlag.length;
-        // log.info("TOGREP | Available Flag: " + Arrays.toString(availableFlag));
-        // for (int i = 0; i < size; i++) {
-        //     if (availableFlag[i] == 0) {
-        //         availableFlag[i] = 1;
-        //         log.info("TOGREP | DEBUG AVAILABLE FLAG: " + Arrays.toString(availableFlag));
-        //         currentNumberOfJobs++;
-        //         log.info("TOGREP | Current number of jobs: " + currentNumberOfJobs);
-        //         lock.unlock();
-        //         return i;
-        //     }
-        // }
-        // lock.unlock();
-        // return -1;
     }
 
+    /**
+     * Deprecated, same as @checkAvailableFlag
+     *
+     * @return
+     */
+    @Deprecated
     public static SparkSession getAvailableSparkSession() {
-        // if (currentNumberOfJobs >= MAXIMUM_JOB) {
-        //     log.info("TOGREP | Destroying Spark Session to release memory");
-        //     listSpark.get(0).close();
-        //     listSpark.clear();
-        //     currentNumberOfJobs = 0;
-        //     for (int i = 0; i < listSpark.size(); i++) {
-        //         if (availableFlag[i] == 1) {
-        //             availableFlag[i] = 0;
-        //         }
-        //     }
-        //     log.info("TOGREP | Done destroying spark session, memory should now be freed");
-        // }
         if (listSpark.size() == 0) {
             createSparkSession();
         }
@@ -157,13 +149,15 @@ public class SparkUtils {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
         }
     }
 
+    /**
+     * If we do not close spark session, we should run out of memory soon, so at least call it sometimes if enough jobs has been done
+     */
     public static void stopSpark() {
         lock.lock();
         try {
@@ -180,17 +174,13 @@ public class SparkUtils {
         }
     }
 
+    /**
+     * The same as @checkAvailableFlag
+     *
+     * @param session
+     */
+    @Deprecated
     public static void releaseSparkSession(SparkSession session) {
-        log.info("TOGREP | Start releasing session");
-        for (int i = 0; i < listSpark.size(); i++) {
-            if (session.equals(listSpark.get(i))) {
-                if (availableFlag[i] == 1) {
-                    availableFlag[i] = 0;
-                    break;
-                }
-            }
-        }
-        log.info("TOGREP | DEBUG AVAILABLE FLAG(AFTER CLOSING): " + Arrays.toString(availableFlag));
     }
 
 }
