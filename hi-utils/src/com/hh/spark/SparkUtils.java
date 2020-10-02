@@ -42,7 +42,6 @@ public class SparkUtils {
         if (listSpark.size() == 0) {
             currentNumberOfJobs = 0;
             log.info("TOGREP | CREATE " + NO_OF_SPARK_SESSION + " SPARK SESSIONS");
-//			spark.sparkContext().addJar("/home/bi_legacy/query-be/app/query-be/lib/bi-query-backend.jar");
             Calendar cal = Calendar.getInstance();
             int hour = cal.get(Calendar.HOUR_OF_DAY);
             String appType = Constants.config.getConfig("app-type");
@@ -81,9 +80,6 @@ public class SparkUtils {
                              * https://stackoverflow.com/questions/39953245/how-to-fix-java-lang-classcastexception-cannot-assign-instance-of-scala-collect
                              */
                             .config("spark.jars", Constants.config.getConfig("spark.jars")).getOrCreate();
-//				SparkSession spark = SparkSession.builder().appName("Business Intelligence " + i)
-//						.config("spark.master", "local[*]").config("spark.local.dir", "/u02/spark-local-dir")
-//						.config("spark.sql.parquet.mergeSchema", "true").getOrCreate().newSession();
                 } else {
                     spark = SparkSession.builder().appName(Constants.config.getConfig("spark.appname"))
                             .config("spark.master", Constants.config.getConfig("spark.master"))
@@ -107,9 +103,6 @@ public class SparkUtils {
                              * https://stackoverflow.com/questions/39953245/how-to-fix-java-lang-classcastexception-cannot-assign-instance-of-scala-collect
                              */
                             .config("spark.jars", Constants.config.getConfig("spark.jars")).getOrCreate();
-//				SparkSession spark = SparkSession.builder().appName("Business Intelligence " + i)
-//						.config("spark.master", "local[*]").config("spark.local.dir", "/u02/spark-local-dir")
-//						.config("spark.sql.parquet.mergeSchema", "true").getOrCreate().newSession();
                 }
                 listSpark.add(spark);
                 availableFlag[i] = 0;
