@@ -166,13 +166,18 @@ public class SparkUtils {
 
     public static void stopSpark() {
         lock.lock();
-        log.info("TOGREP | Killing spark session");
-        if (listSpark.size() != 0) {
-            listSpark.get(0).stop();
-            listSpark.clear();
+        try {
+            log.info("TOGREP | Killing spark session");
+            if (listSpark.size() != 0) {
+                listSpark.get(0).stop();
+                listSpark.clear();
+            }
+            log.info("TOGREP | Done killing spark session");
+        } catch (Exception ignored) {
+
+        } finally {
+            lock.unlock();
         }
-        log.info("TOGREP | Done killing spark session");
-        lock.lock();
     }
 
     public static void releaseSparkSession(SparkSession session) {
