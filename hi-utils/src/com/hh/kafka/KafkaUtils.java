@@ -2,7 +2,7 @@ package com.hh.kafka;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -15,7 +15,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.log4j.Logger;
-import org.apache.poi.ss.formula.functions.T;
 
 public class KafkaUtils<K, V> {
 
@@ -29,20 +28,30 @@ public class KafkaUtils<K, V> {
     protected static String HEARTBEAT_INTERVAL_MS_CONFIG;
     protected static String MAX_POLL_INTERVAL_MS_CONFIG;
     // End configs consumer
-    protected static Map<String,
-    TreeMap<Properties, Set<T>>> kafkaManager;
+    protected static Map<Properties, Producer<?, ?>> producerManager;
+    protected static Map<Properties, Consumer<?, ?>> consumerManager;
 
     static {
         BOOSTRAP_SERVER = "localhost:9092";
-        HEARTBEAT_INTERVAL_MS_CONFIG = "";
-        MAX_POLL_INTERVAL_MS_CONFIG = "";
-        kafkaManager = new HashMap<String, TreeMap<Properties, Set<T>>>();
-        kafkaManager.put("producer", new TreeMap<Properties, Set<T>>());
-        kafkaManager.put("connsumer", new TreeMap<Properties, Set<T>>());
+        CLIENT_ID = "-1";
+        REQUEST_TIMEOUT_MS_CONFIG = "480000";
+        HEARTBEAT_INTERVAL_MS_CONFIG = "30";
+        MAX_POLL_INTERVAL_MS_CONFIG = "480000";
+        producerManager = new TreeMap<Properties, Producer<?, ?>>(new Comparator<Properties>() {
+            @Override
+            public int compare(Properties p1, Properties p2) {
+                return KafkaUtils.compare(p1, p2);
+            }
+        });
+        consumerManager = new TreeMap<Properties, Consumer<?, ?>>(new Comparator<Properties>() {
+            @Override
+            public int compare(Properties p1, Properties p2) {
+                return KafkaUtils.compare(p1, p2);
+            }
+        });
     }
 
-
-    public Producer<K, V> createProducer(Properties configs) throws Exception {
+    public Producer<K, V> getOrCreateProducer(Properties configs) {
         // Begin configs kafka producer
         // Properties configs = new Properties();
         // configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOSTRAP_SERVER);
@@ -50,12 +59,10 @@ public class KafkaUtils<K, V> {
         // configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         // configs.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, REQUEST_TIMEOUT_MS_CONFIG);
         // End configs kafka producer
-        // create new producer with configurations
-        return new ProducerSession.Builder<K, V>(configs).build();
-        // else
+        return new ProducerSession.Builder<K, V>(configs).getOrCreate();
     }
 
-    public Consumer<K, V> createConsumer(Properties configs) {
+    public Consumer<K, V> getOrCreateConsumer(Properties configs) {
         // Begin configs kafka consumer
         // Properties configs = new Properties();
         // configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOSTRAP_SERVER);
@@ -67,8 +74,7 @@ public class KafkaUtils<K, V> {
         // configs.put(ConsumerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         // configs.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, MAX_POLL_INTERVAL_MS_CONFIG);
         // End configs kafka consumer
-        return new ConsumerSession.Builder<K, V>(configs).build();
-        // else
+        return new ConsumerSession.Builder<K, V>(configs).getOrCreate();
     }
 
     public boolean push(Producer<K, V> producer, String topic, K key, V value) {
@@ -103,6 +109,7 @@ public class KafkaUtils<K, V> {
         }
     }
 
+
     public void stop(Consumer<K, V> consumer) {
         LOG.info("==========Begin STOPPING CONSUMER ==========");
         LOG.info("Consumer info: " + consumer
@@ -136,5 +143,20 @@ public class KafkaUtils<K, V> {
             producer.close();
         }
         LOG.info("==========End STOPPING PRODUCER ==========");
+    }
+
+    private static int compare(Properties p1, Properties p2) {
+        if (p1 == null || p2 == null) {
+            return -1;
+        }
+        Set<Object> s1 = p1.keySet();
+        Set<Object> s2 = p2.keySet();
+        if (s1.size() != s2.size()) {
+            return -2;
+        }
+        if (p1.equals(p2)) {
+            return 0;
+        }
+        return -1;
     }
 }

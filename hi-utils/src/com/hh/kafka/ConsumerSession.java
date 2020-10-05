@@ -13,6 +13,9 @@ public class ConsumerSession<K, V> {
     public static class Builder<K, V> {
         private Properties configs;
 
+        public Builder() {
+        }
+
         public Builder(Properties configs) {
             this.configs = configs;
         }
@@ -27,21 +30,25 @@ public class ConsumerSession<K, V> {
             return this;
         }
 
-        public Consumer<K, V> build() {
+        public Consumer<K, V> getOrCreate() {
             return new ConsumerSession<K, V>().builder(this);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Consumer<K, V> builder(Builder<?, ?> builder) {
-        // Neu da ton tai thi tra ve luon
-        boolean isExist = KafkaUtils.kafkaManager.get("producer").containsKey(builder.configs);
+        // If consumer is exist then return it
+        // else create a new consumer
+        boolean isExist = KafkaUtils.consumerManager.containsKey(builder.configs);
         if (isExist) {
-            LOG.info("Da ton tai config nhe - tra ve producer san co");
-            return (Consumer<K, V>) KafkaUtils.kafkaManager.get("consumer").get(builder);
+            LOG.info("Consumer configuration is exist -> return consumer session exist");
+            return (Consumer<K, V>) KafkaUtils.consumerManager.get(builder.configs);
         }
-        // else
-        this.configs = builder.configs;
+        LOG.info("Create new consumer with new a configuration");
+        this.configs = (Properties) builder.configs.clone();
         Consumer<K, V> consumer = new KafkaConsumer<K, V>(this.configs);
+        KafkaUtils.consumerManager.put(this.configs, consumer);
+
         return consumer;
     }
 }

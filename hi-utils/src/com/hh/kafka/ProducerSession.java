@@ -9,8 +9,13 @@ import org.apache.log4j.Logger;
 public class ProducerSession<K, V> {
     private static Logger LOG = Logger.getLogger(ProducerSession.class.getSimpleName());
     private Properties configs;
+
     public static class Builder<K, V> {
         private Properties configs;
+
+        public Builder() {
+            // do nothing
+        }
 
         public Builder(Properties configs) {
             this.configs = configs;
@@ -26,21 +31,25 @@ public class ProducerSession<K, V> {
             return this;
         }
 
-        public Producer<K, V> build() {
+        public Producer<K, V> getOrCreate() {
             return new ProducerSession<K, V>().builder(this);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Producer<K, V> builder(Builder<?, ?> builder) {
-        // Neu da ton tai thi tra ve luon
-        boolean isExist = KafkaUtils.kafkaManager.get("producer").containsKey(builder.configs);
+        // If producer is exist then return it
+        // else create a new producer
+        boolean isExist = KafkaUtils.producerManager.containsKey(builder.configs);
         if (isExist) {
-            LOG.info("Da ton tai config nhe - tra ve producer san co");
-            return (Producer<K, V>) KafkaUtils.kafkaManager.get("producer").get(builder);
+            LOG.info("Producer configuration is exist -> return producer session exist");
+            return (Producer<K, V>) KafkaUtils.producerManager.get(builder.configs);
         }
-        // else
-        this.configs = builder.configs;
+        LOG.info("Create new producer with new a configuration");
+        this.configs = (Properties) builder.configs.clone();
         Producer<K, V> producer = new KafkaProducer<K, V>(this.configs);
+        KafkaUtils.producerManager.put(this.configs, producer);
+
         return producer;
     }
 }
