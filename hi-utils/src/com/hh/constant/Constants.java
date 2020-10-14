@@ -1,6 +1,11 @@
 package com.hh.constant;
 
-import com.hh.util.ConfigUtils;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -9,10 +14,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.spark.SparkConf;
 import org.apache.spark.deploy.SparkHadoopUtil;
 
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
+import com.hh.util.ConfigUtils;
 
 /**
  * @author TruongNX25
@@ -44,6 +46,13 @@ public class Constants {
     public static final String SYMBOL_PRIME = "'";
     public static final String SYMBOL_SLASH = "/";
     public static final String SYMBOL_BACK_SLASH = "\\";
+
+    public static final String TYPE_TXT = ".txt";
+    public static final String TYPE_CSV = ".csv";
+    public static final String TYPE_XLSX = ".xlsx";
+    public static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    public static final String CO_LOI_XAY_RA = "Có lỗi xảy ra";
+
     // Network Operator Code
     public static final String NETWORK_OPERATOR_ID_MOBIFONE = "01";
     public static final String NETWORK_OPERATOR_ID_VINAPHONE = "02";
@@ -74,7 +83,7 @@ public class Constants {
      */
     public void getHDFSSystemFile() throws Exception {
         if (fileSystem == null) {
-            if ("1".equals(USE_KERBEROS_IN_HDFS)) {
+            if ("1".equals(this.USE_KERBEROS_IN_HDFS)) {
                 // set kerberos host and realm
                 // System.setProperty("java.security.krb5.realm", "BIGDATA.VN");
                 System.setProperty("java.security.krb5.realm", this.KERBEROS_REALM);
@@ -127,7 +136,7 @@ public class Constants {
 
                 // log.info("=== 8");
 
-                fileSystem = FileSystem.get(URI.create(HDFS_URL), configuration);
+                fileSystem = FileSystem.get(URI.create(this.HDFS_URL), configuration);
 
                 // config spark session global
                 SparkConf sparkConfiguration = new SparkConf();
@@ -159,7 +168,7 @@ public class Constants {
                 Configuration conf = new Configuration();
                 conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
                 conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
-                fileSystem = FileSystem.get(URI.create(HDFS_URL), conf);
+                fileSystem = FileSystem.get(URI.create(this.HDFS_URL), conf);
                 System.out.println("=== Spark normal HDFS configured");
             }
 
