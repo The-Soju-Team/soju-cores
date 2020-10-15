@@ -1,32 +1,46 @@
 package com.hh.spark;
 
-import com.hh.constant.Constants;
-import com.hh.util.StringUtils;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.functions;
 import org.apache.spark.sql.api.java.UDF1;
 import org.apache.spark.sql.expressions.UserDefinedFunction;
-import org.apache.spark.sql.functions;
 import org.apache.spark.sql.types.DataTypes;
 import org.spark_project.guava.io.Files;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.text.NumberFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.hh.constant.Constants;
+import com.hh.util.StringUtils;
+import com.hh.util.WriteDataToExcel;
 
 /**
  * @author TruongNX25
  */
-
 public class QueryUtils {
     public static final String ERROR_DUPLICATE_HEADER_CSV = "Lỗi: Dữ liệu của bạn có cột trùng, không thể xuất file";
+    private static final String FOLDER_REPORT = Constants.config.getConfig("report-folder");
     public static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(QueryUtils.class.getSimpleName());
     public static final Pattern p = Pattern.compile("^([0-9]+)\\.[0-9]+$");
     public static boolean doneWritingFile = false;
@@ -51,43 +65,60 @@ public class QueryUtils {
         if (msisdn == null) {
             return null;
         }
-        if (msisdn.length() < 9)
+        if (msisdn.length() < 9) {
             return msisdn;
+        }
         if (msisdn.length() == 9) {
             return "84" + msisdn;
         }
-        if (msisdn.charAt(0) == '0')
+        if (msisdn.charAt(0) == '0') {
             msisdn = "84" + msisdn.substring(1);
-        if (msisdn.startsWith("8416"))
+        }
+        if (msisdn.startsWith("8416")) {
             return "843" + msisdn.substring(4);
-        if (msisdn.startsWith("84120"))
+        }
+        if (msisdn.startsWith("84120")) {
             return "8470" + msisdn.substring(5);
-        if (msisdn.startsWith("84121"))
+        }
+        if (msisdn.startsWith("84121")) {
             return "8479" + msisdn.substring(5);
-        if (msisdn.startsWith("84122"))
+        }
+        if (msisdn.startsWith("84122")) {
             return "8477" + msisdn.substring(5);
-        if (msisdn.startsWith("84126"))
+        }
+        if (msisdn.startsWith("84126")) {
             return "8476" + msisdn.substring(5);
-        if (msisdn.startsWith("84128"))
+        }
+        if (msisdn.startsWith("84128")) {
             return "8478" + msisdn.substring(5);
-        if (msisdn.startsWith("84124"))
+        }
+        if (msisdn.startsWith("84124")) {
             return "8484" + msisdn.substring(5);
-        if (msisdn.startsWith("84127"))
+        }
+        if (msisdn.startsWith("84127")) {
             return "8481" + msisdn.substring(5);
-        if (msisdn.startsWith("84129"))
+        }
+        if (msisdn.startsWith("84129")) {
             return "8482" + msisdn.substring(5);
-        if (msisdn.startsWith("84123"))
+        }
+        if (msisdn.startsWith("84123")) {
             return "8483" + msisdn.substring(5);
-        if (msisdn.startsWith("84125"))
+        }
+        if (msisdn.startsWith("84125")) {
             return "8485" + msisdn.substring(5);
-        if (msisdn.startsWith("84186"))
+        }
+        if (msisdn.startsWith("84186")) {
             return "8456" + msisdn.substring(5);
-        if (msisdn.startsWith("84188"))
+        }
+        if (msisdn.startsWith("84188")) {
             return "8458" + msisdn.substring(5);
-        if (msisdn.startsWith("8409"))
+        }
+        if (msisdn.startsWith("8409")) {
             return "849" + msisdn.substring(4);
-        if (msisdn.startsWith("8403"))
+        }
+        if (msisdn.startsWith("8403")) {
             return "843" + msisdn.substring(4);
+        }
         return msisdn;
 
     }, DataTypes.StringType);
@@ -190,7 +221,7 @@ public class QueryUtils {
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, boolean throwError,
-                                                        SparkSession spark) throws IOException {
+            SparkSession spark) throws IOException {
         Map result = new HashMap();
         if ((query == null) || (query.trim().length() < 1)) {
             result.put("status", false);
@@ -224,7 +255,7 @@ public class QueryUtils {
             data = queryToDataset(spark, query);
             data.cache();
             data.show();
-//			data = spark.sql(query);
+            //          data = spark.sql(query);
             log.info(String.format("TOGREP | Done Querying For %s", query));
             result.put("status", true);
         } catch (Exception e) {
@@ -232,8 +263,9 @@ public class QueryUtils {
             log.info("Error while fetching data");
             result.put("status", false);
             result.put("result", "Error: " + e.toString());
-            if (throwError)
+            if (throwError) {
                 throw e;
+            }
             return result;
         } finally {
             SparkUtils.releaseSparkSession(spark);
@@ -351,23 +383,23 @@ public class QueryUtils {
         }
 
 
-//		if (fileName != null) {
-//			File f = new File(fileName);
-//			FileOutputStream fos = new FileOutputStream(f);
-//			OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
-//			BufferedWriter bw = new BufferedWriter(osw);
-//			bw.write("\uFEFF");
-//			bw.write(sb + "");
-//			bw.close();
-//			osw.close();
-//			fos.close();
-//			result.put("status", true);
-//			// result.put("result", sb + "");
-//			// log.info("============= SB ===================");
-//			// log.info("+++ SB +++ " + sb + "");
-//			// log.info("============= SB ////////////////////////");
-//
-//		}
+        //      if (fileName != null) {
+        //          File f = new File(fileName);
+        //          FileOutputStream fos = new FileOutputStream(f);
+        //          OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
+        //          BufferedWriter bw = new BufferedWriter(osw);
+        //          bw.write("\uFEFF");
+        //          bw.write(sb + "");
+        //          bw.close();
+        //          osw.close();
+        //          fos.close();
+        //          result.put("status", true);
+        //          // result.put("result", sb + "");
+        //          // log.info("============= SB ===================");
+        //          // log.info("+++ SB +++ " + sb + "");
+        //          // log.info("============= SB ////////////////////////");
+        //
+        //      }
         log.info("LENGTH:" + rawResult.size() + " - " + rawHeaders.size());
         result.put("oracleResult", rawResult);
         result.put("oracleHeaders", rawHeaders);
@@ -375,7 +407,7 @@ public class QueryUtils {
     }
 
     public static Map<String, Object> executeOracleQuery(String query, String dbSchema, String fileName,
-                                                         boolean throwError) throws IOException {
+            boolean throwError) throws IOException {
         Map result = new HashMap();
         if ((query == null) || (query.trim().length() < 1)) {
             result.put("status", false);
@@ -411,7 +443,7 @@ public class QueryUtils {
         try {
             data = spark.read().format("jdbc").option("driver", "oracle.jdbc.OracleDriver")
                     .option("url", (String) Constants.dataConfig.get(dbSchema).get("url")).option("fetchSize", "1000")
-//                 .option("dbtable", "(select * from cust_mobile) cust_mobile")
+                    //                 .option("dbtable", "(select * from cust_mobile) cust_mobile")
                     .option("dbtable", "( " + query + " ) oracle_query_result")
                     .option("user", (String) Constants.dataConfig.get(dbSchema).get("user"))
                     .option("password", (String) Constants.dataConfig.get(dbSchema).get("password"))
@@ -422,8 +454,9 @@ public class QueryUtils {
             log.info("Error while fetching data");
             result.put("status", false);
             result.put("result", "Error: " + e.toString());
-            if (throwError)
+            if (throwError) {
                 throw e;
+            }
             return result;
         }
 
@@ -501,7 +534,7 @@ public class QueryUtils {
             osw.close();
             fos.close();
             result.put("status", true);
-//			result.put("result", sb.toString());
+            //          result.put("result", sb.toString());
         }
 
         result.put("oracleResult", rawResult);
@@ -540,7 +573,7 @@ public class QueryUtils {
         Dataset<Row> data = null;
         try {
             data = queryToDataset(spark, query);
-//			data = spark.sql(query);
+            //          data = spark.sql(query);
             return data;
         } catch (Exception e) {
             e.printStackTrace();
@@ -572,7 +605,7 @@ public class QueryUtils {
         // spark.conf().set("spark.sql.crossJoin.enabled", "true");
         Dataset<Row> data = null;
         try {
-//			data = spark.sql(query);
+            //          data = spark.sql(query);
             data = queryToDataset(spark, query);
             log.info("TOGREP | DONE QUERY");
             return data;
@@ -604,7 +637,7 @@ public class QueryUtils {
         // spark.conf().set("spark.sql.crossJoin.enabled", "true");
         Dataset<Row> data = null;
         try {
-//			data = spark.sql(query);
+            //          data = spark.sql(query);
             data = queryToDataset(spark, query);
             log.info("TOGREP | DONE QUERY");
             return data;
@@ -651,5 +684,235 @@ public class QueryUtils {
             }
         }
         return result;
+    }
+
+    public static Map<String, Object> executeSparkQuery(String query, String fileName, String header, String type)
+            throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        return executeSparkQuery(query, fileName, header, false, type);
+    }
+
+    public static Map<String, Object> executeSparkQuery(String query, String fileName, String header,
+            boolean throwError, String type) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        SparkSession spark = SparkUtils.getAvailableSparkSession();
+        try {
+            Map result = new HashMap();
+            if ((query == null) || (query.trim().length() < 1)) {
+                result.put("status", false);
+                result.put("result", "Query Empty");
+                return result;
+            }
+            // Replace params
+            for (Map.Entry<String, String> entry : Constants.dataSource.entrySet()) {
+                query = query.replaceAll(":" + entry.getKey() + ":", entry.getValue());
+            }
+
+            // Query data
+            spark.udf().register("convertMSISDN", convertMSISDN);
+            spark.udf().register("vi2en", vi2en);
+            spark.udf().register("str2Ascii", str2Ascii);
+            spark.udf().register("convertBankCode", convertBankCode);
+            spark.udf().register("encryptAccNo", encryptAccNo);
+            spark.udf().register("decryptAccNo", decryptAccNo);
+            spark.udf().register("getNetwork", getNetwork);
+            spark.udf().register("getNetworkStr", getNetworkStr);
+            // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+            Dataset<Row> data = null;
+            try {
+                data = queryToDataset(spark, query);
+                result.put("status", true);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("Error while fetching data");
+                result.put("status", false);
+                result.put("result", "Error: " + e.toString());
+                if (throwError) {
+                    throw e;
+                }
+                return result;
+            } finally {
+                // SparkUtils.releaseSparkSession(spark);
+            }
+            // Fetch data
+            log.info("Fucking here..." + data.count());
+            List<Row> listRows = data.collectAsList();
+            ArrayList<ArrayList> rawResult = new ArrayList<ArrayList>();
+            ArrayList<String> rawHeaders = new ArrayList<String>();
+            StringBuilder sb = new StringBuilder();
+            String[] cols = data.columns();
+            int colNo = 0;
+            for (String col : cols) {
+                System.out.println("Column" + colNo++ + ": " + col);
+                sb.append(col).append(",");
+
+                rawHeaders.add(col);
+            }
+            sb.append("\n");
+            log.info("Total columns: " + colNo);
+            log.info("Total rows: " + listRows.size());
+            int count = 0;
+            NumberFormat nf = NumberFormat.getInstance();
+            nf.setMaximumFractionDigits(2);
+            for (Row row : listRows) {
+                count++;
+                ArrayList rawRow = new ArrayList();
+                for (String col : cols) {
+                    Object val = row.getAs(col);
+                    if (val != null) {
+                        String valStr = "";
+                        if ((val instanceof Double) || (val instanceof Float)) {
+                            String tmpValue = String.format("%.2f", val);
+                            if (tmpValue.indexOf(".00") >= 0) {
+                                valStr = tmpValue.substring(0, tmpValue.indexOf(".00"));
+                            } else {
+                                valStr = tmpValue;
+                            }
+                        } else {
+                            valStr = val.toString();
+                        }
+                        Matcher m = p.matcher(valStr);
+                        if (m.find()) { // Float
+                            String tmpValue = m.group(0);
+                            if (tmpValue.indexOf(".00") >= 0) {
+                                sb.append(tmpValue.substring(0, tmpValue.indexOf(".00")));
+                            } else {
+                                sb.append(tmpValue); // tmp debug
+                            }
+                        } else { // String
+                            if (valStr.indexOf('"') >= 0) {
+                                valStr = valStr.toString().replace("\"", "\"\"");
+                            }
+                            if ((valStr.indexOf(",") >= 0) || (valStr.indexOf('"') >= 0)) {
+                                sb.append('"').append(valStr.toString().replace("\n", " ").replace("\r", " "))
+                                .append('"');
+                            } else {
+                                sb.append(valStr.toString().replace("\n", " ").replace("\r", " "));
+                            }
+                        }
+                    }
+                    // add data to rawResult
+                    rawRow.add(val);
+                    sb.append(",");
+                }
+                if (count <= 1000) {
+                    rawResult.add(rawRow);
+                }
+                sb.append("\n");
+            }
+            if (fileName != null) {
+                if (null == type) {
+                    type = "";
+                }
+                switch (type) {
+                case com.hh.constant.Constants.TYPE_XLSX:
+                    exportReportEXCEL(data, fileName, true);
+                    result.put("status", true);
+                    result.put("result", sb.toString());
+                    break;
+                case com.hh.constant.Constants.TYPE_TXT:
+                    exportExcelTEXT(data, fileName, true);
+                    result.put("status", true);
+                    result.put("result", sb.toString());
+                    break;
+                default:
+                    File f = new File(fileName);
+                    FileOutputStream fos = new FileOutputStream(f);
+                    OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
+                    BufferedWriter bw = new BufferedWriter(osw);
+                    bw.write("\uFEFF"); // BOM
+                    if ((header != null) && (header.length() > 0)) {
+                        bw.write('"');
+                        bw.write(header);
+                        bw.write('"');
+                        bw.write("\n\n");
+                    }
+                    bw.write(sb.toString());
+                    bw.close();
+                    osw.close();
+                    fos.close();
+                    result.put("status", true);
+                    result.put("result", sb.toString());
+                    break;
+                }
+            }
+            log.info("LENGTH:" + rawResult.size() + " - " + rawHeaders.size());
+            result.put("oracleResult", rawResult);
+            result.put("oracleHeaders", rawHeaders);
+            result.put("totalRows", listRows.size());
+            return result;
+        } finally {
+            SparkUtils.releaseSparkSession(spark);
+        }
+    }
+
+    public static String exportReportEXCEL(Dataset<Row> data, String fileName) {
+        return exportReportEXCEL(data, fileName, null);
+    }
+
+    public static String exportReportEXCEL(Dataset<Row> data, String fileName, Boolean isFullPath) {
+        try {
+            String[] headers = data.columns();
+            String fullPath = "";
+            if (isFullPath) {
+                fullPath = fileName;
+            } else {
+                fullPath = FOLDER_REPORT.concat(fileName).concat(com.hh.constant.Constants.TYPE_XLSX);
+            }
+            List<Row> listData = data.collectAsList();
+            final int heightheader = 1;
+            WriteDataToExcel.importExcel(listData, fullPath, heightheader, headers);
+
+            return fullPath;
+        } catch (Exception e) {
+            log.info("ERROR when export report format .xlsx");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String exportReportCSV(Dataset<Row> data, String fileName) {
+        try {
+            String fullPath = FOLDER_REPORT.concat(fileName).concat(com.hh.constant.Constants.TYPE_CSV);
+            data.repartition(1).write().option("header", "true").mode("overwrite").option("delimeter", "\t")
+            .format("com.databricks.spark.csv").save(fullPath);
+            File dir = new File(fullPath);
+            File[] matches = dir.listFiles();
+            if (null == matches) {
+                return null;
+            }
+            for (File file : matches) {
+                System.out.println(file.getName());
+                if (file.getName().endsWith(".csv")) {
+                    fullPath = fullPath.concat("/").concat(file.getName());
+                    return fullPath;
+                }
+            }
+            return fullPath;
+        } catch (Exception e) {
+            log.info("ERROR when export report format .csv");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String exportExcelTEXT(Dataset<Row> data, String fileName) {
+        return exportExcelTEXT(data, fileName, null);
+    }
+
+    public static String exportExcelTEXT(Dataset<Row> data, String fileName, Boolean isFullPath) {
+        try {
+            String fullPath = "";
+            if (isFullPath) {
+                fullPath = fileName;
+            } else {
+                fullPath = FOLDER_REPORT.concat(fileName).concat(com.hh.constant.Constants.TYPE_TXT);
+            }
+            data.repartition(1).write().option("header", "true").option("delimeter", "\t")
+            .format("com.databricks.spark.text").save(fullPath);
+            return fullPath;
+        } catch (Exception e) {
+            log.info("ERROR when export report format .txt");
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -16,91 +16,13 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.log4j.Logger;
 
-import com.hh.constant.Constants;
-
 public class KafkaUtils<K, V> {
 
     private static final Logger LOG = Logger.getLogger(KafkaUtils.class);
-    // Begin configs producer
-    protected static String BOOSTRAP_SERVER_DEFAULT;
-    protected static String CLIENT_ID;
-    public static final String REQUEST_TIMEOUT_MS_CONFIG;
-    public static final String ACKS;
-    public static final int RETRIES;
-    public static final int BATCH_SIZE;
-    public static final int LINGER_MS;
-    public static final int BUFFER_MEMORY;
-    // End configs producer
-    // Begin configs consumer
-    public static final String HEARTBEAT_INTERVAL_MS_CONFIG;
-    public static final String MAX_POLL_INTERVAL_MS_CONFIG;
-    public static final String ENABLE_AUTO_COMMIT;
-    public static final String AUTO_COMMIT_INTERVAL_MS;
-    public static final String SESSION_TIMEOUT_MS;
-    // End configs consumer
-
     protected static Map<Properties, Producer<?, ?>> producerManager;
     protected static Map<Properties, Consumer<?, ?>> consumerManager;
 
     static {
-        String request_timeout_ms_config = "";
-        String heartbeat_interval_ms_config = "";
-        String max_poll_interval_ms_config = "";
-        String acks = "";
-        int retries = 0;
-        int batch_size = 16384;
-        int linger_ms = 1;
-        int buffer_memory = 33554432;
-        String enable_auto_commit = "true";
-        String auto_commit_interval_ms = "1000";
-        String session_timeout_ms = "30000";
-
-        try {
-            BOOSTRAP_SERVER_DEFAULT = Constants.config.getConfig("boostrap_server");
-            CLIENT_ID = Constants.config.getConfig("client_id");
-            request_timeout_ms_config = Constants.config.getConfig("request_timeout_ms_config");
-            heartbeat_interval_ms_config = Constants.config.getConfig("heartbeat_interval_ms_config");
-            max_poll_interval_ms_config = Constants.config.getConfig("max_poll_interval_ms_config");
-            acks = Constants.config.getConfig("request_timeout_ms_config");
-            retries = 0;
-            batch_size = 16384;
-            linger_ms = 1;
-            buffer_memory = 33554432;
-            enable_auto_commit = Constants.config.getConfig("request_timeout_ms_config");
-            auto_commit_interval_ms = Constants.config.getConfig("request_timeout_ms_config");
-            session_timeout_ms = Constants.config.getConfig("request_timeout_ms_config");
-        } catch (Exception e) {
-            LOG.info("ERROR WHILE READ CONFIGURATION -> GET DEFAULT CONFIGURATION");
-            request_timeout_ms_config = "480000";
-            heartbeat_interval_ms_config = "30";
-            max_poll_interval_ms_config = "480000";
-            acks = "all";
-            retries = 0;
-            batch_size = 16384;
-            linger_ms = 1;
-            buffer_memory = 33554432;
-            enable_auto_commit = "true";
-            auto_commit_interval_ms = "1000";
-            session_timeout_ms = "30000";
-            e.printStackTrace();
-        }
-
-        BOOSTRAP_SERVER_DEFAULT = "localhost:9092";
-        CLIENT_ID = "-1";
-        REQUEST_TIMEOUT_MS_CONFIG = request_timeout_ms_config;
-        HEARTBEAT_INTERVAL_MS_CONFIG = heartbeat_interval_ms_config;
-        MAX_POLL_INTERVAL_MS_CONFIG = max_poll_interval_ms_config;
-
-        ACKS = acks;
-        RETRIES = retries;
-        BATCH_SIZE = batch_size;
-        LINGER_MS = linger_ms;
-        BUFFER_MEMORY = buffer_memory;
-
-        ENABLE_AUTO_COMMIT = enable_auto_commit;
-        AUTO_COMMIT_INTERVAL_MS = auto_commit_interval_ms;
-        SESSION_TIMEOUT_MS = session_timeout_ms;
-
         producerManager = new TreeMap<Properties, Producer<?, ?>>(new Comparator<Properties>() {
             @Override
             public int compare(Properties p1, Properties p2) {
