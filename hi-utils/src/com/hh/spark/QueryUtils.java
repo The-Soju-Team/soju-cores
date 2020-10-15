@@ -146,11 +146,15 @@ public class QueryUtils {
     }
 
     public static void writeFileToHDFS(String fileName, Dataset<Row> data) throws IOException {
+        writeFileToHDFS(fileName, data, 1);
+    }
+
+    public static void writeFileToHDFS(String fileName, Dataset<Row> data, int partition) throws IOException {
         String[] nameSplit = fileName.split(File.separator);
         String hdfsPath = "hdfs://10.58.244.172:8020/storage/bi/hdfs/action-result/" + nameSplit[nameSplit.length - 1];
         log.info(String.format("TOGREP | Writing to CSV: %s", hdfsPath));
 
-        data.repartition(1).write().option("header", "true").csv(hdfsPath); // This would create a folder, with
+        data.repartition(partition).write().option("header", "true").csv(hdfsPath); // This would create a folder, with
         // part-000*.csv behind that
         log.info(String.format("TOGREP | Done writing to CSV to %s", hdfsPath));
         FileSystem fs = Constants.fileSystem;
