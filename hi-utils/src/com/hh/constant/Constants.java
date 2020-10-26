@@ -94,6 +94,10 @@ public class Constants {
     public String KERBEROS_KDC = config.getConfig("kerberos-kdc");
     public static FileSystem fileSystem = null;
 
+    public static final String RW_CHECK_RULE = "rw_check_rule";
+    public static final String RW_CHECK_SMS_QUERY = "rw_check_sms_query";
+    public static final String RW_CHECK_MAIL_QUERY = "rw_check_mail_query";
+
     //    static {
     //        BOOSTRAP_SERVER_DEFAULT = Constants.config.getConfig("boostrap_server");
     //        CLIENT_ID_DEFAULT = Constants.config.getConfig("client_id");
