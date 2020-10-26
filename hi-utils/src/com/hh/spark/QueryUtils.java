@@ -225,16 +225,12 @@ public class QueryUtils {
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, boolean throwError,
-<<<<<<< HEAD
-            SparkSession spark) throws IOException {
-=======
                                                         SparkSession spark) throws IOException {
         return executeSparkQuery(query, fileName, throwError, spark, false);
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, boolean throwError,
                                                         SparkSession spark, boolean collect) throws IOException {
->>>>>>> c0d0d1ce765468999855159d9786be5ac24d244a
         Map result = new HashMap();
         if ((query == null) || (query.trim().length() < 1)) {
             result.put("status", false);
