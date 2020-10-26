@@ -177,11 +177,15 @@ public class QueryUtils {
     }
 
     public static void writeFileToHDFS(String fileName, Dataset<Row> data) throws IOException {
+        writeFileToHDFS(fileName, data, 1);
+    }
+
+    public static void writeFileToHDFS(String fileName, Dataset<Row> data, int partition) throws IOException {
         String[] nameSplit = fileName.split(File.separator);
         String hdfsPath = "hdfs://10.58.244.172:8020/storage/bi/hdfs/action-result/" + nameSplit[nameSplit.length - 1];
         log.info(String.format("TOGREP | Writing to CSV: %s", hdfsPath));
 
-        data.repartition(1).write().option("header", "true").csv(hdfsPath); // This would create a folder, with
+        data.repartition(partition).write().option("header", "true").csv(hdfsPath); // This would create a folder, with
         // part-000*.csv behind that
         log.info(String.format("TOGREP | Done writing to CSV to %s", hdfsPath));
         FileSystem fs = Constants.fileSystem;
@@ -221,7 +225,16 @@ public class QueryUtils {
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, boolean throwError,
+<<<<<<< HEAD
             SparkSession spark) throws IOException {
+=======
+                                                        SparkSession spark) throws IOException {
+        return executeSparkQuery(query, fileName, throwError, spark, false);
+    }
+
+    public static Map<String, Object> executeSparkQuery(String query, String fileName, boolean throwError,
+                                                        SparkSession spark, boolean collect) throws IOException {
+>>>>>>> c0d0d1ce765468999855159d9786be5ac24d244a
         Map result = new HashMap();
         if ((query == null) || (query.trim().length() < 1)) {
             result.put("status", false);
@@ -294,120 +307,126 @@ public class QueryUtils {
         });
         writeToHDFS.start();
         log.info(String.format("TOGREP | A new thread has been forked to write file: %s", fileName));
-
-        result.put("totalRows", data.count());
-        if (data.count() > 1000) {
-            data = data.limit(1000);
-        }
-        List<Row> listRows = data.collectAsList();
-        log.info("TOGREP | Collected As List Successfully");
-
-        ArrayList<ArrayList> rawResult = new ArrayList<ArrayList>();
-        ArrayList<String> rawHeaders = new ArrayList<String>();
-
-        // log.info("Collect done, " + listRows.size());
-        StringBuilder sb = new StringBuilder();
-        // Gson gson = new Gson();
-        String[] cols = data.columns();
-        // Let's validate the columns, for some reason, we can't export csv to hdfs with
-        // duplicate headers
-        if (!validateHeaderCSV(cols)) {
-            result.put("status", false);
-            result.put("result", ERROR_DUPLICATE_HEADER_CSV);
-            return result;
-        }
-        // End validate
-        int colNo = 0;
-
-        for (String col : cols) {
-            log.info("Column" + colNo++ + ": " + col);
-            sb.append(col).append(",");
-
-            rawHeaders.add(col);
-        }
-        sb.append("\n");
-        log.info("Total columns: " + colNo);
-        log.info("Total rows: " + listRows.size());
-
-        int count = 0;
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMaximumFractionDigits(2);
-        for (Row row : listRows) {
-            count++;
-
-            ArrayList rawRow = new ArrayList();
-            int stt = 0;
-            for (String col : cols) {
-                stt++;
-                Object val = row.getAs(col);
-                if (val != null) {
-                    String valStr = "";
-                    if ((val instanceof Double) || (val instanceof Float)) {
-                        // log.info("Double or Float: " + val + " convert to " +
-                        // String.format("%.2f", val));
-                        valStr = String.format("%.2f", val);
-                    } else {
-                        valStr = val.toString();
-                    }
-                    Matcher m = p.matcher(valStr);
-                    if (m.find()) { // Float
-                        // sb.append('"');
-                        // sb.append(nf.format(Double.parseDouble(m.group(0))));
-                        // sb.append('"');
-                        sb.append('"').append(m.group(0)).append('"'); // tmp debug
-                        // log.info(stt + " Double: " + m.group(0) + " : " + '"' + m.group(0)
-                        // + '"');
-                    } else { // String
-                        // log.info(stt + " Not Double: " + valStr);
-                        if (valStr.indexOf('"') >= 0) {
-                            valStr = valStr.replace("\"", "\"\"");
-                        }
-                        if ((valStr.contains(",")) || (valStr.indexOf('"') >= 0)) {
-                            sb.append('"').append(valStr.replace("\n", " ").replace("\r", " ")).append('"');
-                        } else {
-                            sb.append(valStr.replace("\n", " ").replace("\r", " "));
-                        }
-                    }
-                }
-
-                // add data to rawRow
-                rawRow.add(val);
-
-                sb.append(",");
+        if (collect) {
+            result.put("totalRows", data.count());
+            if (data.count() > 1000) {
+                data = data.limit(1000);
             }
-            if (count <= 1000) {
-                rawResult.add(rawRow);
+            List<Row> listRows = data.collectAsList();
+            log.info("TOGREP | Collected As List Successfully");
+
+            ArrayList<ArrayList> rawResult = new ArrayList<ArrayList>();
+            ArrayList<String> rawHeaders = new ArrayList<String>();
+
+            // log.info("Collect done, " + listRows.size());
+            StringBuilder sb = new StringBuilder();
+            // Gson gson = new Gson();
+            String[] cols = data.columns();
+            // Let's validate the columns, for some reason, we can't export csv to hdfs with
+            // duplicate headers
+            if (!validateHeaderCSV(cols)) {
+                result.put("status", false);
+                result.put("result", ERROR_DUPLICATE_HEADER_CSV);
+                return result;
+            }
+            // End validate
+            int colNo = 0;
+
+            for (String col : cols) {
+                log.info("Column" + colNo++ + ": " + col);
+                sb.append(col).append(",");
+
+                rawHeaders.add(col);
             }
             sb.append("\n");
+            log.info("Total columns: " + colNo);
+            log.info("Total rows: " + listRows.size());
 
+            int count = 0;
+            NumberFormat nf = NumberFormat.getInstance();
+            nf.setMaximumFractionDigits(2);
+            for (Row row : listRows) {
+                count++;
+
+                ArrayList rawRow = new ArrayList();
+                int stt = 0;
+                for (String col : cols) {
+                    stt++;
+                    Object val = row.getAs(col);
+                    if (val != null) {
+                        String valStr = "";
+                        if ((val instanceof Double) || (val instanceof Float)) {
+                            // log.info("Double or Float: " + val + " convert to " +
+                            // String.format("%.2f", val));
+                            valStr = String.format("%.2f", val);
+                        } else {
+                            valStr = val.toString();
+                        }
+                        Matcher m = p.matcher(valStr);
+                        if (m.find()) { // Float
+                            // sb.append('"');
+                            // sb.append(nf.format(Double.parseDouble(m.group(0))));
+                            // sb.append('"');
+                            sb.append('"').append(m.group(0)).append('"'); // tmp debug
+                            // log.info(stt + " Double: " + m.group(0) + " : " + '"' + m.group(0)
+                            // + '"');
+                        } else { // String
+                            // log.info(stt + " Not Double: " + valStr);
+                            if (valStr.indexOf('"') >= 0) {
+                                valStr = valStr.replace("\"", "\"\"");
+                            }
+                            if ((valStr.contains(",")) || (valStr.indexOf('"') >= 0)) {
+                                sb.append('"').append(valStr.replace("\n", " ").replace("\r", " ")).append('"');
+                            } else {
+                                sb.append(valStr.replace("\n", " ").replace("\r", " "));
+                            }
+                        }
+                    }
+
+                    // add data to rawRow
+                    rawRow.add(val);
+
+                    sb.append(",");
+                }
+                if (count <= 1000) {
+                    rawResult.add(rawRow);
+                }
+                sb.append("\n");
+
+            }
+
+
+//		if (fileName != null) {
+//			File f = new File(fileName);
+//			FileOutputStream fos = new FileOutputStream(f);
+//			OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
+//			BufferedWriter bw = new BufferedWriter(osw);
+//			bw.write("\uFEFF");
+//			bw.write(sb + "");
+//			bw.close();
+//			osw.close();
+//			fos.close();
+//			result.put("status", true);
+//			// result.put("result", sb + "");
+//			// log.info("============= SB ===================");
+//			// log.info("+++ SB +++ " + sb + "");
+//			// log.info("============= SB ////////////////////////");
+//
+//		}
+            log.info("LENGTH:" + rawResult.size() + " - " + rawHeaders.size());
+            result.put("oracleResult", rawResult);
+            result.put("oracleHeaders", rawHeaders);
         }
-
-
-        //      if (fileName != null) {
-        //          File f = new File(fileName);
-        //          FileOutputStream fos = new FileOutputStream(f);
-        //          OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
-        //          BufferedWriter bw = new BufferedWriter(osw);
-        //          bw.write("\uFEFF");
-        //          bw.write(sb + "");
-        //          bw.close();
-        //          osw.close();
-        //          fos.close();
-        //          result.put("status", true);
-        //          // result.put("result", sb + "");
-        //          // log.info("============= SB ===================");
-        //          // log.info("+++ SB +++ " + sb + "");
-        //          // log.info("============= SB ////////////////////////");
-        //
-        //      }
-        log.info("LENGTH:" + rawResult.size() + " - " + rawHeaders.size());
-        result.put("oracleResult", rawResult);
-        result.put("oracleHeaders", rawHeaders);
         return result;
     }
 
     public static Map<String, Object> executeOracleQuery(String query, String dbSchema, String fileName,
-            boolean throwError) throws IOException {
+                                                         boolean throwError) throws IOException {
+        return executeOracleQuery(query, dbSchema, fileName, throwError, false);
+    }
+
+    public static Map<String, Object> executeOracleQuery(String query, String dbSchema, String fileName,
+                                                         boolean throwError, boolean collect) throws IOException {
         Map result = new HashMap();
         if ((query == null) || (query.trim().length() < 1)) {
             result.put("status", false);

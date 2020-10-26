@@ -10,6 +10,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class ServerDecoder extends ByteToMessageDecoder {
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
             Gson gson = builder.create();
-            String json = new String(bytes, Charset.forName("UTF-8"));
+            String json = new String(bytes, StandardCharsets.UTF_8);
             obj = gson.fromJson(json, LinkedTreeMap.class);
         } catch (Exception ex) {
             log.error("Error convert bytes to object: ", ex);
