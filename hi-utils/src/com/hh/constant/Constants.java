@@ -97,6 +97,7 @@ public class Constants {
     public static final String RW_CHECK_RULE = "rw_check_rule";
     public static final String RW_CHECK_SMS_QUERY = "rw_check_sms_query";
     public static final String RW_CHECK_MAIL_QUERY = "rw_check_mail_query";
+    public static final String EMPTY = "";
 
     //    static {
     //        BOOSTRAP_SERVER_DEFAULT = Constants.config.getConfig("boostrap_server");
