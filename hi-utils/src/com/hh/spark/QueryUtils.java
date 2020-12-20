@@ -102,6 +102,16 @@ public class QueryUtils {
         }
     }, DataTypes.StringType);
 
+    public static final UserDefinedFunction decryptSensitiveInformation = functions.udf((UDF1<String, String>) s -> {
+        if (s == null) {
+            return null;
+        } else {
+            s = s.substring(2);
+            s = s.substring(0, s.length() - 4);
+            return decrypt(s).replace("ENCRYPTED-", "");
+        }
+    }, DataTypes.StringType);
+
     public static String encrypt(String s) {
         if (s == null) {
             return null;
@@ -127,6 +137,21 @@ public class QueryUtils {
         }
         decrypt = new String(abytes);
         return decrypt;
+    }
+
+    public static void addUDFToSpark(SparkSession spark) {
+        spark.udf().register("convertMSISDN", convertMSISDN);
+        spark.udf().register("vi2en", vi2en);
+        spark.udf().register("str2Ascii", str2Ascii);
+        spark.udf().register("convertBankCode", convertBankCode);
+        spark.udf().register("encryptAccNo", encryptAccNo);
+        spark.udf().register("decryptAccNo", decryptAccNo);
+        spark.udf().register("getNetwork", getNetwork);
+        spark.udf().register("getNetworkStr", getNetworkStr);
+        spark.udf().register("hash", hashSensitiveInformation);
+        // Decrypt msisdn
+        spark.udf().register("ad89828579479b2985707279b565dcfe", decryptSensitiveInformation);
+        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName)
@@ -210,22 +235,7 @@ public class QueryUtils {
         for (Map.Entry<String, String> entry : Constants.dataSource.entrySet()) {
             query = query.replaceAll(":" + entry.getKey() + ":", entry.getValue());
         }
-
-        // Query data
-        // SparkSession spark = SparkSession.builder().appName("Business Intelligence")
-        // .config("spark.master", "local[*]")
-        // .config("spark.sql.parquet.mergeSchema", "true").getOrCreate();
-
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("str2Ascii", str2Ascii);
-        spark.udf().register("convertBankCode", convertBankCode);
-        spark.udf().register("encryptAccNo", encryptAccNo);
-        spark.udf().register("decryptAccNo", decryptAccNo);
-        spark.udf().register("getNetwork", getNetwork);
-        spark.udf().register("getNetworkStr", getNetworkStr);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
         Dataset<Row> data = null;
         try {
             log.info("TOGREP | Preparing Query");
@@ -403,20 +413,11 @@ public class QueryUtils {
         // }
 
         // Query data
-        SparkSession spark = SparkSession.builder().appName("Business Intelligence").config("spark.master", "local[*]")
-                // .config("spark.sql.parquet.mergeSchema", "true")
-                .config("spark.local.dir", "/u02/spark-local-dir").getOrCreate();
+        SparkSession spark = SparkUtils.getAvailableSparkSession();
 
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("str2Ascii", str2Ascii);
-        spark.udf().register("convertBankCode", convertBankCode);
-        spark.udf().register("encryptAccNo", encryptAccNo);
-        spark.udf().register("decryptAccNo", decryptAccNo);
-        spark.udf().register("getNetwork", getNetwork);
-        spark.udf().register("getNetworkStr", getNetworkStr);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
+
+
         Dataset<Row> data = null;
         log.info("QUERY: " + query);
         // log.info("dbSchema: " + dbSchema);
@@ -542,16 +543,7 @@ public class QueryUtils {
 
         // Query data
         SparkSession spark = SparkUtils.getAvailableSparkSession();
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("str2Ascii", str2Ascii);
-        spark.udf().register("convertBankCode", convertBankCode);
-        spark.udf().register("encryptAccNo", encryptAccNo);
-        spark.udf().register("decryptAccNo", decryptAccNo);
-        spark.udf().register("getNetwork", getNetwork);
-        spark.udf().register("getNetworkStr", getNetworkStr);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
         Dataset<Row> data = null;
         try {
             data = queryToDataset(spark, query);
@@ -581,10 +573,7 @@ public class QueryUtils {
         }
         log.info("TOGREP | Query " + query);
         // Query data
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
         Dataset<Row> data = null;
         try {
 //			data = spark.sql(query);
@@ -613,10 +602,7 @@ public class QueryUtils {
         }
         log.info("TOGREP | Query " + query);
         // Query data
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
         Dataset<Row> data = null;
         try {
 //			data = spark.sql(query);
@@ -639,6 +625,7 @@ public class QueryUtils {
      */
     public static Dataset<Row> queryToDataset(SparkSession spark, String query) {
         Dataset<Row> result = null;
+        addUDFToSpark(spark);
         int count = 0;
         while (count < 10) {
             log.info(String.format("TOGREP | Trying query %s for the %d times", query, count + 1));
