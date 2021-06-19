@@ -78,3 +78,41 @@ GitHub.sublime-settings
 
 # End of https://www.toptal.com/developers/gitignore/api/java,code-java,visualstudiocode,sublimetext
 
+hi-authen/.classpath
+hi-authen/.project
+hi-authen/.settings/
+hi-cache-client/.classpath
+hi-cache-client/.project
+hi-cache-client/.settings/
+hi-cache-client/target/
+hi-cache-server/.classpath
+hi-cache-server/.project
+hi-cache-server/.settings/
+hi-cache-server/target/classes/com/
+hi-cache-server/target/hi-cache-server-1.0.jar
+hi-connector/target/
+hi-container/.classpath
+hi-container/.project
+hi-container/.settings/
+hi-container/target/
+hi-frontend/hi-frontend/.classpath
+hi-frontend/hi-frontend/.project
+hi-frontend/hi-frontend/.settings/
+hi-frontend/hi-frontend/target/
+hi-server/.classpath
+hi-server/.project
+hi-server/.settings/
+hi-server/target/
+hi-utils/.classpath
+hi-utils/.project
+hi-utils/.settings/
+hi-utils/target/
+hi-ws/.classpath
+hi-ws/.project
+hi-ws/.settings/
+hi-ws/target/
+.gitignore
+hi-cache-server/target/
+hi-cache-server/target
+
+hi-connector/.settings/
