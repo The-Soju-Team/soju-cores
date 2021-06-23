@@ -64,6 +64,7 @@ public class Constants {
 
     // Begin configs producer
     public static String BOOSTRAP_SERVER_DEFAULT;
+    public static String BOOSTRAP_SERVER;
     public static String CLIENT_ID_DEFAULT;
     public static String REQUEST_TIMEOUT_MS_CONFIG;
     public static String ACKS;
@@ -99,23 +100,23 @@ public class Constants {
     public static final String RW_CHECK_MAIL_QUERY = "rw_check_mail_query";
     public static final String EMPTY = "";
 
-    //    static {
-    //        BOOSTRAP_SERVER_DEFAULT = Constants.config.getConfig("boostrap_server");
-    //        CLIENT_ID_DEFAULT = Constants.config.getConfig("client_id");
-    //        REQUEST_TIMEOUT_MS_CONFIG = Constants.config.getConfig("request_timeout_ms_config");
-    //        HEARTBEAT_INTERVAL_MS_CONFIG = Constants.config.getConfig("heartbeat_interval_ms_config");
-    //        MAX_POLL_INTERVAL_MS_CONFIG = Constants.config.getConfig("max_poll_interval_ms_config");
-    //        ACKS = Constants.config.getConfig("request_timeout_ms_config");
-    //        RETRIES = 0;
-    //        BATCH_SIZE = 16384;
-    //        LINGER_MS = 1;
-    //        BUFFER_MEMORY = 33554432;
-    //        ENABLE_AUTO_COMMIT = Constants.config.getConfig("request_timeout_ms_config");
-    //        AUTO_COMMIT_INTERVAL_MS = Constants.config.getConfig("request_timeout_ms_config");
-    //        SESSION_TIMEOUT_MS = Constants.config.getConfig("request_timeout_ms_config");
-    //        HOST_REDIS_DEFAULT = Constants.config.getConfig("host_redis_default");
-    //        PORT_REDIS_DEFAULT = new Integer(config.getConfig("port_redis_default"));
-    //    }
+    // static {
+    // BOOSTRAP_SERVER_DEFAULT = Constants.config.getConfig("boostrap_server");
+    // CLIENT_ID_DEFAULT = Constants.config.getConfig("client_id");
+    // REQUEST_TIMEOUT_MS_CONFIG = Constants.config.getConfig("request_timeout_ms_config");
+    // HEARTBEAT_INTERVAL_MS_CONFIG = Constants.config.getConfig("heartbeat_interval_ms_config");
+    // MAX_POLL_INTERVAL_MS_CONFIG = Constants.config.getConfig("max_poll_interval_ms_config");
+    // ACKS = Constants.config.getConfig("request_timeout_ms_config");
+    // RETRIES = 0;
+    // BATCH_SIZE = 16384;
+    // LINGER_MS = 1;
+    // BUFFER_MEMORY = 33554432;
+    // ENABLE_AUTO_COMMIT = Constants.config.getConfig("request_timeout_ms_config");
+    // AUTO_COMMIT_INTERVAL_MS = Constants.config.getConfig("request_timeout_ms_config");
+    // SESSION_TIMEOUT_MS = Constants.config.getConfig("request_timeout_ms_config");
+    // HOST_REDIS_DEFAULT = Constants.config.getConfig("host_redis_default");
+    // PORT_REDIS_DEFAULT = new Integer(config.getConfig("port_redis_default"));
+    // }
 
     public Constants() {
 
