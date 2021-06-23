@@ -38,7 +38,7 @@ public class RedisSession {
     private Jedis build(Builder builder) {
         this.host = builder.host;
         this.port = builder.port;
-        if (!RedisUtils.redisMap.containsKey(this.host + this.port)) {
+        if (!RedisUtils.redisMap.containsKey(this.host + ":" + this.port)) {
             try {
                 GenericObjectPoolConfig genericObjectPoolConfig = new GenericObjectPoolConfig();
                 genericObjectPoolConfig.setTestWhileIdle(true);
