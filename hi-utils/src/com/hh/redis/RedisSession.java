@@ -2,9 +2,6 @@ package com.hh.redis;
 
 import org.apache.log4j.Logger;
 
-import com.hh.constant.Constants;
-import com.viettel.bi.ssoutils.logic.redis.RedisUtils;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -14,8 +11,8 @@ public class RedisSession {
     private int port;
 
     public RedisSession() {
-        this.host = Constants.HOST_REDIS_DEFAULT;
-        this.port = Constants.PORT_REDIS_DEFAULT;
+        // this.host = Constants.HOST_REDIS_DEFAULT;
+        // this.port = Constants.PORT_REDIS_DEFAULT;
     }
 
     public static class Builder {
