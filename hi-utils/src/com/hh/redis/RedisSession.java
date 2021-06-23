@@ -55,6 +55,6 @@ public class RedisSession {
                 e.printStackTrace();
             }
         }
-        return RedisUtils.redisMap.get(this.host + this.port).getResource();
+        return RedisUtils.redisMap.get(this.host + ":" + this.port).getResource();
     }
 }
