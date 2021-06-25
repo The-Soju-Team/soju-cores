@@ -5,21 +5,36 @@
  */
 package com.hh.util.viettel;
 
-import com.hh.constant.Constants;
-import com.hh.util.ConfigUtils;
-import it.sauronsoftware.cron4j.Scheduler;
-import org.apache.log4j.Logger;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.log4j.Logger;
+
+import com.hh.constant.Constants;
+import com.hh.util.ConfigUtils;
+
+import it.sauronsoftware.cron4j.Scheduler;
 
 /**
  * @author donnn
@@ -45,10 +60,10 @@ public class MailUtils {
         if ((emailAddr == null) || (emailAddr.length() < 1)) {
             log.info("Cannot initialize MailUtils.");
             log.info("Config credentials in etc/server.conf first.");
-//            System.exit(1);
+            //            System.exit(1);
         }
 
-        // 
+        //
         scheduler = new Scheduler();
         scheduler.schedule(schedulePattern, MailUtils::flushMail);
         scheduler.start();
@@ -68,6 +83,7 @@ public class MailUtils {
 
         auth = new Authenticator() {
             //override the getPasswordAuthentication method
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(emailAddr, password);
             }
@@ -84,7 +100,9 @@ public class MailUtils {
      */
 
     public static void sendMail(String recipient, String subject, String body) {
-        if (!initialized) init();
+        if (!initialized) {
+            init();
+        }
 
         Session session = Session.getDefaultInstance(props, auth);
 
@@ -126,7 +144,9 @@ public class MailUtils {
      */
 
     public static void sendMailWithAttachments(String recipient, String subject, String body, List<String> attachments) {
-        if (!initialized) init();
+        if (!initialized) {
+            init();
+        }
 
         Session session = Session.getDefaultInstance(props, auth);
 
@@ -154,8 +174,8 @@ public class MailUtils {
 
             // set text
             BodyPart textPart = new MimeBodyPart();
-//            textPart.setHeader("Content-Type", "text/html");
-//            textPart.setText(body);
+            //            textPart.setHeader("Content-Type", "text/html");
+            //            textPart.setText(body);
             textPart.setContent(body, "text/html; charset=UTF-8");
 
             // add text to email
@@ -182,19 +202,82 @@ public class MailUtils {
         }
     }
 
+    public static void sendMailWithAttachmentsRisk(String recipient, String subject, String body,
+            List<String> attachments) {
+        if (!initialized) {
+            init();
+        }
+
+        Session session = Session.getDefaultInstance(props, auth);
+
+        try {
+            MimeMessage msg = new MimeMessage(session);
+            // set message headers
+            msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
+            msg.addHeader("format", "flowed");
+            msg.addHeader("Content-Transfer-Encoding", "8bit");
+
+            msg.setFrom(new InternetAddress(emailAddr, emailAddr));
+
+            msg.setReplyTo(InternetAddress.parse(recipient, false));
+
+            msg.setSubject(subject, "UTF-8");
+
+            msg.setSentDate(new Date());
+
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false));
+
+            // generate email
+
+            // Create a multipart message for attachment
+            Multipart multipart = new MimeMultipart();
+
+            // set text
+            BodyPart textPart = new MimeBodyPart();
+            //            textPart.setHeader("Content-Type", "text/html");
+            textPart.setText(body);
+            //            textPart.setContent(body, "text/html; charset=UTF-8");
+
+            // add text to email
+            multipart.addBodyPart(textPart);
+
+            // add attachments to email
+            for (String fileName : attachments) {
+                BodyPart part = new MimeBodyPart();
+                DataSource source = new FileDataSource(fileName);
+                part.setDataHandler(new DataHandler(source));
+                part.setFileName(
+                        fileName.substring((fileName.lastIndexOf("/") >= 0) ? (fileName.lastIndexOf("/") + 1) : 0));
+
+                // add file to email
+                multipart.addBodyPart(part);
+            }
+
+            msg.setContent(multipart);
+            log.info("Message is ready");
+            Transport.send(msg);
+
+            log.info(String.format("Email Sent Successfully to %s", recipient));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void queueMail(String recipient, String subject, String body, List<String> attachments) {
         queueMail(recipient, subject, body, attachments, new HashMap());
     }
 
     public static void queueMail(String recipient, String subject, String body, List<String> attachments, Map extra) {
-        if (!initialized) init();
+        if (!initialized) {
+            init();
+        }
         log.info("Now add a mail to queue of " + recipient);
         Map<String, Object> mail = new HashMap<String, Object>();
         mail.put("receiver", recipient);
         mail.put("subject", subject);
         mail.put("body", body);
         String group = (extra.get("group") == null) ? "" : (String) extra.get("group");
-        mail.put("group", (String) extra.get("group"));
+        mail.put("group", extra.get("group"));
         mail.put("attachments", attachments);
         ArrayList queuedMails = mailQueue.get(recipient);
         if (queuedMails != null) {
@@ -215,7 +298,7 @@ public class MailUtils {
         }
         log.info("Start flushing mailQueue");
         for (Map.Entry<String, ArrayList<Object>> entry : mailQueue.entrySet()) {
-//            log.info(entry.getKey() + "/" + entry.getValue());
+            //            log.info(entry.getKey() + "/" + entry.getValue());
             String receiver = entry.getKey();
             ArrayList messages = entry.getValue();
             if (messages.size() >= 1) {
@@ -254,7 +337,7 @@ public class MailUtils {
                     mergedBody += msg.get("body");
                     mergedAttachments.addAll((List) (msg.get("attachments")));
                 }
-//                log.info(mergedBody);
+                //                log.info(mergedBody);
                 sendMailWithAttachments(receiver, subject, mergedBody, mergedAttachments);
             }
 
