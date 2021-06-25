@@ -40,7 +40,7 @@ import com.hh.util.WriteDataToExcel;
  */
 public class QueryUtils {
     public static final String ERROR_DUPLICATE_HEADER_CSV = "Lỗi: Dữ liệu của bạn có cột trùng, không thể xuất file";
-    private static final String FOLDER_REPORT = Constants.config.getConfig("report-folder");
+    private static final String FOLDER_REPORT = "/tmp";
     public static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(QueryUtils.class.getSimpleName());
     public static final Pattern p = Pattern.compile("^([0-9]+)\\.[0-9]+$");
     public static boolean doneWritingFile = false;
@@ -133,6 +133,16 @@ public class QueryUtils {
         }
     }, DataTypes.StringType);
 
+    public static final UserDefinedFunction decryptSensitiveInformation = functions.udf((UDF1<String, String>) s -> {
+        if (s == null) {
+            return null;
+        } else {
+            s = s.substring(2);
+            s = s.substring(0, s.length() - 4);
+            return decrypt(s).replace("ENCRYPTED-", "");
+        }
+    }, DataTypes.StringType);
+
     public static String encrypt(String s) {
         if (s == null) {
             return null;
@@ -158,6 +168,21 @@ public class QueryUtils {
         }
         decrypt = new String(abytes);
         return decrypt;
+    }
+
+    public static void addUDFToSpark(SparkSession spark) {
+        spark.udf().register("convertMSISDN", convertMSISDN);
+        spark.udf().register("vi2en", vi2en);
+        spark.udf().register("str2Ascii", str2Ascii);
+        spark.udf().register("convertBankCode", convertBankCode);
+        spark.udf().register("encryptAccNo", encryptAccNo);
+        spark.udf().register("decryptAccNo", decryptAccNo);
+        spark.udf().register("getNetwork", getNetwork);
+        spark.udf().register("getNetworkStr", getNetworkStr);
+        spark.udf().register("hash", hashSensitiveInformation);
+        // Decrypt msisdn
+        spark.udf().register("ad89828579479b2985707279b565dcfe", decryptSensitiveInformation);
+        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName)
@@ -241,22 +266,7 @@ public class QueryUtils {
         for (Map.Entry<String, String> entry : Constants.dataSource.entrySet()) {
             query = query.replaceAll(":" + entry.getKey() + ":", entry.getValue());
         }
-
-        // Query data
-        // SparkSession spark = SparkSession.builder().appName("Business Intelligence")
-        // .config("spark.master", "local[*]")
-        // .config("spark.sql.parquet.mergeSchema", "true").getOrCreate();
-
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("str2Ascii", str2Ascii);
-        spark.udf().register("convertBankCode", convertBankCode);
-        spark.udf().register("encryptAccNo", encryptAccNo);
-        spark.udf().register("decryptAccNo", decryptAccNo);
-        spark.udf().register("getNetwork", getNetwork);
-        spark.udf().register("getNetworkStr", getNetworkStr);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
         Dataset<Row> data = null;
         try {
             log.info("TOGREP | Preparing Query");
@@ -392,23 +402,23 @@ public class QueryUtils {
             }
 
 
-//		if (fileName != null) {
-//			File f = new File(fileName);
-//			FileOutputStream fos = new FileOutputStream(f);
-//			OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
-//			BufferedWriter bw = new BufferedWriter(osw);
-//			bw.write("\uFEFF");
-//			bw.write(sb + "");
-//			bw.close();
-//			osw.close();
-//			fos.close();
-//			result.put("status", true);
-//			// result.put("result", sb + "");
-//			// log.info("============= SB ===================");
-//			// log.info("+++ SB +++ " + sb + "");
-//			// log.info("============= SB ////////////////////////");
-//
-//		}
+            //		if (fileName != null) {
+            //			File f = new File(fileName);
+            //			FileOutputStream fos = new FileOutputStream(f);
+            //			OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
+            //			BufferedWriter bw = new BufferedWriter(osw);
+            //			bw.write("\uFEFF");
+            //			bw.write(sb + "");
+            //			bw.close();
+            //			osw.close();
+            //			fos.close();
+            //			result.put("status", true);
+            //			// result.put("result", sb + "");
+            //			// log.info("============= SB ===================");
+            //			// log.info("+++ SB +++ " + sb + "");
+            //			// log.info("============= SB ////////////////////////");
+            //
+            //		}
             log.info("LENGTH:" + rawResult.size() + " - " + rawHeaders.size());
             result.put("oracleResult", rawResult);
             result.put("oracleHeaders", rawHeaders);
@@ -435,20 +445,11 @@ public class QueryUtils {
         // }
 
         // Query data
-        SparkSession spark = SparkSession.builder().appName("Business Intelligence").config("spark.master", "local[*]")
-                // .config("spark.sql.parquet.mergeSchema", "true")
-                .config("spark.local.dir", "/u02/spark-local-dir").getOrCreate();
+        SparkSession spark = SparkUtils.getAvailableSparkSession();
 
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("str2Ascii", str2Ascii);
-        spark.udf().register("convertBankCode", convertBankCode);
-        spark.udf().register("encryptAccNo", encryptAccNo);
-        spark.udf().register("decryptAccNo", decryptAccNo);
-        spark.udf().register("getNetwork", getNetwork);
-        spark.udf().register("getNetworkStr", getNetworkStr);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
+
+
         Dataset<Row> data = null;
         log.info("QUERY: " + query);
         // log.info("dbSchema: " + dbSchema);
@@ -575,16 +576,7 @@ public class QueryUtils {
 
         // Query data
         SparkSession spark = SparkUtils.getAvailableSparkSession();
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("str2Ascii", str2Ascii);
-        spark.udf().register("convertBankCode", convertBankCode);
-        spark.udf().register("encryptAccNo", encryptAccNo);
-        spark.udf().register("decryptAccNo", decryptAccNo);
-        spark.udf().register("getNetwork", getNetwork);
-        spark.udf().register("getNetworkStr", getNetworkStr);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
         Dataset<Row> data = null;
         try {
             data = queryToDataset(spark, query);
@@ -614,10 +606,7 @@ public class QueryUtils {
         }
         log.info("TOGREP | Query " + query);
         // Query data
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
         Dataset<Row> data = null;
         try {
             //          data = spark.sql(query);
@@ -646,10 +635,7 @@ public class QueryUtils {
         }
         log.info("TOGREP | Query " + query);
         // Query data
-        spark.udf().register("convertMSISDN", convertMSISDN);
-        spark.udf().register("vi2en", vi2en);
-        spark.udf().register("hash", hashSensitiveInformation);
-        // spark.conf().set("spark.sql.crossJoin.enabled", "true");
+        addUDFToSpark(spark);
         Dataset<Row> data = null;
         try {
             //          data = spark.sql(query);
@@ -672,6 +658,7 @@ public class QueryUtils {
      */
     public static Dataset<Row> queryToDataset(SparkSession spark, String query) {
         Dataset<Row> result = null;
+        addUDFToSpark(spark);
         int count = 0;
         while (count < 10) {
             log.info(String.format("TOGREP | Trying query %s for the %d times", query, count + 1));
@@ -707,7 +694,7 @@ public class QueryUtils {
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, String header,
-            boolean throwError, String type) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+                                                        boolean throwError, String type) throws FileNotFoundException, UnsupportedEncodingException, IOException {
         SparkSession spark = SparkUtils.getAvailableSparkSession();
         try {
             Map result = new HashMap();
@@ -720,16 +707,8 @@ public class QueryUtils {
             for (Map.Entry<String, String> entry : Constants.dataSource.entrySet()) {
                 query = query.replaceAll(":" + entry.getKey() + ":", entry.getValue());
             }
-
+            addUDFToSpark(spark);
             // Query data
-            spark.udf().register("convertMSISDN", convertMSISDN);
-            spark.udf().register("vi2en", vi2en);
-            spark.udf().register("str2Ascii", str2Ascii);
-            spark.udf().register("convertBankCode", convertBankCode);
-            spark.udf().register("encryptAccNo", encryptAccNo);
-            spark.udf().register("decryptAccNo", decryptAccNo);
-            spark.udf().register("getNetwork", getNetwork);
-            spark.udf().register("getNetworkStr", getNetworkStr);
             // spark.conf().set("spark.sql.crossJoin.enabled", "true");
             Dataset<Row> data = null;
             try {
@@ -798,7 +777,7 @@ public class QueryUtils {
                             }
                             if ((valStr.indexOf(",") >= 0) || (valStr.indexOf('"') >= 0)) {
                                 sb.append('"').append(valStr.toString().replace("\n", " ").replace("\r", " "))
-                                .append('"');
+                                        .append('"');
                             } else {
                                 sb.append(valStr.toString().replace("\n", " ").replace("\r", " "));
                             }
@@ -818,35 +797,35 @@ public class QueryUtils {
                     type = "";
                 }
                 switch (type) {
-                case com.hh.constant.Constants.TYPE_XLSX:
-                    exportReportEXCEL(data, fileName, true);
-                    result.put("status", true);
-                    result.put("result", sb.toString());
-                    break;
-                case com.hh.constant.Constants.TYPE_TXT:
-                    exportExcelTEXT(data, fileName, true);
-                    result.put("status", true);
-                    result.put("result", sb.toString());
-                    break;
-                default:
-                    File f = new File(fileName);
-                    FileOutputStream fos = new FileOutputStream(f);
-                    OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
-                    BufferedWriter bw = new BufferedWriter(osw);
-                    bw.write("\uFEFF"); // BOM
-                    if ((header != null) && (header.length() > 0)) {
-                        bw.write('"');
-                        bw.write(header);
-                        bw.write('"');
-                        bw.write("\n\n");
-                    }
-                    bw.write(sb.toString());
-                    bw.close();
-                    osw.close();
-                    fos.close();
-                    result.put("status", true);
-                    result.put("result", sb.toString());
-                    break;
+                    case com.hh.constant.Constants.TYPE_XLSX:
+                        exportReportEXCEL(data, fileName, true);
+                        result.put("status", true);
+                        result.put("result", sb.toString());
+                        break;
+                    case com.hh.constant.Constants.TYPE_TXT:
+                        exportExcelTEXT(data, fileName, true);
+                        result.put("status", true);
+                        result.put("result", sb.toString());
+                        break;
+                    default:
+                        File f = new File(fileName);
+                        FileOutputStream fos = new FileOutputStream(f);
+                        OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
+                        BufferedWriter bw = new BufferedWriter(osw);
+                        bw.write("\uFEFF"); // BOM
+                        if ((header != null) && (header.length() > 0)) {
+                            bw.write('"');
+                            bw.write(header);
+                            bw.write('"');
+                            bw.write("\n\n");
+                        }
+                        bw.write(sb.toString());
+                        bw.close();
+                        osw.close();
+                        fos.close();
+                        result.put("status", true);
+                        result.put("result", sb.toString());
+                        break;
                 }
             }
             log.info("LENGTH:" + rawResult.size() + " - " + rawHeaders.size());
@@ -888,7 +867,7 @@ public class QueryUtils {
         try {
             String fullPath = FOLDER_REPORT.concat(fileName).concat(com.hh.constant.Constants.TYPE_CSV);
             data.repartition(1).write().option("header", "true").mode("overwrite").option("delimeter", "\t")
-            .format("com.databricks.spark.csv").save(fullPath);
+                    .format("com.databricks.spark.csv").save(fullPath);
             File dir = new File(fullPath);
             File[] matches = dir.listFiles();
             if (null == matches) {
@@ -922,7 +901,7 @@ public class QueryUtils {
                 fullPath = FOLDER_REPORT.concat(fileName).concat(com.hh.constant.Constants.TYPE_TXT);
             }
             data.repartition(1).write().option("header", "true").option("delimeter", "\t")
-            .format("com.databricks.spark.text").save(fullPath);
+                    .format("com.databricks.spark.text").save(fullPath);
             return fullPath;
         } catch (Exception e) {
             log.info("ERROR when export report format .txt");
