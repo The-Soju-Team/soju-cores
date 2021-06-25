@@ -5,6 +5,9 @@ import com.hh.util.viettel.ViettelSecurityCardUtils;
 import gnu.trove.map.hash.TCharCharHashMap;
 import org.apache.log4j.Logger;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -241,6 +244,22 @@ public class StringUtils {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * converet calendar to String yyyy-MM-dd
+     *
+     * @param date
+     * @return String format yyyy-MM-dd
+     */
+    public static String calendarToString(Calendar date) {
+        Date d = date.getTime();
+        return new SimpleDateFormat("yyyy-MM-dd").format(d);
+    }
+
+    public static String DateTimeToString(Date date) {
+        final SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        return FORMAT_DATE_TIME.format(date);
     }
 
 }
