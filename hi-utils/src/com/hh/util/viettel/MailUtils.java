@@ -263,6 +263,94 @@ public class MailUtils {
         }
     }
 
+    public static void sendMailAllIn(List<String> recipients, List<String> cc, List<String> bcc, String subject,
+            String body, List<String> attachments) {
+        if (!initialized) {
+            init();
+        }
+
+        Session session = Session.getDefaultInstance(props, auth);
+
+        try {
+            MimeMessage msg = new MimeMessage(session);
+            // set message headers
+            msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
+            msg.addHeader("format", "flowed");
+            msg.addHeader("Content-Transfer-Encoding", "8bit");
+
+            msg.setFrom(new InternetAddress(emailAddr, emailAddr));
+
+            //            msg.setReplyTo(InternetAddress.parse(recipient, false));
+
+            msg.setSubject(subject, "UTF-8");
+
+            msg.setSentDate(new Date());
+
+            // Set To: header field of the header.
+            if (null != recipients && !recipients.isEmpty()) {
+                final int SIZE_TO = recipients.size();
+                InternetAddress[] toAddress = new InternetAddress[SIZE_TO];
+
+                for (int i = 0; i < SIZE_TO; i++) {
+                    toAddress[i] = new InternetAddress(recipients.get(i), false);
+                }
+                msg.setRecipients(Message.RecipientType.TO, toAddress);
+            }
+            // Set cc: header field of the header.
+            if (null != cc && !cc.isEmpty()) {
+                final int SIZE_CC = cc.size();
+                InternetAddress[] ccAddress = new InternetAddress[SIZE_CC];
+                for (int i = 0; i < SIZE_CC; i++) {
+                    ccAddress[i] = new InternetAddress(cc.get(i), false);
+                }
+                msg.setRecipients(Message.RecipientType.CC, ccAddress);
+            }
+            // Set bcc: header field of the header.
+            if (null != bcc && !bcc.isEmpty()) {
+                final int SIZE_BCC = bcc.size();
+                InternetAddress[] bccAddress = new InternetAddress[SIZE_BCC];
+                for (int i = 0; i < SIZE_BCC; i++) {
+                    bccAddress[i] = new InternetAddress(bcc.get(i), false);
+                }
+                msg.setRecipients(Message.RecipientType.BCC, bccAddress);
+            }
+            // generate email
+
+
+            // Create a multipart message for attachment
+            Multipart multipart = new MimeMultipart();
+
+            // set text
+            BodyPart textPart = new MimeBodyPart();
+            // textPart.setHeader("Content-Type", "text/html");
+            textPart.setText(body);
+            // textPart.setContent(body, "text/html; charset=UTF-8");
+
+            // add text to email
+            multipart.addBodyPart(textPart);
+
+            // add attachments to email
+            for (String fileName : attachments) {
+                BodyPart part = new MimeBodyPart();
+                DataSource source = new FileDataSource(fileName);
+                part.setDataHandler(new DataHandler(source));
+                part.setFileName(
+                        fileName.substring((fileName.lastIndexOf("/") >= 0) ? (fileName.lastIndexOf("/") + 1) : 0));
+
+                // add file to email
+                multipart.addBodyPart(part);
+            }
+
+            msg.setContent(multipart);
+            log.info("Message is ready");
+            Transport.send(msg);
+
+            log.info(String.format("Email Sent Successfully to %s", recipients.toString()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void queueMail(String recipient, String subject, String body, List<String> attachments) {
         queueMail(recipient, subject, body, attachments, new HashMap());
     }
