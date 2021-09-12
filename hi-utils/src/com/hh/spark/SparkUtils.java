@@ -5,6 +5,7 @@ import com.hh.util.ConfigUtils;
 import org.apache.log4j.Logger;
 import org.apache.spark.sql.SparkSession;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Vector;
 import java.util.concurrent.locks.ReentrantLock;
@@ -36,9 +37,16 @@ public class SparkUtils {
     /**
      * Create SparkSession using preconfig in StartApp.config
      */
-    public static void createSparkSession() {
-        // Create spark session if null;
-        lock.lock();
+
+    private static void initYarnSpark() {
+        if (listSpark.size() == 0) {
+            SparkSession spark = SparkSession.builder().getOrCreate();
+            listSpark.add(spark);
+            Arrays.fill(availableFlag, 0);
+        }
+    }
+
+    private static void initStandaloneSpark() {
         if (listSpark.size() == 0) {
             currentNumberOfJobs = 0;
             log.info("TOGREP | CREATE " + NO_OF_SPARK_SESSION + " SPARK SESSIONS");
@@ -107,6 +115,19 @@ public class SparkUtils {
                 listSpark.add(spark);
                 availableFlag[i] = 0;
             }
+        }
+    }
+
+    public static void createSparkSession() {
+        // Create spark session if null;
+        lock.lock();
+        String sparkType = Constants.config.getConfig("sparkType");
+        if (null != sparkType && sparkType.equals("yarn")) {
+            log.info("INITIALIZING SPARK YARN MODE");
+            initYarnSpark();
+        } else {
+            log.info("INITIALIZING SPARK SPARK MODE");
+            initStandaloneSpark();
         }
         lock.unlock();
 
