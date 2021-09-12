@@ -122,12 +122,12 @@ public class SparkUtils {
         // Create spark session if null;
         lock.lock();
         String sparkType = Constants.config.getConfig("sparkType");
-        if (null != sparkType && sparkType.equals("standalone")) {
-            log.info("INITIALIZING SPARK STANDALONE MODE");
-            initStandaloneSpark();
-        } else if (null != sparkType && sparkType.equals("yarn")) {
+        if (null != sparkType && sparkType.equals("yarn")) {
             log.info("INITIALIZING SPARK YARN MODE");
             initYarnSpark();
+        } else {
+            log.info("INITIALIZING SPARK SPARK MODE");
+            initStandaloneSpark();
         }
         lock.unlock();
 
