@@ -116,3 +116,5 @@ hi-cache-server/target/
 hi-cache-server/target
 
 hi-connector/.settings/
+*/.idea/
+*.iml

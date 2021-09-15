@@ -29,6 +29,10 @@ public class RedisUtils {
         return new RedisSession.Builder().configHost(host).configPort(port).build();
     }
 
+    public static Jedis getOrCreateRedisClient(String host, int port, String password) {
+        return new RedisSession.Builder().configHost(host).configPort(port).password(password).build();
+    }
+
     public static String getRedisValue(Jedis redis, String key) {
         log.info(String.format("Getting Redis value with key: %s", key));
         try {

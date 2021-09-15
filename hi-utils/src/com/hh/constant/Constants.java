@@ -83,6 +83,8 @@ public class Constants {
 
     public static String HOST_REDIS_DEFAULT;
     public static int PORT_REDIS_DEFAULT;
+    public static String REDIS_PASSWORD_DEFAULT;
+    public static int REDIS_DATABASE_NUMBER_DEFAULT;
 
     // end Network Operator Code
     public String HDFS_URL = config.getConfig("hdfs-url");
