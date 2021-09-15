@@ -1,61 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Quan ly dieu hanh</title>
-        <link rel="shortcut icon" href="/authen/share/sso/favicon.ico">
-        <meta name=viewport content="width=device-width, initial-scale=0.9">
-    </head>
-    <body>
-		<div style="width:100%; height:100%; position: absolute; top: 0; left: 0;">
-			<img src="/authen/share/sso/images/hf_background.jpg" style="width:100%; height:100%; position: absolute; top: 0; left: 0;"/>
-		</div>
-        <div class="container">
-            <div id="headerLogo" class="header-logo"><img src="/authen/share/sso/images/logo_100.png"/></div>
-            <section class="main">
-                <form id="loginForm" class="form-2" onsubmit="submitLogin(); return false;">
-                    <input type="submit" value="ĐĂNG NHẬP" style="display:none"/>
-                    <h1 style="text-align: center;"><span class="sign-up">FINTECH BI</span></h1>
-                    <div class="clearfix" style="margin-top:14px; text-align:center;">
-                        <div id="spanUser" class="span-user">
-                            <img src="/authen/share/sso/images/user.png" alt="mobile" class="img-mobile"/>
-                            <input id="userName" type="text" name="userName" autofocus placeholder="Tên đăng nhập" class="mobile-field">
-                        </div>
-                        <div id="userNameError" class="error-message-field"></div>
-                        <div id="spanPassword" class="span-user">
-                            <img src="/authen/share/sso/images/lock.png" alt="mobile" class="img-mobile" style="width:20px; height:20px"/>
-                            <input id="password" type="password" name="password" placeholder="Mật khẩu" autocomplete="off"  class="mobile-field">
-                        </div>
-						<div id="passwordError" class="error-message-field"></div>
+
+<head>
+    <title>Quan ly dieu hanh</title>
+    <link rel="shortcut icon" href="/authen/share/sso/favicon.ico">
+    <meta name=viewport content="width=device-width, initial-scale=0.9">
+</head>
+
+<body>
+    <div style="width:100%; height:100%; position: absolute; top: 0; left: 0;">
+        <img src="/authen/share/sso/images/hf_background.jpg"
+            style="width:100%; height:100%; position: absolute; top: 0; left: 0;" />
+    </div>
+    <div class="container">
+        <div id="headerLogo" class="header-logo"><img src="/authen/share/sso/images/logo_100.png" /></div>
+        <section class="main">
+            <form id="loginForm" class="form-2" onsubmit="doLogin(); return false;">
+                <input type="submit" value="ĐĂNG NHẬP" style="display:none" />
+                <h1 style="text-align: center;"><span class="sign-up">FINTECH BI</span></h1>
+                <div class="clearfix" style="margin-top:14px; text-align:center;">
+                    <div id="spanUser" class="span-user">
+                        <img src="/authen/share/sso/images/user.png" alt="mobile" class="img-mobile" />
+                        <input id="userName" type="tel" name="userName" autofocus placeholder="Tên đăng nhập"
+                            class="mobile-field">
                     </div>
-                    <p id="captchaLabel" class="captcha-label" style="display:none">
-                        <input type="text" id="captcha" name="captcha" placeholder="Nhập mã bảo vệ">
-						<input type="hidden" id="callback" name="callback">
-                        <span id="captchaError" class="captcha-error"></span>
-                        <a href="#" onclick="refreshCaptcha();"><img title="Lấy mã bảo vệ khác" src = "/authen/share/sso/images/refresh.png"></a>
-                    </p>					
-                    <p id="captchaField" class="float" style="display:none">
-                        <img id="captchaImg" class="captcha" src = "">
-                    </p>
-                    <div id="buttonArea" class="clearfix button-area"> 
-                        <button id="loginButton" type="submit" style="width: 100%">
-                            <i class="fa fa-sign-in"></i>&nbsp; ĐĂNG NHẬP
-                        </button>
+                    <div id="userNameError" class="error-message-field"></div>
+                    <div id="spanPassword" class="span-user">
+                        <img src="/authen/share/sso/images/lock.png" alt="mobile" class="img-mobile"
+                            style="width:20px; height:20px" />
+                        <input id="password" type="password" name="password" placeholder="Mật khẩu" autocomplete="off"
+                            class="mobile-field">
                     </div>
-                    <p class="clearfix"> 
-                        <span id="errorMessage" class="alert alert-danger" role="alert" style="display:none;">
-                        </span>
-                    </p>
-                    <p class="clearfix"> 
-                        <span id="successMessage" class="alert alert-success" role="alert" style="display:none;">
-                        </span>
-                    </p>
-                </form>​​
-            </section>
-        </div>
-        <link rel="stylesheet" type="text/css" href="/authen/share/sso/css/style.css" />
-        <script src="/authen/share/sso/js/jquery-1.12.4.min.js"></script>           
-        <script>
-            loadPage();
-        </script>     
-    </body>
+                    <div id="passwordError" class="error-message-field"></div>
+                </div>
+                <p id="captchaLabel" class="captcha-label" style="display:none">
+                    <input type="text" id="captcha" name="captcha" placeholder="Nhập mã bảo vệ">
+                    <input type="hidden" id="callback" name="callback">
+                    <span id="captchaError" class="captcha-error"></span>
+                    <a href="#" onclick="refreshCaptcha();"><img title="Lấy mã bảo vệ khác"
+                            src="/authen/share/sso/images/refresh.png"></a>
+                </p>
+                <p id="captchaField" class="float" style="display:none">
+                    <img id="captchaImg" class="captcha" src="">
+                </p>
+                <div id="buttonArea" class="clearfix button-area">
+                    <button id="loginButton" type="submit" style="width: 100%">
+                        <i class="fa fa-sign-in"></i>&nbsp; ĐĂNG NHẬP
+                    </button>
+                </div>
+                <p class="clearfix">
+                    <span id="errorMessage" class="alert alert-danger" role="alert" style="display:none;">
+                    </span>
+                </p>
+                <p class="clearfix">
+                    <span id="successMessage" class="alert alert-success" role="alert" style="display:none;">
+                    </span>
+                </p>
+            </form>​​
+        </section>
+    </div>
+    <link rel="stylesheet" type="text/css" href="/authen/share/sso/css/style.css" />
+    <script src="/authen/share/sso/js/jquery-1.12.4.min.js"></script>
+    <script src="/authen/share/js/app/app.js"></script>
+    <script>
+        loadPage();
+    </script>
+</body>
+
 </html>

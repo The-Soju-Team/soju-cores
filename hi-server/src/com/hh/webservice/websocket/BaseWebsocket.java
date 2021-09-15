@@ -7,27 +7,27 @@ package com.hh.webservice.websocket;
 
 import com.hh.server.HHServer;
 import com.hh.web.HttpUtils;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- *
  * @author hiendm1
  */
 public abstract class BaseWebsocket implements IWebsocketConnection {
     public HttpUtils httpUtils;
-    public Socket socket; 
-    
+    public Socket socket;
+
     @Override
     public void setChannel(Socket socket) {
         this.socket = socket;
     }
-    
+
     @Override
     public void setHttpUtils(HttpUtils hu) {
         this.httpUtils = hu;
-    }    
+    }
 
     @Override
     public abstract void onReceive(byte[] data);
@@ -47,7 +47,7 @@ public abstract class BaseWebsocket implements IWebsocketConnection {
             os.flush();
         } catch (IOException ex) {
             HHServer.mainLogger.error("HHServer error: ", ex);
-        }  
+        }
     }
 
     @Override
@@ -59,7 +59,7 @@ public abstract class BaseWebsocket implements IWebsocketConnection {
             os.flush();
         } catch (IOException ex) {
             HHServer.mainLogger.error("HHServer error: ", ex);
-        }        
+        }
     }
 
     @Override
@@ -70,5 +70,5 @@ public abstract class BaseWebsocket implements IWebsocketConnection {
             HHServer.mainLogger.error("HHServer error: ", ex);
         }
     }
-    
+
 }

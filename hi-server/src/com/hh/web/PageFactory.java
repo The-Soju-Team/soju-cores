@@ -8,7 +8,6 @@ package com.hh.web;
 import java.util.HashMap;
 
 /**
- *
  * @author HienDM
  */
 public class PageFactory {
@@ -19,7 +18,7 @@ public class PageFactory {
         this.template = template;
         this.childPages = childPages;
     }
-    
+
     public PageFactory(String template) {
         this.template = template;
     }
@@ -39,9 +38,9 @@ public class PageFactory {
     public void setChildPages(HashMap childPages) {
         this.childPages = childPages;
     }
-    
+
     public void addChildPage(String position, String path) {
-        if(childPages == null) childPages = new HashMap();
+        if (childPages == null) childPages = new HashMap();
         childPages.put(path, position);
     }
 }

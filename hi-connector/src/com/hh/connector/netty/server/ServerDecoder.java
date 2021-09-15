@@ -2,14 +2,15 @@ package com.hh.connector.netty.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import com.google.gson.internal.LinkedTreeMap;
-
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -18,29 +19,6 @@ import java.util.List;
 public class ServerDecoder extends ByteToMessageDecoder {
 
     private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ServerDecoder.class.getSimpleName());
-
-    @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        try {
-            while (in.readableBytes() > 4) {
-                in.markReaderIndex();
-                int size = in.readInt();
-                if (in.readableBytes() < size) {
-                    in.resetReaderIndex();
-                    return;
-                }
-
-                ByteBuf bb = in.readSlice(size);
-                byte[] data = new byte[size];
-                bb.readBytes(data);
-                
-                out.add(data);
-            }
-        } catch (Exception ex) {
-            in.resetReaderIndex();
-            log.error("Error when decode Netty: ", ex);
-        }
-    }
 
     public static byte[] mapToByteArray(LinkedTreeMap obj) throws IOException {
         byte[] data = null;
@@ -67,11 +45,34 @@ public class ServerDecoder extends ByteToMessageDecoder {
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
             Gson gson = builder.create();
-            String json = new String(bytes, Charset.forName("UTF-8"));
+            String json = new String(bytes, StandardCharsets.UTF_8);
             obj = gson.fromJson(json, LinkedTreeMap.class);
         } catch (Exception ex) {
             log.error("Error convert bytes to object: ", ex);
         }
         return obj;
+    }
+
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+        try {
+            while (in.readableBytes() > 4) {
+                in.markReaderIndex();
+                int size = in.readInt();
+                if (in.readableBytes() < size) {
+                    in.resetReaderIndex();
+                    return;
+                }
+
+                ByteBuf bb = in.readSlice(size);
+                byte[] data = new byte[size];
+                bb.readBytes(data);
+
+                out.add(data);
+            }
+        } catch (Exception ex) {
+            in.resetReaderIndex();
+            log.error("Error when decode Netty: ", ex);
+        }
     }
 }

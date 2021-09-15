@@ -6,7 +6,6 @@
 package com.hh.connector.server;
 
 /**
- *
  * @author dvgp_admin
  */
 public interface LoadAfterReady {

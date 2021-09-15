@@ -1,18 +1,17 @@
 package com.hh.socket.websocket;
 
-import java.util.List;
-import java.util.Map;
-
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Parse an URI to provide WebSocket service with request informations.
  *
  * @version $Id$
  */
-public class NettyWebSocketRequest implements WebSocketRequest
-{
+public class NettyWebSocketRequest implements WebSocketRequest {
     private final String key;
 
     private final String handlerName;
@@ -21,8 +20,7 @@ public class NettyWebSocketRequest implements WebSocketRequest
 
     private final Map<String, List<String>> parameters;
 
-    NettyWebSocketRequest(FullHttpRequest req, WebSocketService wss)
-    {
+    NettyWebSocketRequest(FullHttpRequest req, WebSocketService wss) {
         QueryStringDecoder dec = new QueryStringDecoder(req.getUri());
         parameters = dec.parameters();
         final List<String> keyParam = parameters.get("k");
@@ -43,32 +41,27 @@ public class NettyWebSocketRequest implements WebSocketRequest
     }
 
     @Override
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return key != null && handlerName != null && wiki != null;
     }
 
     @Override
-    public String getKey()
-    {
+    public String getKey() {
         return key;
     }
 
     @Override
-    public String getHandlerName()
-    {
+    public String getHandlerName() {
         return handlerName;
     }
 
     @Override
-    public String getPath()
-    {
+    public String getPath() {
         return wiki;
     }
 
     @Override
-    public Map<String, List<String>> getParameters()
-    {
+    public Map<String, List<String>> getParameters() {
         return parameters;
     }
 }

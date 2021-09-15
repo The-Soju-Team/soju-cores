@@ -25,61 +25,62 @@
 
 package com.hh.net.impl.httpserver;
 
-import com.hh.net.httpserver.HttpHandler;
 import com.hh.net.httpserver.HttpContext;
+import com.hh.net.httpserver.HttpHandler;
 import com.hh.net.httpserver.HttpServer;
-import java.net.*;
-import java.io.*;
-import java.util.concurrent.*;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
 
 public class HttpServerImpl extends HttpServer {
 
     ServerImpl server;
 
-    HttpServerImpl () throws IOException {
-        this (new InetSocketAddress(80), 0);
+    HttpServerImpl() throws IOException {
+        this(new InetSocketAddress(80), 0);
     }
 
-    HttpServerImpl (
-        InetSocketAddress addr, int backlog
+    HttpServerImpl(
+            InetSocketAddress addr, int backlog
     ) throws IOException {
-        server = new ServerImpl (this, "http", addr, backlog);
+        server = new ServerImpl(this, "http", addr, backlog);
     }
 
-    public void bind (InetSocketAddress addr, int backlog) throws IOException {
-        server.bind (addr, backlog);
+    public void bind(InetSocketAddress addr, int backlog) throws IOException {
+        server.bind(addr, backlog);
     }
 
-    public void start () {
+    public void start() {
         server.start();
     }
 
-    public void setExecutor (Executor executor) {
-        server.setExecutor(executor);
-    }
-
-    public Executor getExecutor () {
+    public Executor getExecutor() {
         return server.getExecutor();
     }
 
-    public void stop (int delay) {
-        server.stop (delay);
+    public void setExecutor(Executor executor) {
+        server.setExecutor(executor);
     }
 
-    public HttpContextImpl createContext (String path, HttpHandler handler) {
-        return server.createContext (path, handler);
+    public void stop(int delay) {
+        server.stop(delay);
     }
 
-    public HttpContextImpl createContext (String path) {
-        return server.createContext (path);
+    public HttpContextImpl createContext(String path, HttpHandler handler) {
+        return server.createContext(path, handler);
     }
 
-    public void removeContext (String path) throws IllegalArgumentException {
-        server.removeContext (path);
+    public HttpContextImpl createContext(String path) {
+        return server.createContext(path);
     }
 
-    public void removeContext (HttpContext context) throws IllegalArgumentException {
-        server.removeContext (context);
+    public void removeContext(String path) throws IllegalArgumentException {
+        server.removeContext(path);
+    }
+
+    public void removeContext(HttpContext context) throws IllegalArgumentException {
+        server.removeContext(context);
     }
 
     public InetSocketAddress getAddress() {

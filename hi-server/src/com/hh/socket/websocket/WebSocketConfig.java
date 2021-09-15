@@ -20,11 +20,10 @@
 package com.hh.socket.websocket;
 
 
-
-
-public interface WebSocketConfig
-{
-    /** Whether SSL should be enabled. */
+public interface WebSocketConfig {
+    /**
+     * Whether SSL should be enabled.
+     */
     boolean sslEnabled();
 
     /**
@@ -33,10 +32,14 @@ public interface WebSocketConfig
      */
     String getCertChainFilename();
 
-    /** The filename of the SSL private key in OpenSSL PEM format. */
+    /**
+     * The filename of the SSL private key in OpenSSL PEM format.
+     */
     String getPrivateKeyFilename();
 
-    /** The IP address to bind to, in case of a machine with multiple interfaces. */
+    /**
+     * The IP address to bind to, in case of a machine with multiple interfaces.
+     */
     String getBindTo();
 
     /**
@@ -44,14 +47,16 @@ public interface WebSocketConfig
      * server's hostname and 'ws' oe 'wss' depending on whether ssl is enabled but in
      * the event that the websocket is tunneled through a different machine or the
      * hostname is not the actual domain, this allows it to be specified manually.
-     *
+     * <p>
      * Examples include:
      * ws://my.website.com:5678/
      * wss://123.45.67.8:5556/
      */
     String getExternalPath();
 
-    /** The port number to bind machine. */
+    /**
+     * The port number to bind machine.
+     */
     int getPort();
 
     /**

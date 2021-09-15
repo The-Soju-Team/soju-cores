@@ -36,6 +36,7 @@ import com.sun.org.apache.xerces.internal.impl.XMLEntityManager;
 import com.sun.org.apache.xerces.internal.impl.PropertyManager;
 import com.sun.org.apache.xerces.internal.impl.XMLErrorReporter;
 import com.sun.org.apache.xerces.internal.impl.Constants;
+// import com.sun.xml.internal.stream.Entity;
 import java.util.Enumeration;
 
 /**
@@ -65,7 +66,7 @@ public class XMLEntityStorage {
 
     protected com.sun.xml.internal.stream.Entity.ScannedEntity fCurrentEntity ;
 
-    private XMLEntityManager fEntityManager;
+    public XMLEntityManager fEntityManager;
     /**
      * Error reporter. This property identifier is:
      * http://apache.org/xml/properties/internal/error-reporter

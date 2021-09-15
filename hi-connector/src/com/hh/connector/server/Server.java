@@ -10,10 +10,11 @@ import com.hh.connector.netty.client.Connector;
 import com.hh.connector.netty.server.NettyServer;
 import com.hh.connector.netty.server.ServerFilter;
 import com.hh.util.ConfigUtils;
+
 import java.util.HashMap;
+import java.util.List;
 
 /**
- *
  * @author HienDM
  */
 public class Server {
@@ -33,12 +34,12 @@ public class Server {
 
     public void setServerFilter(ServerFilter serverFilter) {
         this.serverFilter = serverFilter;
-    }    
+    }
 
     public void setLoadAfterReady(LoadAfterReady loadAfterReady) {
         this.loadAfterReady = loadAfterReady;
     }
-    
+
     public void start(final String configPath) {
         config = new ConfigUtils(configPath);
         connector = new Connector(this);
@@ -58,34 +59,39 @@ public class Server {
         netty.start();
         log.info("Listener started successfully!");
     }
-    
+
     public void initProcess() {
-        log.info("Init server process... ");
-        int count = 1;
-        while (!config.getProcessServer("process" + count).isEmpty()) {
-            String[] action = config.getProcessServer("process" + count).split(",");
-            try {
-                log.info("[" + action[0] + "] " + action[1]);
-                serverAction.put(action[0], Class.forName(action[1]));
-            } catch (ClassNotFoundException ex) {
-                log.error("Error when init process: ", ex);
+        log.info("Init server processes....");
+        List<String> serverProcesses = config.getServerProcesses();
+        if (serverProcesses != null && serverProcesses.size() > 0) {
+            for (String process : serverProcesses) {
+                String[] action = process.split(",");
+                try {
+                    log.info(String.format("[%s] : %s", action[0].split("=")[1], action[1]));
+                    serverAction.put(action[0].split("=")[1], Class.forName(action[1]));
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                    log.error(String.format("Not found class %s for process %s", action[1], action[0]));
+                }
             }
-            count++;
         }
-        log.info("Init client process... ");
-        count = 1;
-        while (!config.getProcessClient("process" + count).isEmpty()) {
-            String[] action = config.getProcessClient("process" + count).split(",");
-            try {
-                log.info("[" + action[0] + "] " + action[1]);
-                clientAction.put(action[0], Class.forName(action[1]));
-            } catch (ClassNotFoundException ex) {
-                log.error("Error when init process: ", ex);
+
+        log.info("Init client processes....");
+        List<String> clientProcesses = config.getClientProcesses();
+        if (clientProcesses != null && clientProcesses.size() > 0) {
+            for (String process : clientProcesses) {
+                String[] action = process.split(",");
+                try {
+                    log.info(String.format("[%s] : %s", action[0].split("=")[1], action[1]));
+                    clientAction.put(action[0].split("=")[1], Class.forName(action[1]));
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                    log.error(String.format("Not found class %s for process %s", action[1], action[0]));
+                }
             }
-            count++;
-        }        
+        }
     }
- 
+
     public void stop() {
         nettyServer.stopServer();
     }

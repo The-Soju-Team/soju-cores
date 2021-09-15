@@ -8,7 +8,6 @@ package com.hh.component;
 import java.util.ArrayList;
 
 /**
- *
  * @author vtsoft
  */
 public class TreeBO {

@@ -25,15 +25,16 @@
 
 package com.hh.net.httpserver.spi;
 
-import com.hh.net.httpserver.HttpsServer;
 import com.hh.net.httpserver.HttpServer;
+import com.hh.net.httpserver.HttpsServer;
+import sun.misc.Service;
+import sun.misc.ServiceConfigurationError;
+
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
-import sun.misc.Service;
-import sun.misc.ServiceConfigurationError;
 
 /**
  * Service provider class for HttpServer.
@@ -43,31 +44,15 @@ import sun.misc.ServiceConfigurationError;
  */
 public abstract class HttpServerProvider {
 
-    /**
-     * creates a HttpServer from this provider
-     * @param addr the address to bind to. May be <code>null</code>
-     * @param backlog the socket backlog. A value of <code>zero</code> means the systems default
-     */
-    public abstract HttpServer createHttpServer (InetSocketAddress addr, int backlog) throws IOException;
-
-    /**
-     * creates a HttpsServer from this provider
-     * @param addr the address to bind to. May be <code>null</code>
-     * @param backlog the socket backlog. A value of <code>zero</code> means the systems default
-     */
-    public abstract HttpsServer createHttpsServer (InetSocketAddress addr, int backlog) throws IOException;
-
-
-
     private static final Object lock = new Object();
     private static HttpServerProvider provider = null;
+
 
     /**
      * Initializes a new instance of this class.  </p>
      *
-     * @throws  SecurityException
-     *          If a security manager has been installed and it denies
-     *          {@link RuntimePermission}<tt>("httpServerProvider")</tt>
+     * @throws SecurityException If a security manager has been installed and it denies
+     *                           {@link RuntimePermission}<tt>("httpServerProvider")</tt>
      */
     protected HttpServerProvider() {
         SecurityManager sm = System.getSecurityManager();
@@ -81,8 +66,8 @@ public abstract class HttpServerProvider {
             return false;
         try {
             Class c = Class.forName(cn, true,
-                                    ClassLoader.getSystemClassLoader());
-            provider = (HttpServerProvider)c.newInstance();
+                    ClassLoader.getSystemClassLoader());
+            provider = (HttpServerProvider) c.newInstance();
             return true;
         } catch (ClassNotFoundException x) {
             throw new ServiceConfigurationError(x);
@@ -97,12 +82,12 @@ public abstract class HttpServerProvider {
 
     private static boolean loadProviderAsService() {
         Iterator i = Service.providers(HttpServerProvider.class,
-                                       ClassLoader.getSystemClassLoader());
-        for (;;) {
+                ClassLoader.getSystemClassLoader());
+        for (; ; ) {
             try {
                 if (!i.hasNext())
                     return false;
-                provider = (HttpServerProvider)i.next();
+                provider = (HttpServerProvider) i.next();
                 return true;
             } catch (ServiceConfigurationError sce) {
                 if (sce.getCause() instanceof SecurityException) {
@@ -147,14 +132,14 @@ public abstract class HttpServerProvider {
      * <p> Subsequent invocations of this method return the provider that was
      * returned by the first invocation.  </p>
      *
-     * @return  The system-wide default HttpServerProvider
+     * @return The system-wide default HttpServerProvider
      */
-    public static HttpServerProvider provider () {
+    public static HttpServerProvider provider() {
         synchronized (lock) {
             if (provider != null)
                 return provider;
-            return (HttpServerProvider)AccessController
-                .doPrivileged(new PrivilegedAction<Object>() {
+            return (HttpServerProvider) AccessController
+                    .doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
                             if (loadProviderFromProperty())
                                 return provider;
@@ -166,5 +151,21 @@ public abstract class HttpServerProvider {
                     });
         }
     }
+
+    /**
+     * creates a HttpServer from this provider
+     *
+     * @param addr    the address to bind to. May be <code>null</code>
+     * @param backlog the socket backlog. A value of <code>zero</code> means the systems default
+     */
+    public abstract HttpServer createHttpServer(InetSocketAddress addr, int backlog) throws IOException;
+
+    /**
+     * creates a HttpsServer from this provider
+     *
+     * @param addr    the address to bind to. May be <code>null</code>
+     * @param backlog the socket backlog. A value of <code>zero</code> means the systems default
+     */
+    public abstract HttpsServer createHttpsServer(InetSocketAddress addr, int backlog) throws IOException;
 
 }

@@ -7,34 +7,30 @@ package com.hh.web;
 
 import com.hh.redis.RedisConnector;
 import com.hh.server.HHServer;
-import com.hh.util.ConfigUtils;
-import java.util.List;
-import java.util.Map;
 import redis.clients.jedis.JedisPool;
 
 /**
- *
  * @author hiendm1
  */
 public class RedisSession extends HttpSession {
+    public static JedisPool jedisPool;
     private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(RedisSession.class.getSimpleName());
     private static RedisSession session;
     private static RedisConnector connector;
-    public static JedisPool jedisPool;
-    
+
     public RedisSession() {
         connector = new RedisConnector(
-                HHServer.config.getConfig("redis.host"), 
-                Integer.parseInt(HHServer.config.getConfig("redis.port")), 
-                Integer.parseInt(HHServer.config.getConfig("redis.max-total")), 
+                HHServer.config.getConfig("redis.host"),
+                Integer.parseInt(HHServer.config.getConfig("redis.port")),
+                Integer.parseInt(HHServer.config.getConfig("redis.max-total")),
                 Integer.parseInt(HHServer.config.getConfig("redis.max-wait-mili")));
     }
-        
+
     public static RedisSession getInstance() {
         if (session == null) session = new RedisSession();
         return session;
-    }    
-    
+    }
+
     @Override
     public void createSession(String sessionId) {
         connector.createStore(sessionId, sessionTimeout);
@@ -44,7 +40,7 @@ public class RedisSession extends HttpSession {
     public Object getSessionAttribute(String sessionId, String key) {
         return connector.getStoreAttribute(sessionId, key);
     }
-    
+
     @Override
     public void setSessionAttribute(String sessionId, String key, Object value) {
         connector.setStoreAttribute(sessionId, key, value);

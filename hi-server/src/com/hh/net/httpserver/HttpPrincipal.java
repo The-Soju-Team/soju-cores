@@ -24,6 +24,7 @@
  */
 
 package com.hh.net.httpserver;
+
 import java.security.Principal;
 
 /**
@@ -35,11 +36,12 @@ public class HttpPrincipal implements Principal {
 
     /**
      * creates a HttpPrincipal from the given username and realm
+     *
      * @param username The name of the user within the realm
-     * @param realm The realm.
+     * @param realm    The realm.
      * @throws NullPointerException if either username or realm are null
      */
-    public HttpPrincipal (String username, String realm) {
+    public HttpPrincipal(String username, String realm) {
         if (username == null || realm == null) {
             throw new NullPointerException();
         }
@@ -53,11 +55,11 @@ public class HttpPrincipal implements Principal {
      * username and realm are equal to this object's username
      * and realm. Returns <code>false</code> otherwise.
      */
-    public boolean equals (Object another) {
+    public boolean equals(Object another) {
         if (!(another instanceof HttpPrincipal)) {
             return false;
         }
-        HttpPrincipal theother = (HttpPrincipal)another;
+        HttpPrincipal theother = (HttpPrincipal) another;
         return (username.equals(theother.username) &&
                 realm.equals(theother.realm));
     }
@@ -89,7 +91,7 @@ public class HttpPrincipal implements Principal {
      * as <code>(getUsername()+getRealm().hashCode()</code>
      */
     public int hashCode() {
-        return (username+realm).hashCode();
+        return (username + realm).hashCode();
     }
 
     /**

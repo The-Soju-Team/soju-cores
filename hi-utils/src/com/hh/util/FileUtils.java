@@ -1,23 +1,9 @@
 package com.hh.util;
 
 import com.google.common.io.Files;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
+import org.apache.commons.io.IOUtils;
+
+import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -25,11 +11,10 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import org.apache.commons.io.IOUtils;
 
 /**
- * @since 26/03/2014
  * @author HienDM1
+ * @since 26/03/2014
  */
 public class FileUtils {
     /**
@@ -58,105 +43,7 @@ public class FileUtils {
      * optional byte-order mark
      */
     public static final String UTF_16 = "UTF-16";
-    
-    /**
-     * Hàm ghi chuỗi dữ liệu ra File
-     * ví dụ: writeStringToFile(String.format("Hello%sthere!",System.getProperty("line.separator")),"D:\\test.txt", UTF_16LE)
-     * 
-     * @since 26/03/2014 HienDM
-     * @param content nội dung chuỗi dữ liệu, để xuống dòng sử dụng
-     * "line.separator" ví dụ:
-     * String.format("Hello%sthere!",System.getProperty("line.separator"));
-     * @param outputFilePath đường dẫn file
-     * @param charset Bộ mã ký tự
-     */
-    public void writeStringToFile(String content, String outputFilePath, String charset) throws UnsupportedEncodingException, FileNotFoundException, IOException {
-        FileOutputStream fos = new FileOutputStream(outputFilePath);
-        OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
-        BufferedWriter outputFile = new BufferedWriter(osw);        
-        try {
-            outputFile.write(content);
-        } finally {
-            outputFile.close();
-            osw.close();
-            fos.close();
-        }
-    }
-    
-    /**
-     * Hàm ghi chuỗi dữ liệu ra File
-     * ví dụ: writeStringToFile(String.format("Hello%sthere!",System.getProperty("line.separator")),"D:\\test.txt", UTF_16LE)
-     * 
-     * @since 26/03/2014 HienDM
-     * @param content nội dung chuỗi dữ liệu, để xuống dòng sử dụng
-     * "line.separator" ví dụ:
-     * String.format("Hello%sthere!",System.getProperty("line.separator"));
-     * @param outputFilePath đường dẫn file
-     * @param charset Bộ mã ký tự
-     */
-    public void writeContinueStringToFile(String content, String outputFilePath, String charset) throws UnsupportedEncodingException, FileNotFoundException, IOException {
-        FileOutputStream fos = new FileOutputStream(outputFilePath, true);
-        OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
-        BufferedWriter outputFile = new BufferedWriter(osw);        
-        try {
-            outputFile.write(content);
-        } finally {
-            outputFile.close();
-            osw.close();
-            fos.close();
-        }
-    }    
-    
-    /**
-     * Hàm ghi dữ liệu trong File ra chuỗi
-     * ví dụ: String content = writeFileToString("D:\\test.txt",UTF_16LE)
-     * 
-     * @since 26/03/2014 HienDM
-     * @param inputFilePath đường dẫn file
-     * @return chuỗi dữ liệu
-     * @param charset Bộ mã ký tự
-     */
-    public String readFileToString(String inputFilePath, String charset) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        File inputFile = new File(inputFilePath);
-        return readFileToString(inputFile, charset);
-    }
-    
-    /**
-     * Hàm ghi dữ liệu trong File ra chuỗi
-     * ví dụ: String content = writeFileToString("D:\\test.txt",UTF_16LE)
-     * 
-     * @since 26/03/2014 HienDM
-     * @param inputFile file
-     * @return chuỗi dữ liệu
-     * @param charset Bộ mã ký tự
-     */
-    public String readFileToString(File inputFile, String charset) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        StringBuilder returnValue = new StringBuilder();
-        try (
-                FileInputStream inputStream = new FileInputStream(inputFile);
-                InputStreamReader isr = new InputStreamReader(inputStream, charset);
-                BufferedReader br = new BufferedReader(isr);){
-            StringBuilder line =  new StringBuilder();
-            while (!(line.append(br.readLine())).toString().equals("null")) {
-                returnValue.append(line);
-                returnValue.append(System.getProperty("line.separator"));
-                line =  new StringBuilder();
-            }
-        }
-        return returnValue.toString();
-    }
-    
-    public void writeStringToFileNIO(File file, String content, String charset) throws IOException {
-        final byte[] messageBytes = content.getBytes(Charset.forName(charset));
-        final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        raf.seek(raf.length());
-        final FileChannel fc = raf.getChannel();
-        final MappedByteBuffer mbf = fc.map(FileChannel.MapMode.READ_WRITE, fc.
-                position(), messageBytes.length);
-        fc.close();
-        mbf.put(messageBytes);
-    }    
-        
+
     /**
      * Kiểm tra an toàn thông tin đường dẫn file
      *
@@ -182,11 +69,11 @@ public class FileUtils {
         }
         return true;
     }
-    
+
     /**
      * Kiểm tra file có đúng định dạng không
      *
-     * @param fileName Tên file
+     * @param fileName    Tên file
      * @param allowedList Các định dạng file được phép
      * @return File có đúng định dạng hay không
      */
@@ -203,13 +90,13 @@ public class FileUtils {
         }
         return false;
     }
-    
+
     /**
      * Lấy đuôi file (định dạng file)
      *
      * @param fileName Tên file
      * @return Đuôi file (định dạng file)
-     */    
+     */
     public static String extractFileExt(String fileName) {
         int dotPos = fileName.lastIndexOf(".");
         String extension = fileName.substring(dotPos);
@@ -227,12 +114,12 @@ public class FileUtils {
         String fileNameNotExt = dotPos > 0 ? fileName.substring(0, dotPos) : fileName;
 
         return fileNameNotExt;
-    }    
-    
+    }
+
     /**
      * Ghi dữ liệu từ inputStream tới file
      *
-     * @param is input stream
+     * @param is       input stream
      * @param filePath Tên file
      */
     public static void writeFileFromInputStream(InputStream is, String filePath) throws FileNotFoundException, IOException {
@@ -244,34 +131,171 @@ public class FileUtils {
                 os.write(buffer, 0, bytesRead);
             }
             IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(os);       
+            IOUtils.closeQuietly(os);
         } finally {
             is.close();
             os.close();
         }
     }
-    
+
     /**
      * Hàm copy File
      *
-     * @param srcPath File nguồn
-     * @param destPath File đích
+     * @param srcPath   File nguồn
+     * @param destPath  File đích
      * @param isReplace thay thế hay không
      * @return 1:Thành công, -1:Thất bại vì file nguồn không tồn tại, 0:Thất bại vì file đích đã tồn tại
      */
     public static int copyFile(String srcPath, String destPath, boolean isReplace) throws IOException {
         File srcFile = new File(srcPath);
-        if(srcFile.exists()) {
+        if (srcFile.exists()) {
             File destFile = new File(destPath);
-            if(destFile.exists()) {
-                if(isReplace) destFile.delete();
+            if (destFile.exists()) {
+                if (isReplace) destFile.delete();
                 else return 0;
             }
             Files.copy(srcFile, destFile);
         } else return -1;
         return 1;
-    }  
-    
+    }
+
+    public static byte[] objectToByteArray(Object obj) throws IOException {
+        byte[] bytes = null;
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos);) {
+            oos.writeObject(obj);
+            oos.flush();
+            bytes = bos.toByteArray();
+        }
+        return bytes;
+    }
+
+    public static Object byteArrayToObject(byte[] bytes) throws IOException, ClassNotFoundException {
+        Object obj = null;
+        try (
+                ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+                ObjectInputStream ois = new ObjectInputStream(bis);) {
+            obj = ois.readObject();
+        }
+        return obj;
+    }
+
+    public static byte[] hexToByteArray(String s) {
+        byte[] b = new byte[s.length() / 2];
+        for (int i = 0; i < b.length; i++) {
+            int index = i * 2;
+            int v = Integer.parseInt(s.substring(index, index + 2), 16);
+            b[i] = (byte) v;
+        }
+        return b;
+    }
+
+    public static String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b : a) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Hàm ghi chuỗi dữ liệu ra File
+     * ví dụ: writeStringToFile(String.format("Hello%sthere!",System.getProperty("line.separator")),"D:\\test.txt", UTF_16LE)
+     *
+     * @param content        nội dung chuỗi dữ liệu, để xuống dòng sử dụng
+     *                       "line.separator" ví dụ:
+     *                       String.format("Hello%sthere!",System.getProperty("line.separator"));
+     * @param outputFilePath đường dẫn file
+     * @param charset        Bộ mã ký tự
+     * @since 26/03/2014 HienDM
+     */
+    public void writeStringToFile(String content, String outputFilePath, String charset) throws UnsupportedEncodingException, FileNotFoundException, IOException {
+        FileOutputStream fos = new FileOutputStream(outputFilePath);
+        OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
+        BufferedWriter outputFile = new BufferedWriter(osw);
+        try {
+            outputFile.write(content);
+        } finally {
+            outputFile.close();
+            osw.close();
+            fos.close();
+        }
+    }
+
+    /**
+     * Hàm ghi chuỗi dữ liệu ra File
+     * ví dụ: writeStringToFile(String.format("Hello%sthere!",System.getProperty("line.separator")),"D:\\test.txt", UTF_16LE)
+     *
+     * @param content        nội dung chuỗi dữ liệu, để xuống dòng sử dụng
+     *                       "line.separator" ví dụ:
+     *                       String.format("Hello%sthere!",System.getProperty("line.separator"));
+     * @param outputFilePath đường dẫn file
+     * @param charset        Bộ mã ký tự
+     * @since 26/03/2014 HienDM
+     */
+    public void writeContinueStringToFile(String content, String outputFilePath, String charset) throws UnsupportedEncodingException, FileNotFoundException, IOException {
+        FileOutputStream fos = new FileOutputStream(outputFilePath, true);
+        OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
+        BufferedWriter outputFile = new BufferedWriter(osw);
+        try {
+            outputFile.write(content);
+        } finally {
+            outputFile.close();
+            osw.close();
+            fos.close();
+        }
+    }
+
+    /**
+     * Hàm ghi dữ liệu trong File ra chuỗi
+     * ví dụ: String content = writeFileToString("D:\\test.txt",UTF_16LE)
+     *
+     * @param inputFilePath đường dẫn file
+     * @param charset       Bộ mã ký tự
+     * @return chuỗi dữ liệu
+     * @since 26/03/2014 HienDM
+     */
+    public String readFileToString(String inputFilePath, String charset) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        File inputFile = new File(inputFilePath);
+        return readFileToString(inputFile, charset);
+    }
+
+    /**
+     * Hàm ghi dữ liệu trong File ra chuỗi
+     * ví dụ: String content = writeFileToString("D:\\test.txt",UTF_16LE)
+     *
+     * @param inputFile file
+     * @param charset   Bộ mã ký tự
+     * @return chuỗi dữ liệu
+     * @since 26/03/2014 HienDM
+     */
+    public String readFileToString(File inputFile, String charset) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        StringBuilder returnValue = new StringBuilder();
+        try (
+                FileInputStream inputStream = new FileInputStream(inputFile);
+                InputStreamReader isr = new InputStreamReader(inputStream, charset);
+                BufferedReader br = new BufferedReader(isr);) {
+            StringBuilder line = new StringBuilder();
+            while (!(line.append(br.readLine())).toString().equals("null")) {
+                returnValue.append(line);
+                returnValue.append(System.getProperty("line.separator"));
+                line = new StringBuilder();
+            }
+        }
+        return returnValue.toString();
+    }
+
+    public void writeStringToFileNIO(File file, String content, String charset) throws IOException {
+        final byte[] messageBytes = content.getBytes(Charset.forName(charset));
+        final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        raf.seek(raf.length());
+        final FileChannel fc = raf.getChannel();
+        final MappedByteBuffer mbf = fc.map(FileChannel.MapMode.READ_WRITE, fc.
+                position(), messageBytes.length);
+        fc.close();
+        mbf.put(messageBytes);
+    }
+
     public String readLastLine(File file) throws FileNotFoundException, IOException {
         RandomAccessFile fileHandler = null;
         try {
@@ -311,7 +335,7 @@ public class FileUtils {
             }
         }
     }
-    
+
     public String readLastLines(File file, int lines) throws FileNotFoundException, IOException {
         java.io.RandomAccessFile fileHandler = null;
         try {
@@ -352,45 +376,6 @@ public class FileUtils {
         }
     }
 
-    public static byte[] objectToByteArray(Object obj) throws IOException {
-        byte[] bytes = null;
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ObjectOutputStream oos = new ObjectOutputStream(bos);) {
-            oos.writeObject(obj);
-            oos.flush();
-            bytes = bos.toByteArray();
-        }
-        return bytes;
-    }
-
-    public static Object byteArrayToObject(byte[] bytes) throws IOException, ClassNotFoundException {
-        Object obj = null;
-        try (
-                ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-                ObjectInputStream ois = new ObjectInputStream(bis);) {
-            obj = ois.readObject();
-        }
-        return obj;
-    }    
-    
-    public static byte[] hexToByteArray(String s) {
-        byte[] b = new byte[s.length() / 2];
-        for (int i = 0; i < b.length; i++) {
-            int index = i * 2;
-            int v = Integer.parseInt(s.substring(index, index + 2), 16);
-            b[i] = (byte) v;
-        }
-        return b;
-    }
-    
-    public static String byteArrayToHex(byte[] a) {
-        StringBuilder sb = new StringBuilder(a.length * 2);
-        for (byte b : a) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
-    }
-    
     public void zip(String srcFile, String destFile) throws Exception {
         FileOutputStream fos = new FileOutputStream(destFile);
         ZipOutputStream zipOut = new ZipOutputStream(fos);
@@ -400,14 +385,14 @@ public class FileUtils {
         zipOut.putNextEntry(zipEntry);
         final byte[] bytes = new byte[1024];
         int length;
-        while((length = fis.read(bytes)) >= 0) {
+        while ((length = fis.read(bytes)) >= 0) {
             zipOut.write(bytes, 0, length);
         }
         zipOut.close();
         fis.close();
-        fos.close();        
+        fos.close();
     }
-    
+
     public void zipLstFile(List<String> srcFiles, String destFile) throws Exception {
         FileOutputStream fos = new FileOutputStream(destFile);
         ZipOutputStream zipOut = new ZipOutputStream(fos);
@@ -416,28 +401,28 @@ public class FileUtils {
             FileInputStream fis = new FileInputStream(fileToZip);
             ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
             zipOut.putNextEntry(zipEntry);
- 
+
             byte[] bytes = new byte[1024];
             int length;
-            while((length = fis.read(bytes)) >= 0) {
+            while ((length = fis.read(bytes)) >= 0) {
                 zipOut.write(bytes, 0, length);
             }
             fis.close();
         }
         zipOut.close();
-        fos.close();        
+        fos.close();
     }
-    
+
     public void zipFolder(String srcFolder, String destFile) throws Exception {
         FileOutputStream fos = new FileOutputStream(destFile);
         ZipOutputStream zipOut = new ZipOutputStream(fos);
         File fileToZip = new File(srcFolder);
- 
+
         zipEachFileInFolder(fileToZip, fileToZip.getName(), zipOut);
         zipOut.close();
-        fos.close();        
+        fos.close();
     }
-    
+
     private void zipEachFileInFolder(File fileToZip, String fileName, ZipOutputStream zipOut) throws Exception {
         if (fileToZip.isHidden()) {
             return;
@@ -457,16 +442,16 @@ public class FileUtils {
         while ((length = fis.read(bytes)) >= 0) {
             zipOut.write(bytes, 0, length);
         }
-        fis.close();        
+        fis.close();
     }
-    
+
     public void unzip(String fileZip, String folder) throws Exception {
         File newFolder = new File(folder);
-        if(!newFolder.exists()) newFolder.mkdir();
+        if (!newFolder.exists()) newFolder.mkdir();
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
         ZipEntry zipEntry = zis.getNextEntry();
-        while(zipEntry != null){
+        while (zipEntry != null) {
             String fileName = zipEntry.getName();
             File newFile = new File(folder + File.separator + fileName);
             FileOutputStream fos = new FileOutputStream(newFile);
@@ -478,6 +463,6 @@ public class FileUtils {
             zipEntry = zis.getNextEntry();
         }
         zis.closeEntry();
-        zis.close();        
-    }    
+        zis.close();
+    }
 }

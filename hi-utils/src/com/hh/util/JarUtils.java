@@ -5,6 +5,8 @@
  */
 package com.hh.util;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -17,7 +19,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.jar.Attributes;
-import org.apache.log4j.Logger;
 
 public class JarUtils {
 

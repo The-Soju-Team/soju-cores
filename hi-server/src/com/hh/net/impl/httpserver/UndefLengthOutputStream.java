@@ -25,7 +25,9 @@
 
 package com.hh.net.impl.httpserver;
 
-import java.io.*;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * a class which allows the caller to write an indefinite
@@ -34,31 +36,30 @@ import java.io.*;
  * The underlying connection needs to be closed afterwards.
  */
 
-class UndefLengthOutputStream extends FilterOutputStream
-{
-    private boolean closed = false;
+class UndefLengthOutputStream extends FilterOutputStream {
     ExchangeImpl t;
+    private boolean closed = false;
 
-    UndefLengthOutputStream (ExchangeImpl t, OutputStream src) {
-        super (src);
+    UndefLengthOutputStream(ExchangeImpl t, OutputStream src) {
+        super(src);
         this.t = t;
     }
 
-    public void write (int b) throws IOException {
+    public void write(int b) throws IOException {
         if (closed) {
-            throw new IOException ("stream closed");
+            throw new IOException("stream closed");
         }
         out.write(b);
     }
 
-    public void write (byte[]b, int off, int len) throws IOException {
+    public void write(byte[] b, int off, int len) throws IOException {
         if (closed) {
-            throw new IOException ("stream closed");
+            throw new IOException("stream closed");
         }
         out.write(b, off, len);
     }
 
-    public void close () throws IOException {
+    public void close() throws IOException {
         if (closed) {
             return;
         }
@@ -68,10 +69,11 @@ class UndefLengthOutputStream extends FilterOutputStream
         if (!is.isClosed()) {
             try {
                 is.close();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
-        WriteFinishedEvent e = new WriteFinishedEvent (t);
-        t.getHttpContext().getServerImpl().addEvent (e);
+        WriteFinishedEvent e = new WriteFinishedEvent(t);
+        t.getHttpContext().getServerImpl().addEvent(e);
     }
 
     // flush is a pass-through

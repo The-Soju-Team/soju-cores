@@ -25,102 +25,105 @@
 
 package com.hh.net.impl.httpserver;
 
-import com.hh.net.httpserver.HttpsExchange;
 import com.hh.net.httpserver.Headers;
 import com.hh.net.httpserver.HttpPrincipal;
-import java.io.*;
-import java.net.*;
+import com.hh.net.httpserver.HttpsExchange;
+
+import javax.net.ssl.SSLSession;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.channels.SocketChannel;
-import javax.net.ssl.*;
 
 class HttpsExchangeImpl extends HttpsExchange {
 
     ExchangeImpl impl;
 
-    HttpsExchangeImpl (ExchangeImpl impl) throws IOException {
+    HttpsExchangeImpl(ExchangeImpl impl) throws IOException {
         this.impl = impl;
     }
 
-    public Headers getRequestHeaders () {
+    public Headers getRequestHeaders() {
         return impl.getRequestHeaders();
     }
 
-    public Headers getResponseHeaders () {
+    public Headers getResponseHeaders() {
         return impl.getResponseHeaders();
     }
 
-    public URI getRequestURI () {
+    public URI getRequestURI() {
         return impl.getRequestURI();
     }
 
-    public String getRequestMethod (){
+    public String getRequestMethod() {
         return impl.getRequestMethod();
     }
 
-    public HttpContextImpl getHttpContext (){
+    public HttpContextImpl getHttpContext() {
         return impl.getHttpContext();
     }
 
-    public void close () {
+    public void close() {
         impl.close();
     }
 
-    public InputStream getRequestBody () {
+    public InputStream getRequestBody() {
         return impl.getRequestBody();
     }
 
-    public int getResponseCode () {
+    public int getResponseCode() {
         return impl.getResponseCode();
     }
 
-    public OutputStream getResponseBody () {
+    public OutputStream getResponseBody() {
         return impl.getResponseBody();
     }
 
 
-    public void sendResponseHeaders (int rCode, long contentLen)
-    throws IOException
-    {
-        impl.sendResponseHeaders (rCode, contentLen);
+    public void sendResponseHeaders(int rCode, long contentLen)
+            throws IOException {
+        impl.sendResponseHeaders(rCode, contentLen);
     }
 
-    public InetSocketAddress getRemoteAddress (){
+    public InetSocketAddress getRemoteAddress() {
         return impl.getRemoteAddress();
     }
 
-    public InetSocketAddress getLocalAddress (){
+    public InetSocketAddress getLocalAddress() {
         return impl.getLocalAddress();
     }
 
-    public String getProtocol (){
+    public String getProtocol() {
         return impl.getProtocol();
     }
 
-    public SSLSession getSSLSession () {
-        return impl.getSSLSession ();
+    public SSLSession getSSLSession() {
+        return impl.getSSLSession();
     }
 
-    public Object getAttribute (String name) {
-        return impl.getAttribute (name);
+    public Object getAttribute(String name) {
+        return impl.getAttribute(name);
     }
 
-    public void setAttribute (String name, Object value) {
-        impl.setAttribute (name, value);
+    public void setAttribute(String name, Object value) {
+        impl.setAttribute(name, value);
     }
 
-    public void setStreams (InputStream i, OutputStream o) {
-        impl.setStreams (i, o);
+    public void setStreams(InputStream i, OutputStream o) {
+        impl.setStreams(i, o);
     }
 
-    public HttpPrincipal getPrincipal () {
+    public HttpPrincipal getPrincipal() {
         return impl.getPrincipal();
     }
 
-    ExchangeImpl getExchangeImpl () {
+    ExchangeImpl getExchangeImpl() {
         return impl;
     }
-    
+
     public SocketChannel getChannel() {
         return impl.connection.chan;
-    }    
+    }
 }

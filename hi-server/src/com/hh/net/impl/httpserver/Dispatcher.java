@@ -9,46 +9,44 @@ import akka.actor.ActorRef;
 import akka.actor.PoisonPill;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.channels.CancelledKeyException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
- *
  * @author hiendm1
  */
 public class Dispatcher extends UntypedActor {
 
+    final LinkedList<HttpConnection> connsToRegister
+            = new LinkedList<HttpConnection>();
     public ServerImpl server;
 
     public Dispatcher(ServerImpl server) {
         this.server = server;
     }
-    
+
     @Override
     public void onReceive(Object o) {
-        try {        
+        try {
             try {
                 handleRequest();
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 server.logger.log(Level.FINER, "ServerImpl.Exchange (1)", ex);
                 try {
                     getContext().stop(getSelf());
-                } catch (Exception e) {}            
-            } 
+                } catch (Exception e) {
+                }
+            }
         } catch (Throwable e) {
             server.logger.log(Level.FINER, "Co loi Fatal ", e);
-        }        
-    }    
-    
+        }
+    }
+
     private void handleRequest() {
         while (!server.finished) {
             try {
@@ -135,9 +133,9 @@ public class Dispatcher extends UntypedActor {
                 e.printStackTrace();
                 server.logger.log(Level.FINER, "Dispatcher (7)", e);
             }
-        }        
+        }
     }
-    
+
     private void handleEvent(Event r) {
         ExchangeImpl t = r.exchange;
         HttpConnection c = t.getConnection();
@@ -149,8 +147,7 @@ public class Dispatcher extends UntypedActor {
                     server.finished = true;
                 }
                 server.responseCompleted(c);
-                try(LeftOverInputStream is = t.getOriginalInputStream();)
-                {
+                try (LeftOverInputStream is = t.getOriginalInputStream();) {
                     if (!is.isEOF()) {
                         t.close = true;
                     }
@@ -172,19 +169,16 @@ public class Dispatcher extends UntypedActor {
             server.logger.log(
                     Level.FINER, "Dispatcher (1)", e
             );
-            if(c != null) c.close();
+            if (c != null) c.close();
             c = null;
         }
     }
-
-    final LinkedList<HttpConnection> connsToRegister
-            = new LinkedList<HttpConnection>();
 
     void reRegister(HttpConnection c) {
         /* re-register with selector */
         try {
             SocketChannel chan = c.getChannel();
-            if(chan != null) {
+            if (chan != null) {
                 chan.configureBlocking(false);
                 SelectionKey key = chan.register(server.selector, SelectionKey.OP_READ);
                 key.attach(c);

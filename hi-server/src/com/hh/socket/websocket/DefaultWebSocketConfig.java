@@ -19,20 +19,19 @@
  */
 package com.hh.socket.websocket;
 
-public class DefaultWebSocketConfig implements WebSocketConfig
-{
+public class DefaultWebSocketConfig implements WebSocketConfig {
     private boolean sslEnable;
-    
+
     private String certChainFile;
-    
+
     private String pkcs8PrivateKeyFile;
-    
+
     private String bindTo = "localhost";
-    
+
     private String externalPath;
-    
+
     private String port = "9999";
-    
+
     private String maxFrameSize = "20000000";
 
     public boolean sslEnabled() {
@@ -89,6 +88,6 @@ public class DefaultWebSocketConfig implements WebSocketConfig
 
     public void setMaxFrameSize(int maxFrameSize) {
         this.maxFrameSize = "" + maxFrameSize;
-    }    
+    }
 
 }

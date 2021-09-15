@@ -25,6 +25,12 @@ searchApp = function() {
             cache: false
         },
         initComplete: function(settings, json) {
+            if ('TIMEOUT' == request.response_code) {
+                    console.log("Quá hạn đăng nhập, mời đăng nhập lại - TIMEOUT");
+                    logout();
+            } else {
+                document.getElementById('sso_user_name').innerHTML = request.sso_user_name;
+            }            
             if(document.getElementById('isdelete').value == '1') {
                 successMessage('Xóa thành công!');
             }
@@ -216,4 +222,161 @@ function viewAddApp() {
     document.getElementById('cmd').value = 'ADD_APP';
     clearForm();
     $('#selectModal').modal().show();
+}
+
+
+var cancelValidate = false;
+var progressCount = 100;
+doLogin = function(loginToken) {
+	if(!validateClient()) return;
+	closeAllMessage();
+	var forward = window.location.href.indexOf("hi-process");
+	if(forward == -1) forward = 0;
+	$.ajax({ 
+		type: 'POST',
+		dataType: 'json',
+		url: '/authen',
+		data: {
+			'hi-process': 'login',
+			'userName': document.getElementById('userName').value,
+			'password': document.getElementById('password').value,
+			'captcha': document.getElementById('captcha').value,
+			'callback': document.getElementById('callback').value,
+			'forward' : forward,
+			loginToken: loginToken
+		},
+		cache: false, //fix loop IE
+		success: function(request, textStatus, jqXHR) {
+			closeAllMessage();
+			if (request.status == '0') { // dang nhap thanh cong
+				var callBack = request.call_back;
+				if(callBack != undefined && callBack != null && callBack != '') {
+					window.location.href = callBack;
+				}
+				else
+					window.location.href = '/authen/home';
+			} else {
+				document.getElementById('captcha').value = '';
+				document.getElementById('loginButton').style.display = '';
+				// if (request.status == '1') {
+				// 	document.getElementById('userName').focus();
+				// 	//console.log('userName', document.getElementById('userName').value)
+				// 	if (document.getElementById('userName').value == 'visual_admin') {
+				// 			showErrorUserName('Tài khoản visual_admin đã hết hiệu lực. Vui lòng liên hệ thuybtb1@viettel.com.vn để được cấp tài khoản đăng nhập vào hệ thống.');
+				// 	} else {
+				// 			showErrorUserName('Thông tin đăng nhập không chính xác. ');
+				// 	}
+				// } else if (request.status == '2') {
+				// 	document.getElementById('captcha').focus();
+				// 	showErrorCaptcha('Sai Mã bảo vệ');
+				// } else if (request.status == '3') {
+				// 	document.getElementById('userName').focus();
+				// 	showErrorUserName('Hãy nhập Tên đăng nhập');
+				// } else if (request.status == '4') {
+				// 	document.getElementById('password').focus();
+				// 	showErrorMessage('Hãy nhập Mật khẩu');
+				// } else if (request.status == '5') {
+				// 	setTimeout(function() {document.getElementById('captcha').focus();},500);
+				// 	showErrorCaptcha('Hãy nhập Mã bảo vệ');
+				// } else if (request.status == '6') {
+				// 	showErrorUserName('Tài khoản của bạn không được đăng nhập tại IP này');
+                // }
+                showErrorMessage(request.message)
+				if (parseInt(request.failCount) > 2) {
+					document.getElementById('captchaLabel').style.display = '';
+					document.getElementById('captchaField').style.display = '';
+					document.getElementById('buttonArea').style.marginTop = '10px'
+					refreshCaptcha();
+				}
+			}
+		}
+	});
+}
+
+validateClient = function() {
+    closeAllMessage();
+
+	if(document.getElementById('userName').value == null || document.getElementById('userName').value.trim().length == 0) {
+		showErrorUserName('Hãy nhập Tên đăng nhập');
+		return false;
+	} else if(document.getElementById('userName').value == null || document.getElementById('userName').value.trim().length == 0) {
+		showErrorUserName('Hãy nhập Mật khẩu');
+		return false;
+	}
+
+    return true;
+}
+
+showErrorMessage = function(message) {
+    document.getElementById('errorMessage').innerHTML = message;
+    document.getElementById('errorMessage').style.display = '';
+}
+
+showErrorUserName = function(message) {
+    document.getElementById('userNameError').innerHTML = message;
+    document.getElementById('spanUser').style.borderColor = "#E04B4A";
+    document.getElementById('userNameError').style.display = '';
+}
+
+showErrorPassword = function(message) {
+    document.getElementById('passwordError').innerHTML = message;
+    document.getElementById('spanPassword').style.borderColor = "#E04B4A";
+    document.getElementById('passwordError').style.display = '';
+}
+
+showErrorCaptcha = function(message) {
+    document.getElementById('captchaError').innerHTML = message;
+    document.getElementById('captcha').style.borderColor = "#E04B4A";
+    document.getElementById('captchaError').style.display = '';
+}
+
+showSuccessMessage = function(message) {
+    document.getElementById('successMessage').innerHTML = message;
+    document.getElementById('successMessage').style.display = '';    
+}
+
+closeAllMessage = function() {
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('successMessage').style.display = 'none';
+    document.getElementById('userNameError').style.display = 'none';
+	document.getElementById('passwordError').style.display = 'none';
+    document.getElementById('captchaError').style.display = 'none';
+    document.getElementById('spanUser').style.borderColor = "#bbb";
+    document.getElementById('captcha').style.borderColor = "#bbb";
+}
+
+refreshCaptcha = function() {
+	$.ajax({ 
+		type: 'POST',
+		dataType: 'json',
+		url: '/authen',
+		data: {
+			'hi-process': 'get-captcha'
+		},
+		cache: false, //fix loop IE
+		success: function(request, textStatus, jqXHR) {
+			document.getElementById('captchaImg').style.display = '';
+			document.getElementById('captchaImg')
+				.setAttribute(
+					'src', 'data:image/png;base64,' + request.data
+				);
+		}
+	});	
+}
+
+loadPage = function() {
+	document.getElementById('headerLogo').style.top = '' + Math.round(window.innerHeight/2 - 160) + 'px';
+	document.getElementById('loginForm').style.top = '' + Math.round(window.innerHeight/2 - 240) + 'px';		
+	/*$.ajax({ 
+		type: 'POST',
+		dataType: 'json',
+		url: '/authen',
+		data: {
+			'hi-process': 'get-call-back'
+		},
+		cache: false, //fix loop IE
+		success: function(request, textStatus, jqXHR) {
+			document.getElementById('callback').value = request.callback;
+		}
+	});	*/
 }

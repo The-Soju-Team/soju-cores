@@ -25,9 +25,13 @@
 
 package com.hh.net.impl.httpserver;
 
-import java.io.*;
-import javax.net.ssl.*;
-import java.nio.channels.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 import java.util.logging.Logger;
 
 /**
@@ -58,9 +62,11 @@ class HttpConnection {
     int remaining;
     boolean closed = false;
     Logger logger;
-
-    public enum State {IDLE, REQUEST, RESPONSE};
     volatile State state;
+
+    ;
+    HttpConnection() {
+    }
 
     public String toString() {
         String s = null;
@@ -70,14 +76,7 @@ class HttpConnection {
         return s;
     }
 
-    HttpConnection () {
-    }
-
-    void setChannel (SocketChannel c) {
-        chan = c;
-    }
-
-    void setContext (HttpContextImpl ctx) {
+    void setContext(HttpContextImpl ctx) {
         context = ctx;
     }
 
@@ -85,16 +84,15 @@ class HttpConnection {
         return state;
     }
 
-    void setState (State s) {
+    void setState(State s) {
         state = s;
     }
 
-    void setParameters (
-        InputStream in, OutputStream rawout, SocketChannel chan,
-        SSLEngine engine, SSLStreams sslStreams, SSLContext sslContext, String protocol,
-        HttpContextImpl context, InputStream raw
-    )
-    {
+    void setParameters(
+            InputStream in, OutputStream rawout, SocketChannel chan,
+            SSLEngine engine, SSLStreams sslStreams, SSLContext sslContext, String protocol,
+            HttpContextImpl context, InputStream raw
+    ) {
         this.context = context;
         this.i = in;
         this.rawout = rawout;
@@ -107,11 +105,15 @@ class HttpConnection {
         this.logger = context.getLogger();
     }
 
-    SocketChannel getChannel () {
+    SocketChannel getChannel() {
         return chan;
     }
 
-    synchronized void close () {
+    void setChannel(SocketChannel c) {
+        chan = c;
+    }
+
+    synchronized void close() {
         if (closed) {
             return;
         }
@@ -123,15 +125,15 @@ class HttpConnection {
                 sslStreams = null;
             }
         } catch (IOException e) {
-            ServerImpl.dprint (e);
-        }            
+            ServerImpl.dprint(e);
+        }
 
         if (logger != null && chan != null) {
-            logger.finest ("Closing connection: " + chan.toString());
+            logger.finest("Closing connection: " + chan.toString());
         }
 
         if (!chan.isOpen()) {
-            ServerImpl.dprint ("Channel already closed");
+            ServerImpl.dprint("Channel already closed");
             return;
         }
         try {
@@ -140,7 +142,7 @@ class HttpConnection {
                 raw = null;
             }
         } catch (IOException e) {
-            ServerImpl.dprint (e);
+            ServerImpl.dprint(e);
         }
         try {
             if (rawout != null) {
@@ -148,13 +150,13 @@ class HttpConnection {
                 rawout = null;
             }
         } catch (IOException e) {
-            ServerImpl.dprint (e);
+            ServerImpl.dprint(e);
         }
         try {
             chan.close();
             chan = null;
         } catch (IOException e) {
-            ServerImpl.dprint (e);
+            ServerImpl.dprint(e);
         }
         try {
             if (i != null) {
@@ -162,49 +164,51 @@ class HttpConnection {
                 i = null;
             }
         } catch (IOException e) {
-            ServerImpl.dprint (e);
+            ServerImpl.dprint(e);
         }
 
         context = null;
         sslContext = null;
     }
 
-    /* remaining is the number of bytes left on the lowest level inputstream
-     * after the exchange is finished
-     */
-    void setRemaining (int r) {
-        remaining = r;
-    }
-
-    int getRemaining () {
+    int getRemaining() {
         return remaining;
     }
 
-    SelectionKey getSelectionKey () {
+    /* remaining is the number of bytes left on the lowest level inputstream
+     * after the exchange is finished
+     */
+    void setRemaining(int r) {
+        remaining = r;
+    }
+
+    SelectionKey getSelectionKey() {
         return selectionKey;
     }
 
-    InputStream getInputStream () {
-            return i;
+    InputStream getInputStream() {
+        return i;
     }
 
-    OutputStream getRawOutputStream () {
-            return rawout;
+    OutputStream getRawOutputStream() {
+        return rawout;
     }
 
-    String getProtocol () {
-            return protocol;
+    String getProtocol() {
+        return protocol;
     }
 
-    SSLEngine getSSLEngine () {
-            return engine;
+    SSLEngine getSSLEngine() {
+        return engine;
     }
 
-    SSLContext getSSLContext () {
-            return sslContext;
+    SSLContext getSSLContext() {
+        return sslContext;
     }
 
-    HttpContextImpl getHttpContext () {
-            return context;
+    HttpContextImpl getHttpContext() {
+        return context;
     }
+
+    public enum State {IDLE, REQUEST, RESPONSE}
 }

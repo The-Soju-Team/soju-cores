@@ -1,0 +1,11 @@
+{
+    "name": "bi",
+    "version": "1.0.0",
+    "author": "HienDM",
+    "contributors": [],
+    "dependencies": {
+        "grunt": "^1.0.x",
+        "grunt-contrib-copy": "1.0.x",
+        "grunt-contrib-clean": "1.0.x"
+    }
+}

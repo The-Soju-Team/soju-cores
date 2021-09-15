@@ -18,16 +18,15 @@ import io.netty.handler.timeout.IdleStateEvent;
  * Created by HienDM
  */
 public class ClientHandler extends SimpleChannelInboundHandler {
-    
+
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ClientHandler.class.getSimpleName());
     private String connector;
     private Server server;
-    
+
     public ClientHandler(String connector, Server server) {
         this.connector = connector;
         this.server = server;
     }
-
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ClientHandler.class.getSimpleName());
 
     @Override
     public void channelActive(ChannelHandlerContext channelHandlerContext) {
@@ -37,13 +36,14 @@ public class ClientHandler extends SimpleChannelInboundHandler {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            ActorRef actor = NettyServer.system.actorOf(Props.create(ClientDispatcher.class, ctx, server).withDispatcher("hh-dispatcher"));
+            ActorRef actor = NettyServer.system
+                    .actorOf(Props.create(ClientDispatcher.class, ctx, server).withDispatcher("hh-dispatcher"));
             actor.tell(msg, actor);
             actor.tell(PoisonPill.getInstance(), ActorRef.noSender());
         } catch (Exception e) {
             log.error("Error receive from client: ", e);
         }
-    }   
+    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) {
@@ -51,7 +51,7 @@ public class ClientHandler extends SimpleChannelInboundHandler {
         log.debug("Exception on ClientHandler: !!!!!!!", cause);
         channelHandlerContext.close();
     }
-    
+
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         log.debug("Ping event triggered");
@@ -60,13 +60,10 @@ public class ClientHandler extends SimpleChannelInboundHandler {
             ByteBuf buf = ctx.alloc().directBuffer().writeBytes(
                     ServerDecoder.mapToByteArray(Config.pingMessage(server.config.getConfig("server-code"))));
             ChannelFuture future = ctx.writeAndFlush(buf);
-            future.addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    if (!future.isSuccess()) {
-                        log.info("SEND PING FAIL: ");
-                        log.info("CAUSE: " + future.cause());
-                    }
+            future.addListener((ChannelFutureListener) future1 -> {
+                if (!future1.isSuccess()) {
+                    log.info("SEND PING FAIL: ");
+                    log.info("CAUSE: " + future1.cause());
                 }
             });
         }

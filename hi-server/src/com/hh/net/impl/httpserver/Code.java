@@ -64,46 +64,83 @@ class Code {
     public static final int HTTP_GATEWAY_TIMEOUT = 504;
     public static final int HTTP_VERSION = 505;
 
-    static String msg (int code) {
+    static String msg(int code) {
 
-      switch (code) {
-        case HTTP_OK: return " OK";
-        case HTTP_CONTINUE: return " Continue";
-        case HTTP_CREATED: return " Created";
-        case HTTP_ACCEPTED: return " Accepted";
-        case HTTP_NOT_AUTHORITATIVE: return " Non-Authoritative Information";
-        case HTTP_NO_CONTENT: return " No Content";
-        case HTTP_RESET: return " Reset Content";
-        case HTTP_PARTIAL: return " Partial Content";
-        case HTTP_MULT_CHOICE: return " Multiple Choices";
-        case HTTP_MOVED_PERM: return " Moved Permanently";
-        case HTTP_MOVED_TEMP: return " Temporary Redirect";
-        case HTTP_SEE_OTHER: return " See Other";
-        case HTTP_NOT_MODIFIED: return " Not Modified";
-        case HTTP_USE_PROXY: return " Use Proxy";
-        case HTTP_BAD_REQUEST: return " Bad Request";
-        case HTTP_UNAUTHORIZED: return " Unauthorized" ;
-        case HTTP_PAYMENT_REQUIRED: return " Payment Required";
-        case HTTP_FORBIDDEN: return " Forbidden";
-        case HTTP_NOT_FOUND: return " Not Found";
-        case HTTP_BAD_METHOD: return " Method Not Allowed";
-        case HTTP_NOT_ACCEPTABLE: return " Not Acceptable";
-        case HTTP_PROXY_AUTH: return " Proxy Authentication Required";
-        case HTTP_CLIENT_TIMEOUT: return " Request Time-Out";
-        case HTTP_CONFLICT: return " Conflict";
-        case HTTP_GONE: return " Gone";
-        case HTTP_LENGTH_REQUIRED: return " Length Required";
-        case HTTP_PRECON_FAILED: return " Precondition Failed";
-        case HTTP_ENTITY_TOO_LARGE: return " Request Entity Too Large";
-        case HTTP_REQ_TOO_LONG: return " Request-URI Too Large";
-        case HTTP_UNSUPPORTED_TYPE: return " Unsupported Media Type";
-        case HTTP_INTERNAL_ERROR: return " Internal Server Error";
-        case HTTP_NOT_IMPLEMENTED: return " Not Implemented";
-        case HTTP_BAD_GATEWAY: return " Bad Gateway";
-        case HTTP_UNAVAILABLE: return " Service Unavailable";
-        case HTTP_GATEWAY_TIMEOUT: return " Gateway Timeout";
-        case HTTP_VERSION: return " HTTP Version Not Supported";
-        default: return "";
-      }
+        switch (code) {
+            case HTTP_OK:
+                return " OK";
+            case HTTP_CONTINUE:
+                return " Continue";
+            case HTTP_CREATED:
+                return " Created";
+            case HTTP_ACCEPTED:
+                return " Accepted";
+            case HTTP_NOT_AUTHORITATIVE:
+                return " Non-Authoritative Information";
+            case HTTP_NO_CONTENT:
+                return " No Content";
+            case HTTP_RESET:
+                return " Reset Content";
+            case HTTP_PARTIAL:
+                return " Partial Content";
+            case HTTP_MULT_CHOICE:
+                return " Multiple Choices";
+            case HTTP_MOVED_PERM:
+                return " Moved Permanently";
+            case HTTP_MOVED_TEMP:
+                return " Temporary Redirect";
+            case HTTP_SEE_OTHER:
+                return " See Other";
+            case HTTP_NOT_MODIFIED:
+                return " Not Modified";
+            case HTTP_USE_PROXY:
+                return " Use Proxy";
+            case HTTP_BAD_REQUEST:
+                return " Bad Request";
+            case HTTP_UNAUTHORIZED:
+                return " Unauthorized";
+            case HTTP_PAYMENT_REQUIRED:
+                return " Payment Required";
+            case HTTP_FORBIDDEN:
+                return " Forbidden";
+            case HTTP_NOT_FOUND:
+                return " Not Found";
+            case HTTP_BAD_METHOD:
+                return " Method Not Allowed";
+            case HTTP_NOT_ACCEPTABLE:
+                return " Not Acceptable";
+            case HTTP_PROXY_AUTH:
+                return " Proxy Authentication Required";
+            case HTTP_CLIENT_TIMEOUT:
+                return " Request Time-Out";
+            case HTTP_CONFLICT:
+                return " Conflict";
+            case HTTP_GONE:
+                return " Gone";
+            case HTTP_LENGTH_REQUIRED:
+                return " Length Required";
+            case HTTP_PRECON_FAILED:
+                return " Precondition Failed";
+            case HTTP_ENTITY_TOO_LARGE:
+                return " Request Entity Too Large";
+            case HTTP_REQ_TOO_LONG:
+                return " Request-URI Too Large";
+            case HTTP_UNSUPPORTED_TYPE:
+                return " Unsupported Media Type";
+            case HTTP_INTERNAL_ERROR:
+                return " Internal Server Error";
+            case HTTP_NOT_IMPLEMENTED:
+                return " Not Implemented";
+            case HTTP_BAD_GATEWAY:
+                return " Bad Gateway";
+            case HTTP_UNAVAILABLE:
+                return " Service Unavailable";
+            case HTTP_GATEWAY_TIMEOUT:
+                return " Gateway Timeout";
+            case HTTP_VERSION:
+                return " HTTP Version Not Supported";
+            default:
+                return "";
+        }
     }
 }

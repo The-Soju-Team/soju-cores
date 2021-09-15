@@ -20,10 +20,7 @@
 package com.hh.socket.websocket;
 
 
-
-
-public interface WebSocketService
-{
+public interface WebSocketService {
     /**
      * Get a token for connecting to the websocket based on the user's identity.
      */

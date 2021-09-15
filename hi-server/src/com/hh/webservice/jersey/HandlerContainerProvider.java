@@ -5,12 +5,11 @@
  */
 package com.hh.webservice.jersey;
 
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.Application;
-
+import com.hh.net.httpserver.HttpHandler;
 import org.glassfish.jersey.server.spi.ContainerProvider;
 
-import com.hh.net.httpserver.HttpHandler;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.core.Application;
 
 /**
  * Container provider for containers based on lightweight Java SE HTTP Server's {@link HttpHandler}.

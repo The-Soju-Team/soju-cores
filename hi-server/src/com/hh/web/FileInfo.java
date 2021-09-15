@@ -6,7 +6,6 @@
 package com.hh.web;
 
 /**
- *
  * @author hiendm1
  */
 public class FileInfo {
@@ -16,29 +15,34 @@ public class FileInfo {
     private byte[] bytes;
 
     public String getFilename() {
-            return filename;
+        return filename;
     }
+
     public void setFilename(String filename) {
-            this.filename = filename;
+        this.filename = filename;
     }
+
     public int getLength() {
-            return length;
+        return length;
     }
+
     public void setLength(int length) {
-            this.length = length;
+        this.length = length;
     }
+
     public byte[] getBytes() {
-            return bytes;
+        return bytes;
     }
+
     public void setBytes(byte[] bytes) {
-            this.bytes = bytes;
+        this.bytes = bytes;
     }
 
     public String getFieldname() {
-            return fieldname;
+        return fieldname;
     }
 
     public void setFieldname(String fieldname) {
-            this.fieldname = fieldname;
+        this.fieldname = fieldname;
     }
 }

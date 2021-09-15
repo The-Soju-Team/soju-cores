@@ -25,64 +25,67 @@
 
 package com.hh.net.impl.httpserver;
 
-import java.io.*;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * a (filter) input stream which can tell us if bytes are "left over"
  * on the underlying stream which can be read (without blocking)
  * on another instance of this class.
- *
+ * <p>
  * The class can also report if all bytes "expected" to be read
  * were read, by the time close() was called. In that case,
  * bytes may be drained to consume them (by calling drain() ).
- *
+ * <p>
  * isEOF() returns true, when all expected bytes have been read
  */
 abstract class LeftOverInputStream extends FilterInputStream {
-    ExchangeImpl t;
-    ServerImpl server;
     protected boolean closed = false;
     protected boolean eof = false;
-    byte[] one = new byte [1];
+    ExchangeImpl t;
+    ServerImpl server;
+    byte[] one = new byte[1];
 
-    public LeftOverInputStream (ExchangeImpl t, InputStream src) {
-        super (src);
+    public LeftOverInputStream(ExchangeImpl t, InputStream src) {
+        super(src);
         this.t = t;
         this.server = t.getServerImpl();
     }
+
     /**
      * if bytes are left over buffered on *the UNDERLYING* stream
      */
-    public boolean isDataBuffered () throws IOException {
+    public boolean isDataBuffered() throws IOException {
         assert eof;
         return super.available() > 0;
     }
 
-    public void close () throws IOException {
+    public void close() throws IOException {
         if (closed) {
             return;
         }
         closed = true;
         if (!eof) {
-            eof = drain (ServerConfig.getDrainAmount());
+            eof = drain(ServerConfig.getDrainAmount());
         }
     }
 
-    public boolean isClosed () {
+    public boolean isClosed() {
         return closed;
     }
 
-    public boolean isEOF () {
+    public boolean isEOF() {
         return eof;
     }
 
-    protected abstract int readImpl (byte[]b, int off, int len) throws IOException;
+    protected abstract int readImpl(byte[] b, int off, int len) throws IOException;
 
-    public synchronized int read () throws IOException {
+    public synchronized int read() throws IOException {
         if (closed) {
-            throw new IOException ("Stream is closed");
+            throw new IOException("Stream is closed");
         }
-        int c = readImpl (one, 0, 1);
+        int c = readImpl(one, 0, 1);
         if (c == -1 || c == 0) {
             return c;
         } else {
@@ -90,11 +93,11 @@ abstract class LeftOverInputStream extends FilterInputStream {
         }
     }
 
-    public synchronized int read (byte[]b, int off, int len) throws IOException {
+    public synchronized int read(byte[] b, int off, int len) throws IOException {
         if (closed) {
-            throw new IOException ("Stream is closed");
+            throw new IOException("Stream is closed");
         }
-        return readImpl (b, off, len);
+        return readImpl(b, off, len);
     }
 
     /**
@@ -103,11 +106,11 @@ abstract class LeftOverInputStream extends FilterInputStream {
      * is at eof (ie. all bytes were read) or false if not
      * (still bytes to be read)
      */
-    public boolean drain (long l) throws IOException {
+    public boolean drain(long l) throws IOException {
         int bufSize = 2048;
-        byte[] db = new byte [bufSize];
+        byte[] db = new byte[bufSize];
         while (l > 0) {
-            long len = readImpl (db, 0, bufSize);
+            long len = readImpl(db, 0, bufSize);
             if (len == -1) {
                 eof = true;
                 return true;
