@@ -20,7 +20,7 @@ public class RedisUtils {
     private RedisUtils() {
     }
 
-    private void setRedis(Jedis redis) {
+    public static void setRedis(Jedis redis) {
         REDIS = redis;
     }
 
