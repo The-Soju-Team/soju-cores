@@ -38,10 +38,23 @@ public class SparkUtils {
      * Create SparkSession using preconfig in StartApp.config
      */
 
+
+    private static void initLocalSpark() {
+        if (listSpark.size() == 0) {
+            SparkSession spark = SparkSession.builder().appName("AML")
+                    .config("spark.master", "local[10]").getOrCreate();
+            for (int i = 0; i < NO_OF_SPARK_SESSION; i++) {
+                listSpark.add(spark);
+            }
+            Arrays.fill(availableFlag, 0);
+        }
+    }
+
     private static void initYarnSpark() {
         if (listSpark.size() == 0) {
             SparkSession spark = SparkSession.builder().getOrCreate();
-            listSpark.add(spark);
+            for (int i = 0; i < NO_OF_SPARK_SESSION; i++)
+                listSpark.add(spark);
             Arrays.fill(availableFlag, 0);
         }
     }
@@ -125,9 +138,12 @@ public class SparkUtils {
         if (null != sparkType && sparkType.equals("yarn")) {
             log.info("INITIALIZING SPARK YARN MODE");
             initYarnSpark();
-        } else {
+        } else if (null != sparkType && sparkType.equals("standalone")) {
             log.info("INITIALIZING SPARK SPARK MODE");
             initStandaloneSpark();
+        } else {
+            log.info("INITIALIZING SPARK LOCAL MODE");
+            initLocalSpark();
         }
         lock.unlock();
 
