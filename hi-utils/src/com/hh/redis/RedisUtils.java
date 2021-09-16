@@ -13,7 +13,15 @@ import redis.clients.jedis.JedisPool;
 
 public class RedisUtils {
 
+    // Instead of set redis instance every time, we set it once and for all
+
+    private static Jedis REDIS;
+
     private RedisUtils() {
+    }
+
+    private void setRedis(Jedis redis) {
+        REDIS = redis;
     }
 
     protected static Map<String, JedisPool> redisMap = new HashMap<String, JedisPool>();
@@ -33,6 +41,10 @@ public class RedisUtils {
         return new RedisSession.Builder().configHost(host).configPort(port).password(password).build();
     }
 
+    public static String getRedisValue(String key) {
+        return getRedisValue(REDIS, key);
+    }
+
     public static String getRedisValue(Jedis redis, String key) {
         log.info(String.format("Getting Redis value with key: %s", key));
         try {
@@ -44,6 +56,10 @@ public class RedisUtils {
         } finally {
             redis.close();
         }
+    }
+
+    public static byte[] getRedisValue(byte[] key) {
+        return getRedisValue(REDIS, key);
     }
 
     public static byte[] getRedisValue(Jedis redis, byte[] key) {
@@ -59,6 +75,10 @@ public class RedisUtils {
         }
     }
 
+    public static boolean removeKey(String key) {
+        return removeKey(REDIS, key);
+    }
+
     public static boolean removeKey(Jedis redis, String key) {
         log.info(String.format("Deleting key: %s", key));
         try {
@@ -70,6 +90,10 @@ public class RedisUtils {
         } finally {
             redis.close();
         }
+    }
+
+    public static boolean removeKey(byte[] key) {
+        return removeKey(REDIS, key);
     }
 
     public static boolean removeKey(Jedis redis, byte[] key) {
@@ -84,6 +108,10 @@ public class RedisUtils {
         }
     }
 
+    public static void deleteRedisKey(String key) {
+        deleteRedisKey(REDIS, key);
+    }
+
     public static void deleteRedisKey(Jedis redis, String key) {
         log.info(String.format("Check exist redis key: %s", key));
         try {
@@ -93,6 +121,10 @@ public class RedisUtils {
         } finally {
             redis.close();
         }
+    }
+
+    public static void deleteRedisKey(byte[] key) {
+        deleteRedisKey(REDIS, key);
     }
 
     public static void deleteRedisKey(Jedis redis, byte[] key) {
@@ -106,7 +138,11 @@ public class RedisUtils {
         }
     }
 
-    public boolean isKeyExistsRedis(Jedis redis, String key) {
+    public static boolean isKeyExistsRedis(String key) {
+        return isKeyExistsRedis(REDIS, key);
+    }
+
+    public static boolean isKeyExistsRedis(Jedis redis, String key) {
         log.info(String.format("Check exist redis key: %s", key));
         try {
             return redis.exists(key);
@@ -115,6 +151,10 @@ public class RedisUtils {
         } finally {
             redis.close();
         }
+    }
+
+    public static boolean isKeyExistsRedis(byte[] key) {
+        return isKeyExistsRedis(REDIS, key);
     }
 
     public static boolean isKeyExistsRedis(Jedis redis, byte[] key) {
@@ -126,6 +166,10 @@ public class RedisUtils {
         } finally {
             redis.close();
         }
+    }
+
+    public static Set<String> getRedisKeyByPattern(String pattern) {
+        return getRedisKeyByPattern(REDIS, pattern);
     }
 
     public static Set<String> getRedisKeyByPattern(Jedis redis, String pattern) {
@@ -141,6 +185,10 @@ public class RedisUtils {
         return keys;
     }
 
+    public static boolean setRedisKeyValue(String key, String value) {
+        return setRedisKeyValue(REDIS, key, value);
+    }
+
     public static boolean setRedisKeyValue(Jedis redis, String key, String value) {
         log.info(String.format("Setting Redis value with key: %s - value: %s", key, value));
         try {
@@ -153,6 +201,10 @@ public class RedisUtils {
         } finally {
             redis.close();
         }
+    }
+
+    public static boolean setRedisKeyValue(byte[] key, byte[] value) {
+        return setRedisKeyValue(REDIS, key, value);
     }
 
     public static boolean setRedisKeyValue(Jedis redis, byte[] key, byte[] value) {
