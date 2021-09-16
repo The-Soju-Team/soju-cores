@@ -63,7 +63,7 @@ public class RedisSession {
                 genericObjectPoolConfig.setTimeBetweenEvictionRunsMillis(30000);
                 genericObjectPoolConfig.setNumTestsPerEvictionRun(-1);
                 JedisPool redisPool;
-                if (!password.isEmpty()) {
+                if (password != null && !password.isEmpty()) {
                     redisPool = new JedisPool(genericObjectPoolConfig, this.host, this.port, this.timeout, this.password, this.databaseNo);
                 } else {
                     redisPool = new JedisPool(genericObjectPoolConfig, this.host, this.port);
