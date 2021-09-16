@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.hh.util.viettel.LivyUtils;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -252,12 +253,12 @@ public class QueryUtils {
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, boolean throwError,
-            SparkSession spark) throws IOException {
+                                                        SparkSession spark) throws IOException {
         return executeSparkQuery(query, fileName, throwError, spark, false);
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, boolean throwError,
-            SparkSession spark, boolean collect) throws IOException {
+                                                        SparkSession spark, boolean collect) throws IOException {
         Map result = new HashMap();
         if ((query == null) || (query.trim().length() < 1)) {
             result.put("status", false);
@@ -429,12 +430,12 @@ public class QueryUtils {
     }
 
     public static Map<String, Object> executeOracleQuery(String query, String dbSchema, String fileName,
-            boolean throwError) throws IOException {
+                                                         boolean throwError) throws IOException {
         return executeOracleQuery(query, dbSchema, fileName, throwError, false);
     }
 
     public static Map<String, Object> executeOracleQuery(String query, String dbSchema, String fileName,
-            boolean throwError, boolean collect) throws IOException {
+                                                         boolean throwError, boolean collect) throws IOException {
         Map result = new HashMap();
         if ((query == null) || (query.trim().length() < 1)) {
             result.put("status", false);
@@ -694,14 +695,15 @@ public class QueryUtils {
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
         return executeSparkQuery(query, fileName, header, false, type);
     }
+
     public static Map<String, Object> executeSparkQuery(String query, String fileName, String header,
-            boolean throwError, String type) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+                                                        boolean throwError, String type) throws FileNotFoundException, UnsupportedEncodingException, IOException {
         return executeSparkQuery(query, fileName, header, throwError, type, null, null);
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, String header,
-            boolean throwError, String type, String rwCode, String rwName)
-                    throws FileNotFoundException, UnsupportedEncodingException, IOException {
+                                                        boolean throwError, String type, String rwCode, String rwName)
+            throws FileNotFoundException, UnsupportedEncodingException, IOException {
         SparkSession spark = SparkUtils.getAvailableSparkSession();
         try {
             Map result = new HashMap();
@@ -784,7 +786,7 @@ public class QueryUtils {
                             }
                             if ((valStr.indexOf(",") >= 0) || (valStr.indexOf('"') >= 0)) {
                                 sb.append('"').append(valStr.toString().replace("\n", " ").replace("\r", " "))
-                                .append('"');
+                                        .append('"');
                             } else {
                                 sb.append(valStr.toString().replace("\n", " ").replace("\r", " "));
                             }
@@ -804,35 +806,35 @@ public class QueryUtils {
                     type = "";
                 }
                 switch (type) {
-                case com.hh.constant.Constants.TYPE_XLSX:
-                    exportReportEXCEL(data, fileName, true);
-                    result.put("status", true);
-                    result.put("result", sb.toString());
-                    break;
-                case com.hh.constant.Constants.TYPE_TXT:
-                    exportExcelTEXT(data, fileName, true);
-                    result.put("status", true);
-                    result.put("result", sb.toString());
-                    break;
-                default:
-                    File f = new File(fileName);
-                    FileOutputStream fos = new FileOutputStream(f);
-                    OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
-                    BufferedWriter bw = new BufferedWriter(osw);
-                    bw.write("\uFEFF"); // BOM
-                    if ((header != null) && (header.length() > 0)) {
-                        bw.write('"');
-                        bw.write(header);
-                        bw.write('"');
-                        bw.write("\n\n");
-                    }
-                    bw.write(sb.toString());
-                    bw.close();
-                    osw.close();
-                    fos.close();
-                    result.put("status", true);
-                    result.put("result", sb.toString());
-                    break;
+                    case com.hh.constant.Constants.TYPE_XLSX:
+                        exportReportEXCEL(data, fileName, true);
+                        result.put("status", true);
+                        result.put("result", sb.toString());
+                        break;
+                    case com.hh.constant.Constants.TYPE_TXT:
+                        exportExcelTEXT(data, fileName, true);
+                        result.put("status", true);
+                        result.put("result", sb.toString());
+                        break;
+                    default:
+                        File f = new File(fileName);
+                        FileOutputStream fos = new FileOutputStream(f);
+                        OutputStreamWriter osw = new OutputStreamWriter(fos, "utf8");
+                        BufferedWriter bw = new BufferedWriter(osw);
+                        bw.write("\uFEFF"); // BOM
+                        if ((header != null) && (header.length() > 0)) {
+                            bw.write('"');
+                            bw.write(header);
+                            bw.write('"');
+                            bw.write("\n\n");
+                        }
+                        bw.write(sb.toString());
+                        bw.close();
+                        osw.close();
+                        fos.close();
+                        result.put("status", true);
+                        result.put("result", sb.toString());
+                        break;
                 }
             }
             log.info("LENGTH:" + rawResult.size() + " - " + rawHeaders.size());
@@ -898,7 +900,7 @@ public class QueryUtils {
         try {
             String fullPath = FOLDER_REPORT.concat(fileName).concat(com.hh.constant.Constants.TYPE_CSV);
             data.repartition(1).write().option("header", "true").mode("overwrite").option("delimeter", "\t")
-            .format("com.databricks.spark.csv").save(fullPath);
+                    .format("com.databricks.spark.csv").save(fullPath);
             File dir = new File(fullPath);
             File[] matches = dir.listFiles();
             if (null == matches) {
@@ -932,12 +934,32 @@ public class QueryUtils {
                 fullPath = FOLDER_REPORT.concat(fileName).concat(com.hh.constant.Constants.TYPE_TXT);
             }
             data.repartition(1).write().option("header", "true").option("delimeter", "\t")
-            .format("com.databricks.spark.text").save(fullPath);
+                    .format("com.databricks.spark.text").save(fullPath);
             return fullPath;
         } catch (Exception e) {
             log.info("ERROR when export report format .txt");
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static Dataset<Row> executeToNDQuery(String query) {
+        String filePath = LivyUtils.queryToFile(query);
+        if (filePath != null) {
+            return csvToDS(SparkUtils.getAvailableSparkSession(), filePath);
+        }
+        return null;
+    }
+
+    public static Dataset<Row> csvToDS(SparkSession spark, String filePath) {
+        try {
+            Dataset<Row> ds = spark.read().option("header", "true").option("delimeter", ",").csv(filePath);
+            return ds;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            SparkUtils.releaseSparkSession(spark);
         }
     }
 }
