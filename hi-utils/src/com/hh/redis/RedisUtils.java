@@ -59,6 +59,31 @@ public class RedisUtils {
         }
     }
 
+    public static boolean removeKey(Jedis redis, String key) {
+        log.info(String.format("Deleting key: %s", key));
+        try {
+            redis.del(key);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            redis.close();
+        }
+    }
+
+    public static boolean removeKey(Jedis redis, byte[] key) {
+        log.info(String.format("Deleting key: %s", key));
+        try {
+            redis.del(key);
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            redis.close();
+        }
+    }
+
     public static void deleteRedisKey(Jedis redis, String key) {
         log.info(String.format("Check exist redis key: %s", key));
         try {
@@ -144,4 +169,5 @@ public class RedisUtils {
             redis.close();
         }
     }
+
 }
