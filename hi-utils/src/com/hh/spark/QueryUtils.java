@@ -49,6 +49,8 @@ public class QueryUtils {
     public static boolean doneWritingFile = false;
     public static Thread writeToHDFS;
 
+    public static boolean isToND = false;
+
 
     public static final UserDefinedFunction encryptAccNo = functions.udf((UDF1<String, String>) StringUtils::encryptAccNo, DataTypes.StringType);
 
@@ -572,29 +574,33 @@ public class QueryUtils {
         if ((query == null) || (query.length() < 1)) {
             return null;
         }
-        // Replace params
-        for (Map.Entry<String, String> entry : Constants.dataSource.entrySet()) {
-            query = query.replaceAll(":" + entry.getKey() + ":", entry.getValue());
-        }
-
-        // Query data
-        SparkSession spark = SparkUtils.getAvailableSparkSession();
-        addUDFToSpark(spark);
-        Dataset<Row> data = null;
-        try {
-            data = queryToDataset(spark, query);
-            //          data = spark.sql(query);
-            return data;
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.info("Error while fetching data");
-            if (throwError) {
-                throw e;
-            } else {
-                return null;
+        if (!isToND) {
+            // Replace params
+            for (Map.Entry<String, String> entry : Constants.dataSource.entrySet()) {
+                query = query.replaceAll(":" + entry.getKey() + ":", entry.getValue());
             }
-        } finally {
-            SparkUtils.releaseSparkSession(spark);
+
+            // Query data
+            SparkSession spark = SparkUtils.getAvailableSparkSession();
+            addUDFToSpark(spark);
+            Dataset<Row> data = null;
+            try {
+                data = queryToDataset(spark, query);
+                //          data = spark.sql(query);
+                return data;
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.info("Error while fetching data");
+                if (throwError) {
+                    throw e;
+                } else {
+                    return null;
+                }
+            } finally {
+                SparkUtils.releaseSparkSession(spark);
+            }
+        } else {
+            return executeToNDQuery(query);
         }
     }
 
@@ -660,35 +666,39 @@ public class QueryUtils {
      * @return a data set
      */
     public static Dataset<Row> queryToDataset(SparkSession spark, String query) {
-        Dataset<Row> result = null;
-        addUDFToSpark(spark);
-        int count = 0;
-        while (count < 10) {
-            log.info(String.format("TOGREP | Trying query %s for the %d times", query, count + 1));
-            try {
-                result = spark.sql(query);
-                result.cache();
-                result.show();
-                count = 10;
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (!e.toString().contains("SparkContext")) {
-                    // It does look like Spark Context is going down
-                    throw e;
-                }
-            }
-            // data would be available for the function
-            // Due to the spark context might shutdown, we need to retry it to make sure
-            count++;
-            if (count < 10) {
+        if (!isToND) {
+            Dataset<Row> result = null;
+            addUDFToSpark(spark);
+            int count = 0;
+            while (count < 10) {
+                log.info(String.format("TOGREP | Trying query %s for the %d times", query, count + 1));
                 try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
+                    result = spark.sql(query);
+                    result.cache();
+                    result.show();
+                    count = 10;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (!e.toString().contains("SparkContext")) {
+                        // It does look like Spark Context is going down
+                        throw e;
+                    }
+                }
+                // data would be available for the function
+                // Due to the spark context might shutdown, we need to retry it to make sure
+                count++;
+                if (count < 10) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
 
+                    }
                 }
             }
+            return result;
+        } else {
+            return executeToNDQuery(query);
         }
-        return result;
     }
 
     public static Map<String, Object> executeSparkQuery(String query, String fileName, String header, String type)
@@ -721,8 +731,20 @@ public class QueryUtils {
             // spark.conf().set("spark.sql.crossJoin.enabled", "true");
             Dataset<Row> data = null;
             try {
-                data = queryToDataset(spark, query);
-                result.put("status", true);
+                if (!isToND) {
+                    data = queryToDataset(spark, query);
+                } else {
+                    data = executeToNDQuery(query);
+                }
+                if (data != null) {
+                    result.put("status", true);
+                } else {
+                    log.error("Error while fetching data");
+                    result.put("status", false);
+                    result.put("result", "Error: ");
+                    return result;
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("Error while fetching data");
