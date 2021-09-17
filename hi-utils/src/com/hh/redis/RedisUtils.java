@@ -52,6 +52,7 @@ public class RedisUtils {
             log.debug(String.format("Value of key:%s is: %s", key, temp));
             return temp;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         } finally {
             redis.close();
