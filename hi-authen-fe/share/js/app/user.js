@@ -150,6 +150,23 @@ addUser = function() {
         data: $("#addForm").serialize(),
         cache: false, //fix loop IE
         success: function(data, textStatus, jqXHR) {
+            console.log(data);
+            if (data && 'passwordpolicy_01'.localeCompare(data.error_code) == 0) {
+                noty({
+                    text: data.error_message + '<br /><br />\n\n' +
+                    `- Phải chứa ký tự, chữ số, chữ in hoa, ký tự đặc biệt: ~!@#$%^&amp;*()_+|\`-={}[]:" &lt; ;' ? &gt;,./ <br />\n` +
+                    `- Độ dài tối thiểu là 8 <br />\n` +
+                    `- Không chứa tên tài khoản và bắt đầu bằng 123, 456, 789, 147, 258, 852, 741, abc, 369 <br />\n` +
+                    `- Không chứa các cụm từ dễ đoán: qwerty, password, passw0rd, password@123, abc123, iloveyou, viettel@123, admin@123, 123qwea@, abc@123, qwerty@123, vtt@2014, 123@123, 123123, 696969 <br />\n` +
+                    `- Không chứa thông tin cá nhân: name, date of birth, phone number, ID card number, staff code <br />\n` +
+                    `- Không chứa các dãy 4 ký tự tăng dần hoặc giảm dần: 1234, 4321, 6789, abcd... <br />\n` +
+                    `- Ví dụ mật khẩu đúng: 1Qaz@123`,
+                    layout: 'center',
+                    type: 'info'
+                });
+                setTimeout(function(){ closeAllMessage(); }, 10000);
+                return
+            }
             closeAllMessage();
             searchUser();
             if(document.getElementById('cmd') == 'ADD_USER') {
@@ -158,6 +175,9 @@ addUser = function() {
             } else {
                 successMessage('Cập nhật thành công!');
             }
+        },
+        error: function (err) {
+            console.log(err);
         }
     });
 }
