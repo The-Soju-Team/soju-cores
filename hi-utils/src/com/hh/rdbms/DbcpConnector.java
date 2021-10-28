@@ -101,6 +101,7 @@ public class DbcpConnector {
             ds.setValidationQuery("SELECT 1 from dual");
             ds.setValidationQueryTimeout(15);
             ds.setTimeBetweenEvictionRunsMillis(60000);
+            ds.setDriverClassName(driverClass);
 
         } catch (Exception ex) {
             log.error("Dbcp error: ", ex);

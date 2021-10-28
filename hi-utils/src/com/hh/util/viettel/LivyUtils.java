@@ -55,7 +55,8 @@ public class LivyUtils {
         params.put("queryId", submitResult.get("queryId").toString());
         params.put("sessionId", submitResult.get("sessionId").toString());
         Map<Object, Object> isQueryDone;
-        while (count <= 10) {
+        while (count <= 200) {
+            LOG.info("Waiting for result from DonNN's service");
             try {
                 isQueryDone = RequestUtils.get(endpoint, params);
 
