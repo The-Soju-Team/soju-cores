@@ -17,6 +17,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -106,7 +107,8 @@ public class SMSUtils {
     // }
 
     public static void sendViSMS(String receiver, String content) throws ClientProtocolException, IOException {
-        sendViSMS(receiver, content, "DMP_MONITOR");
+        // sendViSMS(receiver, content, "DMP_MONITOR");
+        sendSMSNew(receiver, content);
     }
 
     /**
@@ -128,6 +130,40 @@ public class SMSUtils {
         params.add(new BasicNameValuePair("text", content));
         try {
             httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+            HttpResponse response = httpClient.execute(httppost);
+            String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
+            Map m = gson.fromJson(responseString, HashMap.class);
+            if ("success".equals(m.get("status"))) {
+                System.out.println("SMS Sent Successfully via DMP");
+                // logSMS(receiver, content);
+            } else {
+                System.out.println("Can not send SMS via DMP");
+                System.out.println(responseString);
+            }
+        } catch (Exception e) {
+            System.out.println("Can not send SMS via DMP: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Send SMS with Vietnamese content via new gw
+     *
+     * @param receiver MSISDN to send. Ex: "84345678901"
+     * @param content  SMS Content
+     * @throws IOException
+     * @throws ClientProtocolException
+     */
+
+    public static void sendSMSNew(String receiver, String content) throws ClientProtocolException, IOException {
+        HttpClient httpClient = HttpClients.createDefault();
+        HttpPost httppost = new HttpPost("http://10.254.136.41:9124/send-sms");
+
+        httppost.setHeader("Content-Type", "application/json");
+        Map<String,String> body = new HashMap<>();
+        body.put("receivers", receiver);
+        body.put("content", content);
+        try {
+            httppost.setEntity(new StringEntity(gson.toJson(body), "UTF-8"));
             HttpResponse response = httpClient.execute(httppost);
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
             Map m = gson.fromJson(responseString, HashMap.class);
